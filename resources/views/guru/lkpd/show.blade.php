@@ -2,6 +2,7 @@
 <html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -27,314 +28,13 @@
             min-height: 100vh;
         }
 
-        .container {
-            width: min(950px, calc(100% - 36px));
-            margin: auto;
-            padding: 34px 0 60px;
-        }
-
-        .back {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            margin-bottom: 20px;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 750;
-        }
-
-        .back:hover {
-            color: #0f172a;
-        }
-
-        .heading {
-            margin-bottom: 22px;
-        }
-
-        .eyebrow {
-            margin-bottom: 6px;
-            color: #2563eb;
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-        }
-
-        h1 {
-            margin: 0;
-            color: #0f172a;
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: -.04em;
-        }
-
-        .subtitle {
-            margin: 8px 0 0;
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        /* STUDENT */
-
-        .student-card {
-            margin-bottom: 20px;
-            padding: 22px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 17px;
-        }
-
-        .student-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .student-name {
-            color: #0f172a;
-            font-size: 20px;
-            font-weight: 900;
-        }
-
-        .student-meta {
-            margin-top: 5px;
-            color: #64748b;
-            font-size: 13px;
-        }
-
-        .meeting {
-            flex: 0 0 auto;
-            padding: 8px 12px;
-            border-radius: 9px;
-            background: #eff6ff;
-            color: #2563eb;
-            font-size: 12px;
-            font-weight: 850;
-        }
-
-        .sent {
-            margin-top: 14px;
-            color: #94a3b8;
-            font-size: 11px;
-        }
-
-        /* TASK */
-
-        .task-card {
-            margin-bottom: 20px;
-            padding: 20px;
-            border: 1px solid #dbeafe;
-            border-radius: 16px;
-            background: #f8fbff;
-        }
-
-        .task-label {
-            margin-bottom: 7px;
-            color: #2563eb;
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-        }
-
-        .task-text {
-            color: #334155;
-            font-size: 14px;
-            line-height: 1.75;
-        }
-
-        /* PHOTO */
-
-        .photo-card {
-            overflow: hidden;
-            margin-bottom: 20px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 17px;
-        }
-
-        .photo-header {
-            padding: 20px 22px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .photo-title {
-            color: #0f172a;
-            font-size: 16px;
-            font-weight: 850;
-        }
-
-        .photo-subtitle {
-            margin-top: 4px;
-            color: #94a3b8;
-            font-size: 12px;
-        }
-
-        .photo-area {
-            padding: 20px;
-            background: #f8fafc;
-        }
-
-        .photo-area img {
-            display: block;
-            width: 100%;
-            max-height: 720px;
-            object-fit: contain;
-            margin: auto;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            background: #fff;
-        }
-
-        /* APPROVAL */
-
-        .approval-card {
-            padding: 22px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 17px;
-        }
-
-        .approval-title {
-            color: #0f172a;
-            font-size: 16px;
-            font-weight: 850;
-        }
-
-        .approval-description {
-            margin-top: 5px;
-            margin-bottom: 17px;
-            color: #64748b;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .approval-option {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: .18s ease;
-        }
-
-        .approval-option:hover {
-            background: #f8fafc;
-        }
-
-        .approval-option.approved {
-            border-color: #bbf7d0;
-            background: #f0fdf4;
-        }
-
-        .approval-option input {
-            width: 19px;
-            height: 19px;
-            margin: 1px 0 0;
-            accent-color: #16a34a;
-            cursor: pointer;
-            flex: 0 0 auto;
-        }
-
-        .approval-text strong {
-            display: block;
-            color: #0f172a;
-            font-size: 14px;
-            font-weight: 850;
-        }
-
-        .approval-text span {
-            display: block;
-            margin-top: 4px;
-            color: #64748b;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        .approval-time {
-            margin-top: 10px;
-            color: #15803d;
-            font-size: 11px;
-            font-weight: 750;
-        }
-
-        .submit {
-            width: 100%;
-            height: 46px;
-            margin-top: 15px;
-            border: 0;
-            border-radius: 11px;
-            background: #0f172a;
-            color: #fff;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 850;
-            cursor: pointer;
-            transition: .18s ease;
-        }
-
-        .submit:hover {
-            background: #1e293b;
-            transform: translateY(-1px);
-        }
-
-        .success {
-            margin-bottom: 20px;
-            padding: 13px 15px;
-            border: 1px solid #bbf7d0;
-            border-radius: 11px;
-            background: #ecfdf5;
-            color: #166534;
-            font-size: 13px;
-            font-weight: 750;
-        }
-
-        .error {
-            margin-bottom: 20px;
-            padding: 13px 15px;
-            border: 1px solid #fecaca;
-            border-radius: 11px;
-            background: #fef2f2;
-            color: #b91c1c;
-            font-size: 13px;
-            font-weight: 750;
-        }
-
         @media (max-width: 1023px) {
             .main-content {
                 margin-left: 0 !important;
             }
         }
-
-        @media (max-width: 650px) {
-
-            .container {
-                width: min(100% - 28px, 950px);
-                padding-top: 25px;
-            }
-
-            h1 {
-                font-size: 27px;
-            }
-
-            .student-top {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .meeting {
-                width: fit-content;
-            }
-
-            .photo-area {
-                padding: 12px;
-            }
-        }
     </style>
+
 </head>
 
 
@@ -342,93 +42,35 @@
 
 <div class="min-h-screen">
 
-    {{-- =========================================================
-         SIDEBAR GLOBAL
-    ========================================================== --}}
-
     @include('guru.partials.sidebar')
 
 
-    {{-- =========================================================
-         MAIN CONTENT
-    ========================================================== --}}
+    {{-- =====================================================
+         MAIN
+    ====================================================== --}}
 
     <main
-        id="mainContent"
-        class="
-            main-content
-            lg:ml-64
-            transition-all
-            duration-300
-        "
+        class="main-content lg:ml-64 transition-all duration-300"
     >
 
+
         {{-- =====================================================
-             TOPBAR
+             HEADBAR GURU
         ====================================================== --}}
 
-        <header
-            class="
-                h-[74px]
-                bg-white
-                border-b
-                border-slate-200
-                flex
-                items-center
-                justify-between
-                px-5
-                lg:px-8
-                sticky
-                top-0
-                z-20
-            "
+        @include('guru.partials.header')
+
+
+        <div
+            class="p-5 lg:p-8 max-w-[1200px] mx-auto"
         >
-
-            <div>
-
-                <p class="text-xs text-slate-400">
-                    Panel Guru
-                </p>
-
-                <h2 class="font-bold text-slate-900">
-                    Detail LKPD
-                </h2>
-
-            </div>
-
-
-            <div
-                class="
-                    w-9
-                    h-9
-                    rounded-full
-                    bg-blue-600
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                "
-            >
-                G
-            </div>
-
-        </header>
-
-
-        {{-- =====================================================
-             CONTENT
-        ====================================================== --}}
-
-        <div class="container">
 
             {{-- BACK --}}
             <a
-                href="{{ route('guru.lkpd.index', [
-                    'kelas' => $lkpd->student->kelas ?? '',
-                    'pertemuan' => $lkpd->pertemuan
-                ]) }}"
-                class="back"
+                href="{{ route('guru.lkpd.index') }}"
+                class="inline-flex items-center gap-2
+                       mb-6 text-sm font-semibold
+                       text-slate-500 hover:text-slate-900"
             >
 
                 <i
@@ -436,115 +78,59 @@
                     class="w-4 h-4"
                 ></i>
 
-                Kembali ke Rekap LKPD
+                Kembali ke LKPD
 
             </a>
 
 
-            {{-- HEADER --}}
-            <section class="heading">
-
-                <div class="eyebrow">
-                    Pemeriksaan Tugas
-                </div>
-
-                <h1>
-                    Detail LKPD
-                </h1>
-
-                <p class="subtitle">
-                    Periksa hasil tugas siswa dan berikan persetujuan.
-                </p>
-
-            </section>
-
-
-            {{-- SUCCESS --}}
+            {{-- FLASH --}}
             @if(session('success'))
 
-                <div class="success">
-
-                    <div class="flex items-center gap-2">
-
-                        <i
-                            data-lucide="circle-check"
-                            class="w-4 h-4"
-                        ></i>
-
-                        {{ session('success') }}
-
-                    </div>
-
+                <div
+                    class="mb-6 px-4 py-3 rounded-xl
+                           border border-emerald-200
+                           bg-emerald-50 text-emerald-700
+                           text-sm font-semibold"
+                >
+                    {{ session('success') }}
                 </div>
 
             @endif
 
 
-            {{-- ERROR --}}
-            @if($errors->any())
+            @if(session('error'))
 
-                <div class="error">
-
-                    <div class="font-bold mb-1">
-                        Terjadi kesalahan:
-                    </div>
-
-                    <ul class="list-disc pl-5">
-
-                        @foreach($errors->all() as $error)
-
-                            <li>
-                                {{ $error }}
-                            </li>
-
-                        @endforeach
-
-                    </ul>
-
+                <div
+                    class="mb-6 px-4 py-3 rounded-xl
+                           border border-red-200
+                           bg-red-50 text-red-700
+                           text-sm font-semibold"
+                >
+                    {{ session('error') }}
                 </div>
 
             @endif
 
 
-            {{-- =================================================
-                 INFORMASI SISWA
-            ================================================== --}}
+            {{-- HEADER LKPD --}}
+            <section
+                class="bg-white border border-slate-200
+                       rounded-2xl p-6 shadow-sm mb-6"
+            >
 
-            <section class="student-card">
-
-                <div class="student-top">
+                <div
+                    class="flex flex-col lg:flex-row
+                           lg:items-start lg:justify-between gap-5"
+                >
 
                     <div>
 
-                        <div class="student-name">
-                            {{ $lkpd->student->nama ?? 'Siswa tidak ditemukan' }}
-                        </div>
-
-
-                        <div class="student-meta">
-
-                            No. Absen:
-
-                            <strong>
-                                {{ $lkpd->student->nomor_absen ?? '-' }}
-                            </strong>
-
-                            &nbsp; • &nbsp;
-
-                            Kelas:
-
-                            <strong>
-                                {{ $lkpd->student->kelas ?? '-' }}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="meeting">
-
-                        <div class="flex items-center gap-1.5">
+                        <div
+                            class="inline-flex items-center gap-2
+                                   px-3 py-1.5 rounded-lg
+                                   bg-blue-50 text-blue-600
+                                   text-xs font-bold mb-3"
+                        >
 
                             <i
                                 data-lucide="calendar-days"
@@ -555,259 +141,823 @@
 
                         </div>
 
+
+                        <h1
+                            class="text-2xl lg:text-3xl
+                                   font-black text-slate-900"
+                        >
+                            {{ $lkpd->judul }}
+                        </h1>
+
+
+                        @if($lkpd->deskripsi)
+
+                            <p
+                                class="mt-3 text-sm leading-7
+                                       text-slate-500 max-w-3xl"
+                            >
+                                {{ $lkpd->deskripsi }}
+                            </p>
+
+                        @endif
+
                     </div>
 
-                </div>
 
+                    {{-- STATUS AKTIF --}}
+                    @if($lkpd->aktif)
 
-                <div class="sent flex items-center gap-1.5">
+                        <span
+                            class="inline-flex items-center gap-2
+                                   px-3 py-2 rounded-xl
+                                   bg-emerald-50 text-emerald-700
+                                   text-xs font-bold"
+                        >
 
-                    <i
-                        data-lucide="clock-3"
-                        class="w-3.5 h-3.5"
-                    ></i>
+                            <span
+                                class="w-2 h-2 rounded-full
+                                       bg-emerald-500"
+                            ></span>
 
-                    Dikumpulkan:
+                            Aktif untuk Siswa
 
-                    {{ $lkpd->created_at->format('d/m/Y H:i') }}
+                        </span>
+
+                    @else
+
+                        <span
+                            class="inline-flex items-center gap-2
+                                   px-3 py-2 rounded-xl
+                                   bg-slate-100 text-slate-500
+                                   text-xs font-bold"
+                        >
+
+                            <span
+                                class="w-2 h-2 rounded-full
+                                       bg-slate-400"
+                            ></span>
+
+                            Belum Aktif
+
+                        </span>
+
+                    @endif
 
                 </div>
 
             </section>
 
 
-            {{-- =================================================
-                 TUGAS
-            ================================================== --}}
-
+            {{-- STATISTIK SOAL --}}
             @php
 
-                $task = match ((int) $lkpd->pertemuan) {
+                $pgCount = $lkpd->questions
+                    ->where('jenis', 'pilihan_ganda')
+                    ->count();
 
-                    1 =>
-                        'Pilih satu lagu daerah yang kamu ketahui. Tuliskan identitas lagu tersebut pada buku tugas, meliputi nama lagu dan daerah asalnya. Setelah selesai, foto hasil pekerjaanmu dan unggah di sini.',
+                $essayCount = $lkpd->questions
+                    ->where('jenis', 'essay')
+                    ->count();
 
-                    2 =>
-                        'Pilih satu lagu daerah. Identifikasi dan tuliskan ciri-ciri lagu tersebut berdasarkan materi yang telah dipelajari. Foto hasil pekerjaanmu dan unggah di sini.',
+                $studentCount = $lkpd->answers
+                    ->pluck('student_id')
+                    ->unique()
+                    ->count();
 
-                    3 =>
-                        'Lakukan latihan teknik dasar bernyanyi dengan memperhatikan sikap tubuh dan teknik pernapasan. Tuliskan hasil pengalaman latihanmu pada buku tugas, kemudian foto hasil pekerjaanmu dan unggah di sini.',
-
-                    4 =>
-                        'Latih satu bagian lagu daerah dengan memperhatikan intonasi, artikulasi, tempo, dan frasering. Tuliskan hasil latihan atau catatan kesulitanmu pada buku tugas, kemudian foto hasil pekerjaanmu dan unggah di sini.',
-
-                    5 =>
-                        'Pilih tiga alat musik tradisional Indonesia. Tuliskan nama alat musik dan daerah asalnya. Foto hasil pekerjaanmu dan unggah di sini.',
-
-                    6 =>
-                        'Pilih empat alat musik tradisional yang dimainkan dengan cara berbeda. Tuliskan nama alat musik dan cara memainkannya. Foto hasil pekerjaanmu dan unggah di sini.',
-
-                    7 =>
-                        'Pilih empat alat musik tradisional dan kelompokkan berdasarkan sumber bunyinya: kordofon, aerofon, membranofon, atau idiofon. Foto hasil pekerjaanmu dan unggah di sini.',
-
-                    8 =>
-                        'Buatlah tulisan singkat tentang cara yang dapat dilakukan generasi muda untuk melestarikan alat musik tradisional Indonesia. Kerjakan pada buku tugas, kemudian foto hasil pekerjaanmu dan unggah di sini.',
-
-                    default =>
-                        'Tugas LKPD pertemuan ini.',
-                };
+                $pendingEssay = $lkpd->answers
+                    ->filter(function ($answer) {
+                        return $answer->question &&
+                            $answer->question->jenis === 'essay' &&
+                            $answer->nilai === null;
+                    })
+                    ->count();
 
             @endphp
 
 
-            <section class="task-card">
+            <div
+                class="grid grid-cols-2 lg:grid-cols-4
+                       gap-4 mb-6"
+            >
 
-                <div class="task-label">
-                    Tugas Pertemuan {{ $lkpd->pertemuan }}
-                </div>
-
-                <div class="task-text">
-                    {{ $task }}
-                </div>
-
-            </section>
-
-
-            {{-- =================================================
-                 FOTO TUGAS
-            ================================================== --}}
-
-            <section class="photo-card">
-
-                <div class="photo-header">
-
-                    <div class="photo-title flex items-center gap-2">
-
-                        <i
-                            data-lucide="image"
-                            class="w-5 h-5 text-blue-600"
-                        ></i>
-
-                        Foto Hasil Tugas
-
-                    </div>
-
-                    <div class="photo-subtitle">
-                        Dokumentasi tugas yang dikirim oleh siswa.
-                    </div>
-
-                </div>
-
-
-                <div class="photo-area">
-
-                    @if($lkpd->foto)
-
-                        <img
-                            src="{{ asset('storage/' . $lkpd->foto) }}"
-                            alt="Foto tugas {{ $lkpd->student->nama ?? 'siswa' }}"
-                        >
-
-                    @else
-
-                        <div
-                            class="
-                                py-20
-                                text-center
-                                text-slate-400
-                            "
-                        >
-
-                            <i
-                                data-lucide="image-off"
-                                class="
-                                    w-10
-                                    h-10
-                                    mx-auto
-                                    mb-3
-                                "
-                            ></i>
-
-                            <p class="font-semibold">
-                                Foto tugas tidak tersedia
-                            </p>
-
-                        </div>
-
-                    @endif
-
-                </div>
-
-            </section>
-
-
-            {{-- =================================================
-                 PERSETUJUAN
-            ================================================== --}}
-
-            <section class="approval-card">
-
-                <div class="approval-title flex items-center gap-2">
-
-                    <i
-                        data-lucide="shield-check"
-                        class="w-5 h-5 text-blue-600"
-                    ></i>
-
-                    Pemeriksaan Guru
-
-                </div>
-
-
-                <div class="approval-description">
-
-                    Jika tugas sudah sesuai dan dapat diterima,
-                    centang persetujuan di bawah lalu simpan.
-
-                </div>
-
-
-                <form
-                    action="{{ route('guru.lkpd.approve', $lkpd) }}"
-                    method="POST"
+                <div
+                    class="bg-white border border-slate-200
+                           rounded-2xl p-5 shadow-sm"
                 >
 
-                    @csrf
-
-
-                    <label
-                        class="
-                            approval-option
-                            {{ $lkpd->disetujui ? 'approved' : '' }}
-                        "
-                        id="approval-option"
+                    <div
+                        class="text-xs font-semibold
+                               text-slate-400"
                     >
+                        Total Soal
+                    </div>
 
-                        <input
-                            type="checkbox"
-                            name="disetujui"
-                            value="1"
-                            id="disetujui"
-                            {{ $lkpd->disetujui ? 'checked' : '' }}
+                    <div
+                        class="mt-2 text-2xl font-black
+                               text-slate-900"
+                    >
+                        {{ $lkpd->questions->count() }}
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="bg-white border border-slate-200
+                           rounded-2xl p-5 shadow-sm"
+                >
+
+                    <div
+                        class="text-xs font-semibold
+                               text-slate-400"
+                    >
+                        Pilihan Ganda
+                    </div>
+
+                    <div
+                        class="mt-2 text-2xl font-black
+                               text-violet-600"
+                    >
+                        {{ $pgCount }}
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="bg-white border border-slate-200
+                           rounded-2xl p-5 shadow-sm"
+                >
+
+                    <div
+                        class="text-xs font-semibold
+                               text-slate-400"
+                    >
+                        Essay
+                    </div>
+
+                    <div
+                        class="mt-2 text-2xl font-black
+                               text-amber-600"
+                    >
+                        {{ $essayCount }}
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="bg-white border border-slate-200
+                           rounded-2xl p-5 shadow-sm"
+                >
+
+                    <div
+                        class="text-xs font-semibold
+                               text-slate-400"
+                    >
+                        Siswa
+                    </div>
+
+                    <div
+                        class="mt-2 text-2xl font-black
+                               text-blue-600"
+                    >
+                        {{ $studentCount }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- SOAL --}}
+            <section
+                class="bg-white border border-slate-200
+                       rounded-2xl overflow-hidden shadow-sm
+                       mb-6"
+            >
+
+                <div
+                    class="px-6 py-5 border-b
+                           border-slate-100"
+                >
+
+                    <h2
+                        class="font-black text-slate-900"
+                    >
+                        Daftar Soal
+                    </h2>
+
+                    <p
+                        class="mt-1 text-xs text-slate-400"
+                    >
+                        Soal yang dibuat untuk LKPD ini.
+                    </p>
+
+                </div>
+
+
+                <div class="p-6 space-y-5">
+
+                    @forelse($lkpd->questions as $question)
+
+                        <div
+                            class="border border-slate-200
+                                   rounded-2xl p-5"
                         >
 
+                            <div
+                                class="flex flex-col
+                                       sm:flex-row
+                                       sm:items-start
+                                       sm:justify-between
+                                       gap-3 mb-4"
+                            >
 
-                        <div class="approval-text">
+                                <div
+                                    class="flex items-center gap-2"
+                                >
 
-                            <strong>
-                                Setujui Tugas
-                            </strong>
+                                    <span
+                                        class="w-8 h-8 rounded-lg
+                                               bg-slate-100
+                                               flex items-center
+                                               justify-center
+                                               text-xs font-black
+                                               text-slate-500"
+                                    >
+                                        {{ $question->urutan }}
+                                    </span>
 
-                            <span>
-                                Saya menyatakan bahwa tugas LKPD ini telah
-                                diperiksa dan dapat diterima.
-                            </span>
+                                    @if($question->jenis === 'pilihan_ganda')
+
+                                        <span
+                                            class="px-2.5 py-1.5
+                                                   rounded-lg
+                                                   bg-violet-50
+                                                   text-violet-700
+                                                   text-xs font-bold"
+                                        >
+                                            Pilihan Ganda
+                                        </span>
+
+                                    @else
+
+                                        <span
+                                            class="px-2.5 py-1.5
+                                                   rounded-lg
+                                                   bg-amber-50
+                                                   text-amber-700
+                                                   text-xs font-bold"
+                                        >
+                                            Essay
+                                        </span>
+
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="text-sm font-semibold
+                                       leading-7 text-slate-800"
+                            >
+                                {{ $question->pertanyaan }}
+                            </div>
+
+
+                            @if($question->jenis === 'pilihan_ganda')
+
+                                <div
+                                    class="grid grid-cols-1
+                                           md:grid-cols-2
+                                           gap-2 mt-4"
+                                >
+
+                                    @foreach([
+                                        'A' => $question->opsi_a,
+                                        'B' => $question->opsi_b,
+                                        'C' => $question->opsi_c,
+                                        'D' => $question->opsi_d,
+                                    ] as $key => $option)
+
+                                        @if($option !== null && $option !== '')
+
+                                            <div
+                                                class="
+                                                    px-4 py-3
+                                                    rounded-xl
+                                                    border
+                                                    {{ $question->jawaban_benar === $key
+                                                        ? 'border-emerald-200 bg-emerald-50'
+                                                        : 'border-slate-200 bg-slate-50'
+                                                    }}
+                                                "
+                                            >
+
+                                                <span
+                                                    class="font-black
+                                                           text-slate-500
+                                                           mr-2"
+                                                >
+                                                    {{ $key }}.
+                                                </span>
+
+                                                <span
+                                                    class="text-sm
+                                                           text-slate-700"
+                                                >
+                                                    {{ $option }}
+                                                </span>
+
+                                                @if($question->jawaban_benar === $key)
+
+                                                    <span
+                                                        class="ml-2
+                                                               text-xs
+                                                               font-bold
+                                                               text-emerald-600"
+                                                    >
+                                                        ✓ Benar
+                                                    </span>
+
+                                                @endif
+
+                                            </div>
+
+                                        @endif
+
+                                    @endforeach
+
+                                </div>
+
+                            @endif
 
                         </div>
 
-                    </label>
+                    @empty
 
-
-                    @if($lkpd->disetujui && $lkpd->disetujui_at)
-
-                        <div class="approval-time flex items-center gap-1.5">
-
-                            <i
-                                data-lucide="circle-check"
-                                class="w-4 h-4"
-                            ></i>
-
-                            Disetujui pada
-                            {{ $lkpd->disetujui_at->format('d/m/Y H:i') }}
-
+                        <div
+                            class="py-12 text-center
+                                   text-sm text-slate-400"
+                        >
+                            Belum ada soal.
                         </div>
 
-                    @endif
+                    @endforelse
 
-
-                    <button
-                        type="submit"
-                        class="submit"
-                    >
-
-                        <span
-                            class="
-                                flex
-                                items-center
-                                justify-center
-                                gap-2
-                            "
-                        >
-
-                            <i
-                                data-lucide="save"
-                                class="w-4 h-4"
-                            ></i>
-
-                            Simpan Persetujuan
-
-                        </span>
-
-                    </button>
-
-                </form>
+                </div>
 
             </section>
+
+
+            {{-- JAWABAN SISWA --}}
+            <section
+                class="bg-white border border-slate-200
+                       rounded-2xl overflow-hidden shadow-sm"
+            >
+
+                <div
+                    class="px-6 py-5 border-b
+                           border-slate-100"
+                >
+
+                    <h2
+                        class="font-black text-slate-900"
+                    >
+                        Jawaban Siswa
+                    </h2>
+
+                    <p
+                        class="mt-1 text-xs text-slate-400"
+                    >
+                        Penilaian otomatis untuk PG dan manual
+                        untuk essay.
+                    </p>
+
+                </div>
+
+
+                @php
+
+                    $students = $lkpd->answers
+                        ->groupBy('student_id');
+
+                @endphp
+
+
+                @if($students->count())
+
+                    <div class="p-6 space-y-8">
+
+                        @foreach($students as $studentId => $answers)
+
+                            @php
+                                $student = $answers->first()->student;
+                            @endphp
+
+
+                            <div
+                                class="border border-slate-200
+                                       rounded-2xl overflow-hidden"
+                            >
+
+                                {{-- STUDENT HEADER --}}
+                                <div
+                                    class="px-5 py-4
+                                           bg-slate-50
+                                           border-b border-slate-200
+                                           flex flex-col sm:flex-row
+                                           sm:items-center
+                                           sm:justify-between gap-3"
+                                >
+
+                                    <div>
+
+                                        <div
+                                            class="font-black
+                                                   text-slate-900"
+                                        >
+                                            {{ $student->nama ?? 'Siswa' }}
+                                        </div>
+
+                                        <div
+                                            class="text-xs
+                                                   text-slate-400 mt-1"
+                                        >
+                                            Kelas:
+                                            {{ $student->kelas ?? '-' }}
+                                            &nbsp; • &nbsp;
+                                            Absen:
+                                            {{ $student->nomor_absen ?? '-' }}
+                                        </div>
+
+                                    </div>
+
+
+                                    @php
+
+                                        $studentEssayPending =
+                                            $answers->contains(
+                                                fn ($answer) =>
+                                                    $answer->question &&
+                                                    $answer->question->jenis === 'essay' &&
+                                                    $answer->nilai === null
+                                            );
+
+                                    @endphp
+
+
+                                    @if($studentEssayPending)
+
+                                        <span
+                                            class="inline-flex
+                                                   items-center gap-1.5
+                                                   px-3 py-2 rounded-lg
+                                                   bg-orange-50
+                                                   text-orange-700
+                                                   text-xs font-bold"
+                                        >
+
+                                            <i
+                                                data-lucide="clock-3"
+                                                class="w-3.5 h-3.5"
+                                            ></i>
+
+                                            Essay belum dinilai
+
+                                        </span>
+
+                                    @else
+
+                                        <span
+                                            class="inline-flex
+                                                   items-center gap-1.5
+                                                   px-3 py-2 rounded-lg
+                                                   bg-emerald-50
+                                                   text-emerald-700
+                                                   text-xs font-bold"
+                                        >
+
+                                            <i
+                                                data-lucide="circle-check"
+                                                class="w-3.5 h-3.5"
+                                            ></i>
+
+                                            Penilaian selesai
+
+                                        </span>
+
+                                    @endif
+
+                                </div>
+
+
+                                {{-- ANSWERS --}}
+                                <div class="p-5 space-y-5">
+
+                                    @foreach($lkpd->questions as $question)
+
+                                        @php
+
+                                            $answer = $answers->firstWhere(
+                                                'lkpd_question_id',
+                                                $question->id
+                                            );
+
+                                        @endphp
+
+
+                                        <div
+                                            class="border border-slate-100
+                                                   rounded-xl p-4"
+                                        >
+
+                                            <div
+                                                class="flex items-start
+                                                       justify-between
+                                                       gap-3"
+                                            >
+
+                                                <div
+                                                    class="text-sm
+                                                           font-bold
+                                                           text-slate-800"
+                                                >
+
+                                                    {{ $question->urutan }}.
+                                                    {{ $question->pertanyaan }}
+
+                                                </div>
+
+                                            </div>
+
+
+                                            {{-- PG --}}
+                                            @if($question->jenis === 'pilihan_ganda')
+
+                                                <div
+                                                    class="mt-3 flex flex-wrap
+                                                           items-center gap-3"
+                                                >
+
+                                                    <span
+                                                        class="text-xs
+                                                               text-slate-400"
+                                                    >
+                                                        Jawaban:
+                                                    </span>
+
+                                                    <span
+                                                        class="px-3 py-1.5
+                                                               rounded-lg
+                                                               bg-violet-50
+                                                               text-violet-700
+                                                               text-xs
+                                                               font-black"
+                                                    >
+                                                        {{ $answer->jawaban ?? '-' }}
+                                                    </span>
+
+
+                                                    @if($answer && $answer->nilai !== null)
+
+                                                        <span
+                                                            class="text-xs
+                                                                   font-bold
+                                                                   text-emerald-600"
+                                                        >
+                                                            Nilai:
+                                                            {{ $answer->nilai }}
+                                                        </span>
+
+                                                    @endif
+
+                                                </div>
+
+                                            {{-- ESSAY --}}
+                                            @else
+
+                                                <div
+                                                    class="mt-3 p-4
+                                                           rounded-xl
+                                                           bg-slate-50
+                                                           text-sm
+                                                           leading-7
+                                                           text-slate-700
+                                                "
+                                                >
+                                                    {{ $answer->jawaban ?? 'Belum menjawab.' }}
+                                                </div>
+
+
+                                                @if($answer)
+
+                                                    <div
+                                                        class="mt-4"
+                                                    >
+
+                                                        <label
+                                                            class="block
+                                                                   text-xs
+                                                                   font-bold
+                                                                   text-slate-600
+                                                                   mb-2"
+                                                        >
+                                                            Nilai Essay
+                                                        </label>
+
+                                                        <input
+                                                            form="grade-form-{{ $studentId }}"
+                                                            type="number"
+                                                            name="answers[{{ $answer->id }}]"
+                                                            min="0"
+                                                            max="100"
+                                                            value="{{ $answer->nilai }}"
+                                                            placeholder="0–100"
+                                                            class="w-full sm:w-40
+                                                                   h-10 px-3
+                                                                   border
+                                                                   border-slate-200
+                                                                   rounded-xl
+                                                                   text-sm
+                                                                   outline-none
+                                                                   focus:border-blue-500
+                                                                   focus:ring-4
+                                                                   focus:ring-blue-100"
+                                                        >
+
+                                                    </div>
+
+                                                @endif
+
+                                            @endif
+
+                                        </div>
+
+                                    @endforeach
+
+
+                                    {{-- GRADE FORM --}}
+                                    @if($answers->contains(
+                                        fn ($answer) =>
+                                            $answer->question &&
+                                            $answer->question->jenis === 'essay'
+                                    ))
+
+                                        <form
+                                            id="grade-form-{{ $studentId }}"
+                                            action="{{ route('guru.lkpd.grade', $lkpd) }}"
+                                            method="POST"
+                                            class="pt-2"
+                                        >
+
+                                            @csrf
+
+                                            <button
+                                                type="submit"
+                                                class="inline-flex
+                                                       items-center
+                                                       justify-center gap-2
+                                                       px-4 py-2.5
+                                                       rounded-xl
+                                                       bg-slate-900
+                                                       hover:bg-slate-800
+                                                       text-white
+                                                       text-sm font-bold"
+                                            >
+
+                                                <i
+                                                    data-lucide="save"
+                                                    class="w-4 h-4"
+                                                ></i>
+
+                                                Simpan Nilai Essay
+
+                                            </button>
+
+                                        </form>
+
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                @else
+
+                    <div
+                        class="px-6 py-16 text-center"
+                    >
+
+                        <div
+                            class="w-14 h-14 mx-auto
+                                   rounded-2xl bg-slate-100
+                                   flex items-center
+                                   justify-center mb-4"
+                        >
+
+                            <i
+                                data-lucide="inbox"
+                                class="w-6 h-6 text-slate-400"
+                            ></i>
+
+                        </div>
+
+                        <div
+                            class="font-bold text-slate-700"
+                        >
+                            Belum ada jawaban siswa
+                        </div>
+
+                        <div
+                            class="text-sm text-slate-400 mt-1"
+                        >
+                            Jawaban siswa akan muncul setelah LKPD
+                            dikerjakan.
+                        </div>
+
+                    </div>
+
+                @endif
+
+            </section>
+
+
+            {{-- FINALIZE --}}
+            @if($essayCount > 0 && $studentCount > 0)
+
+                <section
+                    class="mt-6 bg-white border border-slate-200
+                           rounded-2xl p-5 shadow-sm"
+                >
+
+                    <div
+                        class="flex flex-col lg:flex-row
+                               lg:items-center
+                               lg:justify-between gap-4"
+                    >
+
+                        <div>
+
+                            <div
+                                class="font-black text-slate-900"
+                            >
+                                Selesaikan Penilaian LKPD
+                            </div>
+
+                            <div
+                                class="text-xs text-slate-400 mt-1"
+                            >
+                                Pastikan seluruh jawaban essay
+                                sudah dinilai sebelum menyelesaikan
+                                penilaian.
+                            </div>
+
+                        </div>
+
+
+                        <form
+                            action="{{ route('guru.lkpd.finalize', $lkpd) }}"
+                            method="POST"
+                        >
+
+                            @csrf
+
+                            <button
+                                type="submit"
+                                class="inline-flex items-center
+                                       justify-center gap-2
+                                       px-5 py-3 rounded-xl
+                                       bg-emerald-600
+                                       hover:bg-emerald-700
+                                       text-white text-sm
+                                       font-bold"
+                            >
+
+                                <i
+                                    data-lucide="check-check"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Selesaikan Penilaian
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+            @endif
+
 
         </div>
 
@@ -817,36 +967,20 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
 
-        if (typeof lucide !== 'undefined') {
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        if (
+            typeof lucide !== 'undefined'
+        ) {
             lucide.createIcons();
         }
 
-        const checkbox =
-            document.getElementById('disetujui');
+    }
+);
 
-        const option =
-            document.getElementById('approval-option');
-
-        if (checkbox && option) {
-
-            checkbox.addEventListener(
-                'change',
-                function () {
-
-                    if (this.checked) {
-                        option.classList.add('approved');
-                    } else {
-                        option.classList.remove('approved');
-                    }
-
-                }
-            );
-
-        }
-
-    });
 </script>
 
 </body>

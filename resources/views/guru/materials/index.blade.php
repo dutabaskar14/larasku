@@ -62,93 +62,39 @@
 <body class="min-h-screen text-slate-800">
 
 
-    {{-- =========================================================
-         SIDEBAR GLOBAL
-    ========================================================== --}}
+   {{-- =========================================================
+     SIDEBAR GLOBAL
+========================================================== --}}
 
-    @include('guru.partials.sidebar')
-
-
-    {{-- =========================================================
-         MAIN
-    ========================================================== --}}
-
-    <main
-        id="mainContent"
-        class="
-            main-content
-            min-h-screen
-            lg:ml-64
-            transition-all
-            duration-300
-        "
-    >
+@include('guru.partials.sidebar')
 
 
-        {{-- =====================================================
-             TOP BAR
-        ====================================================== --}}
+{{-- =========================================================
+     MAIN
+========================================================== --}}
 
-        <header
-            class="
-                h-16
-                bg-white
-                border-b
-                border-slate-200
-                flex
-                items-center
-                justify-between
-                px-5
-                lg:px-8
-                sticky
-                top-0
-                z-20
-            "
-        >
-
-            <div>
-
-                <p class="text-xs text-slate-400">
-                    Panel Guru
-                </p>
-
-                <h2 class="font-bold text-slate-900">
-                    Materi Pembelajaran
-                </h2>
-
-            </div>
+<main
+    class="main-content lg:ml-64 transition-all duration-300"
+>
 
 
-            <div
-                class="
-                    w-9
-                    h-9
-                    rounded-full
-                    bg-blue-600
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                "
-            >
-                G
-            </div>
+    {{-- =====================================================
+         HEADBAR GURU
+    ====================================================== --}}
 
-        </header>
+    @include('guru.partials.header')
 
 
+    {{-- =====================================================
+         CONTENT
+    ====================================================== --}}
 
-        {{-- =====================================================
-             CONTENT
-        ====================================================== --}}
-
-        <div class="p-5 lg:p-8 max-w-7xl mx-auto">
+    <div class="p-5 lg:p-8 max-w-[1500px] mx-auto">
 
 
-            {{-- =================================================
-                 PAGE HEADER
-            ================================================== --}}
+        {{-- =================================================
+             PAGE HEADER
+        ================================================== --}}
 
             <div
                 class="
@@ -562,11 +508,15 @@
 
                                 @if($pertemuan)
 
-                                    {{ $pertemuan }}
+                                    Pertemuan {{ $pertemuan }}
+
+                                @elseif(isset($pertemuans) && $pertemuans->count())
+
+                                    {{ $pertemuans->count() }} pertemuan
 
                                 @else
 
-                                    1–8
+                                    Belum ada
 
                                 @endif
 
@@ -1312,8 +1262,8 @@
 
                 <p>
                     Materi dapat dikelompokkan berdasarkan
-                    8 pertemuan dan dilengkapi teks, gambar,
-                    video, maupun audio.
+                    pertemuan yang dibuat dan dilengkapi teks,
+                    gambar, video, maupun audio.
                 </p>
 
             </div>

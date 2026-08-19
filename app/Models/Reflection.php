@@ -3,29 +3,49 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reflection extends Model
 {
     protected $fillable = [
-        'student_id',
         'pertemuan',
-        'jawaban_1',
-        'jawaban_2',
-        'jawaban_3',
-        'jawaban_4',
-        'jawaban_5',
+        'judul',
+        'deskripsi',
+        'aktif',
     ];
 
     protected $casts = [
         'pertemuan' => 'integer',
+        'aktif' => 'boolean',
     ];
 
+
     /**
-     * Satu refleksi dimiliki oleh satu siswa.
+     * ============================================================
+     * SOAL REFLEKSI
+     * ============================================================
      */
-    public function student(): BelongsTo
+
+    public function questions(): HasMany
     {
-        return $this->belongsTo(Student::class);
+        return $this->hasMany(
+            ReflectionQuestion::class,
+            'reflection_id'
+        )->orderBy('urutan');
+    }
+
+
+    /**
+     * ============================================================
+     * JAWABAN SISWA
+     * ============================================================
+     */
+
+    public function answers(): HasMany
+    {
+        return $this->hasMany(
+            ReflectionAnswer::class,
+            'reflection_id'
+        );
     }
 }

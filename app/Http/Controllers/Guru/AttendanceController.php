@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\ClassRoom;
+use App\Models\Material;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -12,12 +13,15 @@ class AttendanceController extends Controller
 {
     /**
      * Menampilkan kelola absensi guru.
+     *
+     * Daftar pertemuan mengikuti pertemuan yang sudah dibuat
+     * melalui materi.
      */
     public function index(Request $request)
     {
         /*
         |--------------------------------------------------------------------------
-        | AMBIL KELAS DARI TABEL classes
+        | AMBIL KELAS AKTIF
         |--------------------------------------------------------------------------
         */
 
@@ -42,7 +46,7 @@ class AttendanceController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | CARI DATA KELAS TERPILIH
+        | CARI KELAS TERPILIH
         |--------------------------------------------------------------------------
         */
 
@@ -54,24 +58,79 @@ class AttendanceController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | PERTEMUAN
+        | AMBIL PERTEMUAN DARI MATERIAL
         |--------------------------------------------------------------------------
+        |
+        | Pertemuan tidak lagi dibatasi 1-8.
+        |
+        | Contoh:
+        |
+        | Material:
+        | Pertemuan 1
+        | Pertemuan 2
+        | Pertemuan 3
+        |
+        | Maka absensi otomatis memiliki:
+        | Pertemuan 1
+        | Pertemuan 2
+        | Pertemuan 3
+        |
         */
 
-        $pertemuan = (int) $request->get(
-            'pertemuan',
-            1
-        );
+        $pertemuans = Material::query()
+            ->whereNotNull('pertemuan')
+            ->select('pertemuan')
+            ->distinct()
+            ->orderBy('pertemuan')
+            ->pluck('pertemuan');
 
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL SISWA DARI TABEL students
+        | PERTEMUAN YANG DIPILIH
+        |--------------------------------------------------------------------------
+        */
+
+        $pertemuan = $request->get('pertemuan');
+
+        if (
+            $pertemuan === null &&
+            $pertemuans->isNotEmpty()
+        ) {
+            $pertemuan = $pertemuans->first();
+        }
+
+        $pertemuan =
+            $pertemuan !== null
+                ? (int) $pertemuan
+                : null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI PERTEMUAN
         |--------------------------------------------------------------------------
         |
-        | Hanya siswa aktif dari kelas yang dipilih.
+        | Pertemuan harus benar-benar berasal dari materi.
         |
-        | CAST digunakan karena nomor_absen bertipe string.
+        */
+
+        if (
+            $pertemuan !== null &&
+            ! $pertemuans->contains($pertemuan)
+        ) {
+            $pertemuan = $pertemuans->first();
+
+            $pertemuan =
+                $pertemuan !== null
+                    ? (int) $pertemuan
+                    : null;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL SISWA
         |--------------------------------------------------------------------------
         */
 
@@ -100,16 +159,21 @@ class AttendanceController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $attendances = Attendance::where(
-                'pertemuan',
-                $pertemuan
-            )
-            ->whereIn(
-                'student_id',
-                $students->pluck('id')
-            )
-            ->get()
-            ->keyBy('student_id');
+        $attendances = collect();
+
+        if ($pertemuan !== null) {
+
+            $attendances = Attendance::where(
+                    'pertemuan',
+                    $pertemuan
+                )
+                ->whereIn(
+                    'student_id',
+                    $students->pluck('id')
+                )
+                ->get()
+                ->keyBy('student_id');
+        }
 
 
         /*
@@ -126,7 +190,8 @@ class AttendanceController extends Controller
                 'students',
                 'attendances',
                 'kelas',
-                'pertemuan'
+                'pertemuan',
+                'pertemuans'
             )
         );
     }
@@ -158,10 +223,34 @@ class AttendanceController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'max:8',
             ],
 
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PASTIKAN PERTEMUAN ADA DI MATERIAL
+        |--------------------------------------------------------------------------
+        */
+
+        $meetingExists = Material::query()
+            ->where(
+                'pertemuan',
+                $validated['pertemuan']
+            )
+            ->exists();
+
+
+        if (! $meetingExists) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'pertemuan' =>
+                        'Pertemuan tersebut belum dibuat pada materi.',
+                ]);
+        }
 
 
         /*
@@ -198,23 +287,23 @@ class AttendanceController extends Controller
         | PERTEMUAN HANYA BOLEH MAJU
         |--------------------------------------------------------------------------
         |
-        | Pertemuan sebelumnya tidak akan terkunci.
-        |
         | Contoh:
         |
-        | 3 dibuka
+        | Pertemuan aktif = 2
+        |
+        | Guru membuka 3:
+        |
         | 1 = terbuka
         | 2 = terbuka
         | 3 = terbuka
         |
-        | Kalau guru kembali memilih 2,
-        | tetap disimpan 3.
-        |--------------------------------------------------------------------------
+        | Pertemuan sebelumnya tidak dikunci.
+        |
         */
 
         if (
             $validated['pertemuan']
-            > $class->pertemuan_aktif
+            > (int) $class->pertemuan_aktif
         ) {
 
             $class->update([
@@ -249,13 +338,15 @@ class AttendanceController extends Controller
 
 
     /**
-     * Menampilkan rekap absensi 8 pertemuan.
+     * Menampilkan rekap absensi.
+     *
+     * Jumlah pertemuan mengikuti materi.
      */
     public function rekap(Request $request)
     {
         /*
         |--------------------------------------------------------------------------
-        | AMBIL KELAS DARI TABEL classes
+        | AMBIL KELAS AKTIF
         |--------------------------------------------------------------------------
         */
 
@@ -280,11 +371,7 @@ class AttendanceController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | SISWA DARI TABEL students
-        |--------------------------------------------------------------------------
-        |
-        | Urut berdasarkan nomor absen secara numerik,
-        | kemudian nama.
+        | SISWA
         |--------------------------------------------------------------------------
         */
 
@@ -309,6 +396,20 @@ class AttendanceController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | PERTEMUAN DARI MATERIAL
+        |--------------------------------------------------------------------------
+        */
+
+        $pertemuans = Material::query()
+            ->whereNotNull('pertemuan')
+            ->select('pertemuan')
+            ->distinct()
+            ->orderBy('pertemuan')
+            ->pluck('pertemuan');
+
+
+        /*
+        |--------------------------------------------------------------------------
         | VIEW REKAP
         |--------------------------------------------------------------------------
         */
@@ -318,7 +419,8 @@ class AttendanceController extends Controller
             compact(
                 'classes',
                 'students',
-                'kelas'
+                'kelas',
+                'pertemuans'
             )
         );
     }
@@ -347,7 +449,6 @@ class AttendanceController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'max:8',
             ],
 
             'attendance' => [
@@ -361,6 +462,31 @@ class AttendanceController extends Controller
             ],
 
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PASTIKAN PERTEMUAN ADA DI MATERIAL
+        |--------------------------------------------------------------------------
+        */
+
+        $meetingExists = Material::query()
+            ->where(
+                'pertemuan',
+                $validated['pertemuan']
+            )
+            ->exists();
+
+
+        if (! $meetingExists) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'pertemuan' =>
+                        'Pertemuan tersebut belum dibuat pada materi.',
+                ]);
+        }
 
 
         /*

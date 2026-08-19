@@ -85,92 +85,34 @@
 
 <body>
 
-    @php
-        $pertemuan = (int) request('pertemuan', 1);
-
-        if ($pertemuan < 1 || $pertemuan > 8) {
-            $pertemuan = 1;
-        }
-    @endphp
-
 
     {{-- =========================================================
-         SIDEBAR GLOBAL
-    ========================================================== --}}
+     SIDEBAR
+========================================================== --}}
 
-    @include('guru.partials.sidebar')
-
-
-
-    {{-- =========================================================
-         MAIN
-    ========================================================== --}}
-
-    <main
-        id="mainContent"
-        class="main-content"
-    >
+@include('guru.partials.sidebar')
 
 
-        {{-- =====================================================
-             TOPBAR
-        ====================================================== --}}
+{{-- =========================================================
+     MAIN
+========================================================== --}}
 
-        <header
-            class="
-                h-16
-                bg-white
-                border-b
-                border-slate-200
-                flex
-                items-center
-                justify-between
-                px-5
-                lg:px-8
-                sticky
-                top-0
-                z-20
-            "
-        >
-
-            <div>
-
-                <p class="text-xs text-slate-400">
-                    Panel Guru
-                </p>
+<main
+    id="mainContent"
+    class="main-content"
+>
 
 
-                <h2 class="font-bold text-slate-900">
-                    Quiz Pembelajaran
-                </h2>
+    {{-- =====================================================
+         HEADBAR GURU
+    ====================================================== --}}
 
-            </div>
-
-
-            <div
-                class="
-                    w-9
-                    h-9
-                    rounded-full
-                    bg-blue-600
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                "
-            >
-                G
-            </div>
-
-        </header>
+    @include('guru.partials.header')
 
 
-
-        {{-- =====================================================
-             CONTENT
-        ====================================================== --}}
-
+    {{-- =====================================================
+         CONTENT
+    ====================================================== --}}
         <div
             class="
                 max-w-6xl
@@ -214,30 +156,91 @@
                 </div>
 
 
-                <h1
+                <div
                     class="
-                        text-3xl
-                        lg:text-4xl
-                        font-black
-                        tracking-tight
-                        text-slate-900
+                        flex
+                        flex-col
+                        md:flex-row
+                        md:items-end
+                        md:justify-between
+                        gap-5
                     "
                 >
-                    Quiz Pembelajaran
-                </h1>
+
+                    <div>
+
+                        <h1
+                            class="
+                                text-3xl
+                                lg:text-4xl
+                                font-black
+                                tracking-tight
+                                text-slate-900
+                            "
+                        >
+                            Quiz Pembelajaran
+                        </h1>
 
 
-                <p
-                    class="
-                        text-sm
-                        text-slate-500
-                        mt-2
-                        max-w-2xl
-                    "
-                >
-                    Kelola soal, kunci jawaban, dan hasil penilaian
-                    Quiz berdasarkan pertemuan.
-                </p>
+                        <p
+                            class="
+                                text-sm
+                                text-slate-500
+                                mt-2
+                                max-w-2xl
+                            "
+                        >
+                            Kelola Quiz, soal, kunci jawaban,
+                            status Quiz, dan hasil penilaian
+                            berdasarkan pertemuan.
+                        </p>
+
+                    </div>
+
+
+                    @if($pertemuan)
+
+                        @if(!$quiz)
+
+                            <a
+                                href="{{ route(
+                                    'guru.quizzes.create',
+                                    [
+                                        'pertemuan' => $pertemuan
+                                    ]
+                                ) }}"
+                                class="
+                                    inline-flex
+                                    items-center
+                                    justify-center
+                                    gap-2
+                                    bg-blue-600
+                                    hover:bg-blue-700
+                                    text-white
+                                    px-5
+                                    py-3
+                                    rounded-xl
+                                    text-sm
+                                    font-bold
+                                    shadow-sm
+                                    transition
+                                "
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Buat Quiz
+
+                            </a>
+
+                        @endif
+
+                    @endif
+
+                </div>
 
             </section>
 
@@ -272,8 +275,50 @@
                         class="w-5 h-5"
                     ></i>
 
-
                     {{ session('success') }}
+
+                </div>
+
+            @endif
+
+
+
+            {{-- =================================================
+                 ERROR
+            ================================================== --}}
+
+            @if($errors->any())
+
+                <div
+                    class="
+                        mb-5
+                        px-4
+                        py-3
+                        rounded-xl
+                        border
+                        border-red-200
+                        bg-red-50
+                        text-red-700
+                        text-sm
+                    "
+                >
+
+                    <div class="font-bold mb-1">
+                        Terjadi kesalahan:
+                    </div>
+
+
+                    <ul class="list-disc pl-5 space-y-1">
+
+                        @foreach($errors->all() as $error)
+
+                            <li>
+                                {{ $error }}
+                            </li>
+
+                        @endforeach
+
+                    </ul>
 
                 </div>
 
@@ -300,74 +345,294 @@
                 <div
                     class="
                         flex
-                        items-center
-                        gap-2
+                        flex-col
+                        sm:flex-row
+                        sm:items-center
+                        sm:justify-between
+                        gap-4
                         mb-4
                     "
                 >
 
-                    <i
-                        data-lucide="calendar-days"
-                        class="w-4 h-4 text-blue-600"
-                    ></i>
-
-
-                    <span
+                    <div
                         class="
-                            text-xs
-                            font-bold
-                            uppercase
-                            tracking-wider
-                            text-slate-500
+                            flex
+                            items-center
+                            gap-2
                         "
                     >
-                        Pilih Pertemuan
-                    </span>
 
-                </div>
+                        <i
+                            data-lucide="calendar-days"
+                            class="w-4 h-4 text-blue-600"
+                        ></i>
 
 
-                <div
-                    class="
-                        flex
-                        gap-2
-                        overflow-x-auto
-                        pb-1
-                    "
-                >
-
-                    @for($i = 1; $i <= 8; $i++)
-
-                        <a
-                            href="{{ route('guru.quizzes.index', [
-                                'pertemuan' => $i
-                            ]) }}"
+                        <span
                             class="
-                                meeting
-                                shrink-0
+                                text-xs
+                                font-bold
+                                uppercase
+                                tracking-wider
+                                text-slate-500
+                            "
+                        >
+                            Pilih Pertemuan
+                        </span>
+
+                    </div>
+
+
+                    {{-- =================================================
+                         TAMBAH PERTEMUAN
+                    ================================================== --}}
+
+                    <form
+                        method="POST"
+                        action="{{ route(
+                            'guru.quizzes.meetings.store'
+                        ) }}"
+                        class="
+                            flex
+                            items-center
+                            gap-2
+                        "
+                    >
+
+                        @csrf
+
+                        <input
+                            type="number"
+                            name="pertemuan"
+                            min="1"
+                            max="255"
+                            required
+                            placeholder="No. pertemuan"
+                            class="
+                                w-32
+                                px-3
+                                py-2
+                                rounded-xl
+                                border
+                                border-slate-200
+                                bg-slate-50
+                                text-xs
+                                font-semibold
+                                text-slate-700
+                                outline-none
+                                focus:border-blue-400
+                                focus:ring-2
+                                focus:ring-blue-100
+                            "
+                        >
+
+                        <button
+                            type="submit"
+                            class="
                                 inline-flex
                                 items-center
                                 justify-center
-                                px-4
-                                py-2.5
+                                gap-1.5
+                                px-3.5
+                                py-2
                                 rounded-xl
-                                border
+                                bg-blue-600
+                                hover:bg-blue-700
+                                text-white
                                 text-xs
                                 font-bold
-                                no-underline
-
-                                {{ $pertemuan === $i
-                                    ? 'bg-slate-900 border-slate-900 text-white'
-                                    : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-800'
-                                }}
+                                transition
                             "
                         >
-                            Pertemuan {{ $i }}
-                        </a>
 
-                    @endfor
+                            <i
+                                data-lucide="plus"
+                                class="w-3.5 h-3.5"
+                            ></i>
+
+                            Tambah
+
+                        </button>
+
+                    </form>
 
                 </div>
+
+
+                @if($pertemuans->isNotEmpty())
+
+                    <div
+                        class="
+                            flex
+                            flex-wrap
+                            gap-2
+                        "
+                    >
+
+                        @foreach($pertemuans as $item)
+
+                            @php
+
+                                $meeting =
+                                    \App\Models\QuizMeetingAdmin::where(
+                                        'pertemuan',
+                                        $item
+                                    )->first();
+
+                            @endphp
+
+
+                            <div
+                                class="
+                                    meeting
+                                    inline-flex
+                                    items-center
+                                    gap-1
+                                    rounded-xl
+                                    border
+                                    overflow-hidden
+                                    {{
+                                        $pertemuan === (int) $item
+                                            ? 'border-slate-900 bg-slate-900'
+                                            : 'border-slate-200 bg-white'
+                                    }}
+                                "
+                            >
+
+                                <a
+                                    href="{{ route(
+                                        'guru.quizzes.index',
+                                        [
+                                            'pertemuan' => $item
+                                        ]
+                                    ) }}"
+                                    class="
+                                        inline-flex
+                                        items-center
+                                        justify-center
+                                        gap-2
+                                        px-4
+                                        py-2.5
+                                        text-xs
+                                        font-bold
+                                        no-underline
+                                        {{
+                                            $pertemuan === (int) $item
+                                                ? 'text-white'
+                                                : 'text-slate-500 hover:text-slate-800'
+                                        }}
+                                    "
+                                >
+
+                                    <i
+                                        data-lucide="calendar"
+                                        class="w-3.5 h-3.5"
+                                    ></i>
+
+                                    Pertemuan {{ $item }}
+
+                                </a>
+
+
+                                {{-- =================================================
+                                     HAPUS PERTEMUAN INI SAJA
+                                ================================================== --}}
+
+                                @if($meeting)
+
+                                    <form
+                                        method="POST"
+                                        action="{{ route(
+                                            'guru.quizzes.meetings.destroy',
+                                            [
+                                                'quizMeetingAdmin' => $meeting
+                                            ]
+                                        ) }}"
+                                        onsubmit="return confirm('Hapus Pertemuan {{ $item }} beserta Quiz dan seluruh soalnya?');"
+                                    >
+
+                                        @csrf
+
+                                        @method('DELETE')
+
+                                        <button
+                                            type="submit"
+                                            class="
+                                                inline-flex
+                                                items-center
+                                                justify-center
+                                                px-3
+                                                py-2.5
+                                                {{
+                                                    $pertemuan === (int) $item
+                                                        ? 'text-red-300 hover:text-red-200'
+                                                        : 'text-red-500 hover:text-red-700'
+                                                }}
+                                                transition
+                                            "
+                                            title="Hapus Pertemuan {{ $item }}"
+                                        >
+
+                                            <i
+                                                data-lucide="trash-2"
+                                                class="w-3.5 h-3.5"
+                                            ></i>
+
+                                        </button>
+
+                                    </form>
+
+                                @endif
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                @else
+
+                    <div
+                        class="
+                            rounded-xl
+                            border
+                            border-amber-200
+                            bg-amber-50
+                            text-amber-700
+                            px-4
+                            py-4
+                            text-sm
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-2
+                            "
+                        >
+
+                            <i
+                                data-lucide="info"
+                                class="w-4 h-4"
+                            ></i>
+
+                            <span class="font-semibold">
+                                Belum ada pertemuan Quiz.
+                            </span>
+
+                        </div>
+
+
+                        <p class="mt-1 text-xs">
+                            Tambahkan pertemuan terlebih dahulu
+                            menggunakan tombol Tambah di atas.
+                        </p>
+
+                    </div>
+
+                @endif
 
             </section>
 
@@ -380,7 +645,9 @@
             @if($quiz)
 
 
-                {{-- HEADER QUIZ --}}
+                {{-- =================================================
+                     HEADER QUIZ
+                ================================================== --}}
 
                 <div
                     class="
@@ -398,12 +665,90 @@
 
                         <div
                             class="
-                                text-xl
-                                font-black
-                                text-slate-900
+                                flex
+                                flex-wrap
+                                items-center
+                                gap-3
                             "
                         >
-                            {{ $quiz->judul }}
+
+                            <div
+                                class="
+                                    text-xl
+                                    font-black
+                                    text-slate-900
+                                "
+                            >
+                                {{ $quiz->judul }}
+                            </div>
+
+
+                            @if($quiz->aktif)
+
+                                <span
+                                    class="
+                                        inline-flex
+                                        items-center
+                                        gap-2
+                                        px-3
+                                        py-1.5
+                                        rounded-xl
+                                        bg-green-50
+                                        text-green-700
+                                        border
+                                        border-green-100
+                                        text-xs
+                                        font-bold
+                                    "
+                                >
+
+                                    <span
+                                        class="
+                                            w-1.5
+                                            h-1.5
+                                            rounded-full
+                                            bg-green-500
+                                        "
+                                    ></span>
+
+                                    Aktif
+
+                                </span>
+
+                            @else
+
+                                <span
+                                    class="
+                                        inline-flex
+                                        items-center
+                                        gap-2
+                                        px-3
+                                        py-1.5
+                                        rounded-xl
+                                        bg-slate-100
+                                        text-slate-500
+                                        border
+                                        border-slate-200
+                                        text-xs
+                                        font-bold
+                                    "
+                                >
+
+                                    <span
+                                        class="
+                                            w-1.5
+                                            h-1.5
+                                            rounded-full
+                                            bg-slate-400
+                                        "
+                                    ></span>
+
+                                    Tidak Aktif
+
+                                </span>
+
+                            @endif
+
                         </div>
 
 
@@ -421,158 +766,135 @@
 
                         @endif
 
+
+                        <div
+                            class="
+                                flex
+                                flex-wrap
+                                items-center
+                                gap-3
+                                mt-2
+                                text-xs
+                                text-slate-400
+                            "
+                        >
+
+                            <span
+                                class="
+                                    flex
+                                    items-center
+                                    gap-1.5
+                                "
+                            >
+
+                                <i
+                                    data-lucide="calendar"
+                                    class="w-3.5 h-3.5"
+                                ></i>
+
+                                Pertemuan {{ $pertemuan }}
+
+                            </span>
+
+
+                            <span
+                                class="
+                                    flex
+                                    items-center
+                                    gap-1.5
+                                "
+                            >
+
+                                <i
+                                    data-lucide="file-question"
+                                    class="w-3.5 h-3.5"
+                                ></i>
+
+                                {{ $quiz->questions_count }}
+                                Soal
+
+                            </span>
+
+                        </div>
+
                     </div>
 
 
-                    @if($quiz->aktif)
-
-                        <span
-                            class="
-                                inline-flex
-                                items-center
-                                gap-2
-                                self-start
-                                md:self-auto
-                                px-3
-                                py-2
-                                rounded-xl
-                                bg-green-50
-                                text-green-700
-                                text-xs
-                                font-bold
-                            "
-                        >
-
-                            <span
-                                class="
-                                    w-1.5
-                                    h-1.5
-                                    rounded-full
-                                    bg-green-500
-                                "
-                            ></span>
-
-                            Aktif
-
-                        </span>
-
-                    @else
-
-                        <span
-                            class="
-                                inline-flex
-                                items-center
-                                gap-2
-                                self-start
-                                md:self-auto
-                                px-3
-                                py-2
-                                rounded-xl
-                                bg-red-50
-                                text-red-600
-                                text-xs
-                                font-bold
-                            "
-                        >
-
-                            <span
-                                class="
-                                    w-1.5
-                                    h-1.5
-                                    rounded-full
-                                    bg-red-500
-                                "
-                            ></span>
-
-                            Tidak Aktif
-
-                        </span>
-
-                    @endif
-
-                </div>
-
-
-
-                {{-- =================================================
-                     ACTION
-                ================================================== --}}
-
-                <div
-                    class="
-                        flex
-                        flex-col
-                        sm:flex-row
-                        sm:justify-end
-                        gap-2
-                        mb-5
-                    "
-                >
-
-                    <a
-                        href="{{ route(
-                            'guru.quizzes.show',
-                            $quiz
-                        ) }}"
+                    <div
                         class="
-                            inline-flex
-                            items-center
-                            justify-center
+                            flex
+                            flex-col
+                            sm:flex-row
                             gap-2
-                            px-4
-                            py-2.5
-                            rounded-xl
-                            border
-                            border-blue-200
-                            bg-blue-50
-                            text-blue-600
-                            hover:bg-blue-100
-                            text-xs
-                            font-bold
-                            transition
                         "
                     >
 
-                        <i
-                            data-lucide="bar-chart-3"
-                            class="w-4 h-4"
-                        ></i>
+                        <a
+                            href="{{ route(
+                                'guru.quizzes.show',
+                                $quiz
+                            ) }}"
+                            class="
+                                inline-flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-2.5
+                                rounded-xl
+                                border
+                                border-blue-200
+                                bg-blue-50
+                                text-blue-600
+                                hover:bg-blue-100
+                                text-xs
+                                font-bold
+                                transition
+                            "
+                        >
 
-                        Lihat Hasil
+                            <i
+                                data-lucide="bar-chart-3"
+                                class="w-4 h-4"
+                            ></i>
 
-                    </a>
+                            Lihat Hasil
+
+                        </a>
 
 
-                    <a
-                        href="{{ route(
-                            'guru.quizzes.edit',
-                            $quiz
-                        ) }}"
-                        class="
-                            inline-flex
-                            items-center
-                            justify-center
-                            gap-2
-                            px-4
-                            py-2.5
-                            rounded-xl
-                            bg-slate-900
-                            hover:bg-slate-800
-                            text-white
-                            text-xs
-                            font-bold
-                            transition
-                        "
-                    >
+                        <a
+                            href="{{ route(
+                                'guru.quizzes.edit',
+                                $quiz
+                            ) }}"
+                            class="
+                                inline-flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-2.5
+                                rounded-xl
+                                bg-slate-900
+                                hover:bg-slate-800
+                                text-white
+                                text-xs
+                                font-bold
+                                transition
+                            "
+                        >
 
-                        <i
-                            data-lucide="pencil"
-                            class="w-4 h-4"
-                        ></i>
+                            <i
+                                data-lucide="pencil"
+                                class="w-4 h-4"
+                            ></i>
 
-                        Edit Pertemuan
+                            Edit Quiz
 
-                    </a>
+                        </a>
+
+                    </div>
 
                 </div>
 
@@ -583,7 +905,6 @@
                 ================================================== --}}
 
                 @if($quiz->questions->count())
-
 
                     <div class="space-y-3">
 
@@ -642,6 +963,10 @@
                                         </div>
 
 
+                                        {{-- =================================================
+                                             SEMUA OPSI JAWABAN A - D
+                                        ================================================== --}}
+
                                         <div
                                             class="
                                                 grid
@@ -652,22 +977,19 @@
                                             "
                                         >
 
-                                            {{-- A --}}
+                                            {{-- OPSI A --}}
 
                                             <div
                                                 class="
                                                     p-3
                                                     rounded-xl
                                                     border
-                                                    {{ $question->jawaban_benar === 'A'
-                                                        ? 'border-green-200 bg-green-50 text-green-700'
-                                                        : 'border-slate-100 bg-slate-50 text-slate-500'
-                                                    }}
                                                     text-xs
                                                     leading-relaxed
-                                                    {{ $question->jawaban_benar === 'A'
-                                                        ? 'font-bold'
-                                                        : ''
+                                                    {{
+                                                        $question->jawaban_benar === 'A'
+                                                            ? 'border-green-200 bg-green-50 text-green-700 font-bold'
+                                                            : 'border-slate-100 bg-slate-50 text-slate-500'
                                                     }}
                                                 "
                                             >
@@ -679,22 +1001,19 @@
                                             </div>
 
 
-                                            {{-- B --}}
+                                            {{-- OPSI B --}}
 
                                             <div
                                                 class="
                                                     p-3
                                                     rounded-xl
                                                     border
-                                                    {{ $question->jawaban_benar === 'B'
-                                                        ? 'border-green-200 bg-green-50 text-green-700'
-                                                        : 'border-slate-100 bg-slate-50 text-slate-500'
-                                                    }}
                                                     text-xs
                                                     leading-relaxed
-                                                    {{ $question->jawaban_benar === 'B'
-                                                        ? 'font-bold'
-                                                        : ''
+                                                    {{
+                                                        $question->jawaban_benar === 'B'
+                                                            ? 'border-green-200 bg-green-50 text-green-700 font-bold'
+                                                            : 'border-slate-100 bg-slate-50 text-slate-500'
                                                     }}
                                                 "
                                             >
@@ -706,22 +1025,19 @@
                                             </div>
 
 
-                                            {{-- C --}}
+                                            {{-- OPSI C --}}
 
                                             <div
                                                 class="
                                                     p-3
                                                     rounded-xl
                                                     border
-                                                    {{ $question->jawaban_benar === 'C'
-                                                        ? 'border-green-200 bg-green-50 text-green-700'
-                                                        : 'border-slate-100 bg-slate-50 text-slate-500'
-                                                    }}
                                                     text-xs
                                                     leading-relaxed
-                                                    {{ $question->jawaban_benar === 'C'
-                                                        ? 'font-bold'
-                                                        : ''
+                                                    {{
+                                                        $question->jawaban_benar === 'C'
+                                                            ? 'border-green-200 bg-green-50 text-green-700 font-bold'
+                                                            : 'border-slate-100 bg-slate-50 text-slate-500'
                                                     }}
                                                 "
                                             >
@@ -733,22 +1049,19 @@
                                             </div>
 
 
-                                            {{-- D --}}
+                                            {{-- OPSI D --}}
 
                                             <div
                                                 class="
                                                     p-3
                                                     rounded-xl
                                                     border
-                                                    {{ $question->jawaban_benar === 'D'
-                                                        ? 'border-green-200 bg-green-50 text-green-700'
-                                                        : 'border-slate-100 bg-slate-50 text-slate-500'
-                                                    }}
                                                     text-xs
                                                     leading-relaxed
-                                                    {{ $question->jawaban_benar === 'D'
-                                                        ? 'font-bold'
-                                                        : ''
+                                                    {{
+                                                        $question->jawaban_benar === 'D'
+                                                            ? 'border-green-200 bg-green-50 text-green-700 font-bold'
+                                                            : 'border-slate-100 bg-slate-50 text-slate-500'
                                                     }}
                                                 "
                                             >
@@ -761,6 +1074,10 @@
 
                                         </div>
 
+
+                                        {{-- =================================================
+                                             KUNCI JAWABAN
+                                        ================================================== --}}
 
                                         <div
                                             class="
@@ -794,11 +1111,7 @@
 
                     </div>
 
-
                 @else
-
-
-                    {{-- EMPTY SOAL --}}
 
                     <section
                         class="
@@ -841,7 +1154,7 @@
                                 text-slate-700
                             "
                         >
-                            Belum ada soal
+                            Belum Ada Soal
                         </h3>
 
 
@@ -852,8 +1165,8 @@
                                 mt-2
                             "
                         >
-                            Belum ada soal untuk Pertemuan
-                            {{ $pertemuan }}.
+                            Quiz Pertemuan {{ $pertemuan }}
+                            belum memiliki soal.
                         </p>
 
 
@@ -874,6 +1187,7 @@
                                 text-white
                                 text-xs
                                 font-bold
+                                hover:bg-slate-800
                             "
                         >
 
@@ -888,7 +1202,6 @@
 
                     </section>
 
-
                 @endif
 
 
@@ -896,7 +1209,7 @@
 
 
                 {{-- =================================================
-                     QUIZ TIDAK TERSEDIA
+                     QUIZ BELUM DIBUAT
                 ================================================== --}}
 
                 <section
@@ -916,7 +1229,8 @@
                             w-14
                             h-14
                             rounded-2xl
-                            bg-slate-100
+                            bg-blue-50
+                            text-blue-600
                             flex
                             items-center
                             justify-center
@@ -926,35 +1240,102 @@
                     >
 
                         <i
-                            data-lucide="clipboard-x"
-                            class="w-7 h-7 text-slate-400"
+                            data-lucide="clipboard-plus"
+                            class="w-7 h-7"
                         ></i>
 
                     </div>
 
 
-                    <h3
-                        class="
-                            text-base
-                            font-black
-                            text-slate-700
-                        "
-                    >
-                        Quiz belum tersedia
-                    </h3>
+                    @if($pertemuan)
+
+                        <h3
+                            class="
+                                text-base
+                                font-black
+                                text-slate-700
+                            "
+                        >
+                            Quiz Pertemuan {{ $pertemuan }}
+                            Belum Dibuat
+                        </h3>
 
 
-                    <p
-                        class="
-                            text-sm
-                            text-slate-400
-                            mt-2
-                        "
-                    >
-                        Quiz untuk Pertemuan
-                        {{ $pertemuan }}
-                        belum tersedia.
-                    </p>
+                        <p
+                            class="
+                                text-sm
+                                text-slate-400
+                                mt-2
+                            "
+                        >
+                            Buat Quiz untuk Pertemuan
+                            {{ $pertemuan }}
+                            dan tambahkan soal beserta
+                            kunci jawabannya.
+                        </p>
+
+
+                        <a
+                            href="{{ route(
+                                'guru.quizzes.create',
+                                [
+                                    'pertemuan' => $pertemuan
+                                ]
+                            ) }}"
+                            class="
+                                inline-flex
+                                items-center
+                                justify-center
+                                gap-2
+                                mt-5
+                                px-5
+                                py-3
+                                rounded-xl
+                                bg-blue-600
+                                hover:bg-blue-700
+                                text-white
+                                text-sm
+                                font-bold
+                                transition
+                            "
+                        >
+
+                            <i
+                                data-lucide="plus"
+                                class="w-4 h-4"
+                            ></i>
+
+                            Buat Quiz Pertemuan
+                            {{ $pertemuan }}
+
+                        </a>
+
+                    @else
+
+                        <h3
+                            class="
+                                text-base
+                                font-black
+                                text-slate-700
+                            "
+                        >
+                            Belum Ada Pertemuan
+                        </h3>
+
+
+                        <p
+                            class="
+                                text-sm
+                                text-slate-400
+                                mt-2
+                            "
+                        >
+                            Buat pertemuan Quiz terlebih dahulu
+                            menggunakan tombol Tambah Pertemuan
+                            di atas.
+                        </p>
+
+                    @endif
 
                 </section>
 

@@ -122,84 +122,34 @@
 
 
     {{-- =====================================================
-         SIDEBAR GLOBAL
-    ====================================================== --}}
+     SIDEBAR GLOBAL
+====================================================== --}}
 
-    @include('guru.partials.sidebar')
+@include('guru.partials.sidebar')
+
+
+{{-- =====================================================
+     MAIN
+====================================================== --}}
+
+<main
+    class="
+        flex-1
+        lg:ml-64
+    "
+>
 
 
     {{-- =====================================================
-         MAIN
+         HEADBAR GURU
     ====================================================== --}}
 
-    <main
-        class="
-            flex-1
-            lg:ml-64
-        "
-    >
+    @include('guru.partials.header')
 
 
-        {{-- TOPBAR --}}
-
-        <header
-            class="
-                h-16
-                bg-white
-                border-b
-                border-slate-200
-                flex
-                items-center
-                justify-between
-                px-5
-                lg:px-8
-            "
-        >
-
-            <div>
-
-                <p
-                    class="
-                        text-xs
-                        text-slate-400
-                    "
-                >
-                    Panel Guru
-                </p>
-
-                <h2
-                    class="
-                        font-bold
-                        text-slate-900
-                    "
-                >
-                    Dashboard
-                </h2>
-
-            </div>
-
-
-            <div
-                class="
-                    w-9
-                    h-9
-                    rounded-full
-                    bg-blue-600
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                "
-            >
-                G
-            </div>
-
-        </header>
-
-
-        {{-- CONTENT --}}
-
+    {{-- =====================================================
+         CONTENT
+    ====================================================== --}}
         <div
             class="
                 p-5

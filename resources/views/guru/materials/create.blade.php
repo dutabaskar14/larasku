@@ -1496,75 +1496,36 @@
 
 
     {{-- =========================================================
-         SIDEBAR
-    ========================================================== --}}
+     SIDEBAR GLOBAL
+========================================================== --}}
 
-    @include('guru.partials.sidebar')
-
-
-    <main class="lg:ml-64 min-h-screen">
+@include('guru.partials.sidebar')
 
 
-        {{-- =========================================================
-             HEADER
-        ========================================================== --}}
+{{-- =========================================================
+     MAIN
+========================================================== --}}
 
-        <header
-            class="
-                h-16
-                bg-white
-                border-b
-                border-slate-200
-                flex
-                items-center
-                justify-between
-                px-5
-                lg:px-8
-                sticky
-                top-0
-                z-20
-            "
-        >
-
-            <div>
-
-                <p class="text-xs text-slate-400">
-                    Panel Guru
-                </p>
-
-                <h2 class="font-bold text-slate-900">
-                    Tambah Materi
-                </h2>
-
-            </div>
+<main
+    class="main-content lg:ml-64 transition-all duration-300"
+>
 
 
-            <div
-                class="
-                    w-9
-                    h-9
-                    rounded-full
-                    bg-blue-600
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                "
-            >
-                G
-            </div>
+    {{-- =====================================================
+         HEADBAR GURU
+    ====================================================== --}}
 
-        </header>
+    @include('guru.partials.header')
 
 
-        {{-- =========================================================
-             CONTENT
-        ========================================================== --}}
+    {{-- =====================================================
+         CONTENT
+    ====================================================== --}}
 
-        <div class="p-5 lg:p-8 max-w-5xl mx-auto">
+    <div class="p-5 lg:p-8 max-w-[1500px] mx-auto">
 
 
+       
             {{-- =====================================================
                  HERO
             ====================================================== --}}
@@ -1760,26 +1721,61 @@
                                 </option>
 
 
-                                @for($i = 1; $i <= 8; $i++)
+                                @foreach($pertemuans as $item)
 
                                     <option
-                                        value="{{ $i }}"
-                                        {{ old('pertemuan') == $i ? 'selected' : '' }}
+                                        value="{{ $item }}"
+                                        {{ old('pertemuan') == $item ? 'selected' : '' }}
                                     >
 
-                                        Pertemuan {{ $i }}
+                                        Pertemuan {{ $item }}
 
                                     </option>
 
-                                @endfor
+                                @endforeach
 
                             </select>
 
 
+                            <button
+                                type="button"
+                                id="addMeetingButton"
+                                class="mt-3 w-full inline-flex items-center justify-center gap-2 min-h-[42px] px-4 rounded-[11px] border border-blue-200 bg-blue-50 text-blue-700 text-[12px] font-extrabold transition hover:bg-blue-100 hover:border-blue-300"
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Tambah Pertemuan
+
+                            </button>
+
+
                             <div class="field-help">
 
-                                Materi akan ditempatkan pada
-                                pertemuan yang dipilih.
+                                Pilih pertemuan yang sudah dibuat,
+                                atau klik <strong>Tambah Pertemuan</strong>
+                                untuk membuat nomor pertemuan berikutnya.
+
+                            </div>
+
+
+                            <div
+                                id="newMeetingInfo"
+                                class="hidden mt-3 rounded-[11px] border border-blue-100 bg-blue-50 px-3 py-2.5 text-[11px] text-blue-700"
+                            >
+
+                                <div class="font-extrabold">
+                                    Pertemuan baru
+                                </div>
+
+                                <div class="mt-1">
+                                    Pertemuan <span id="newMeetingNumber"></span>
+                                    akan dibuat ketika materi ini disimpan.
+
+                                </div>
 
                             </div>
 
@@ -2959,6 +2955,126 @@
 
             reader.readAsDataURL(
                 file
+            );
+
+        }
+
+
+        /* =========================================================
+           TAMBAH PERTEMUAN
+        ========================================================== */
+
+        const meetingSelect =
+            document.getElementById(
+                'pertemuan'
+            );
+
+        const addMeetingButton =
+            document.getElementById(
+                'addMeetingButton'
+            );
+
+        const newMeetingInfo =
+            document.getElementById(
+                'newMeetingInfo'
+            );
+
+        const newMeetingNumber =
+            document.getElementById(
+                'newMeetingNumber'
+            );
+
+
+        if (
+            meetingSelect &&
+            addMeetingButton
+        ) {
+
+            addMeetingButton.addEventListener(
+                'click',
+                function () {
+
+                    const values =
+                        Array
+                            .from(
+                                meetingSelect.options
+                            )
+                            .map(
+                                option =>
+                                    parseInt(
+                                        option.value,
+                                        10
+                                    )
+                            )
+                            .filter(
+                                value =>
+                                    Number.isInteger(
+                                        value
+                                    ) &&
+                                    value > 0
+                            );
+
+
+                    const nextMeeting =
+                        values.length
+                            ? Math.max(...values) + 1
+                            : 1;
+
+
+                    let option =
+                        Array
+                            .from(
+                                meetingSelect.options
+                            )
+                            .find(
+                                item =>
+                                    parseInt(
+                                        item.value,
+                                        10
+                                    ) === nextMeeting
+                            );
+
+
+                    if (!option) {
+
+                        option =
+                            document.createElement(
+                                'option'
+                            );
+
+                        option.value =
+                            nextMeeting;
+
+                        option.textContent =
+                            'Pertemuan ' +
+                            nextMeeting;
+
+                        meetingSelect.appendChild(
+                            option
+                        );
+
+                    }
+
+
+                    meetingSelect.value =
+                        String(nextMeeting);
+
+
+                    if (
+                        newMeetingInfo &&
+                        newMeetingNumber
+                    ) {
+
+                        newMeetingNumber.textContent =
+                            nextMeeting;
+
+                        newMeetingInfo.classList.remove(
+                            'hidden'
+                        );
+
+                    }
+
+                }
             );
 
         }

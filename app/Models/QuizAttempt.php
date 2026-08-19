@@ -27,7 +27,6 @@ class QuizAttempt extends Model
         'dikerjakan_at' => 'datetime',
     ];
 
-
     /**
      * Quiz yang dikerjakan.
      */
@@ -38,7 +37,6 @@ class QuizAttempt extends Model
             'quiz_id'
         );
     }
-
 
     /**
      * Siswa yang mengerjakan.

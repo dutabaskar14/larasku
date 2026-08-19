@@ -3,35 +3,51 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LKPD extends Model
 {
     protected $table = 'lkpds';
 
     protected $fillable = [
-        'student_id',
         'pertemuan',
-        'foto',
-        'disetujui',
-        'disetujui_at',
+        'judul',
+        'deskripsi',
+        'aktif',
     ];
 
     protected $casts = [
         'pertemuan' => 'integer',
-        'disetujui' => 'boolean',
-        'disetujui_at' => 'datetime',
+        'aktif' => 'boolean',
     ];
 
 
     /**
-     * LKPD milik siswa.
+     * ============================================================
+     * SOAL LKPD
+     * ============================================================
      */
-    public function student(): BelongsTo
+
+    public function questions(): HasMany
     {
-        return $this->belongsTo(
-            \App\Models\Student::class,
-            'student_id'
+        return $this->hasMany(
+            LKPDQuestion::class,
+            'lkpd_id'
+        )->orderBy('urutan');
+    }
+
+
+    /**
+     * ============================================================
+     * JAWABAN SISWA
+     * ============================================================
+     */
+
+    public function answers(): HasMany
+    {
+        return $this->hasMany(
+            LKPDAnswer::class,
+            'lkpd_id'
         );
     }
 }

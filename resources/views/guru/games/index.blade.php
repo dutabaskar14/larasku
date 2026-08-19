@@ -316,33 +316,46 @@
 <body>
 
     {{-- SIDEBAR GLOBAL --}}
-    @include('guru.partials.sidebar')
+
+@include('guru.partials.sidebar')
 
 
-    <main class="main-content">
+{{-- =========================================================
+     MAIN
+========================================================== --}}
 
-        <div class="container">
+<main class="main-content">
 
-            <div class="eyebrow">
-                Panel Guru
+
+    {{-- =========================================================
+         HEADBAR GURU
+    ========================================================== --}}
+
+    @include('guru.partials.header')
+
+
+    <div class="container">
+
+        <div class="eyebrow">
+            Panel Guru
+        </div>
+
+        <h1>
+            Game Interaktif
+        </h1>
+
+        <p class="subtitle">
+            Atur satu link game interaktif yang akan dimainkan oleh siswa.
+        </p>
+
+
+        @if(session('success'))
+
+            <div class="success">
+                {{ session('success') }}
             </div>
 
-            <h1>
-                Game Interaktif
-            </h1>
-
-            <p class="subtitle">
-                Atur satu link game interaktif yang akan dimainkan oleh siswa.
-            </p>
-
-
-            @if(session('success'))
-
-                <div class="success">
-                    {{ session('success') }}
-                </div>
-
-            @endif
+        @endif
 
 
             <section class="card">

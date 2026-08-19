@@ -3,17 +3,26 @@
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\StudentDashboardController;
 
+use App\Http\Controllers\Auth\LoginController;
+
 use App\Http\Controllers\Guru\DashboardController;
 use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
 use App\Http\Controllers\Guru\StudentController;
 use App\Http\Controllers\Guru\MaterialController;
 use App\Http\Controllers\Guru\ClassController;
 use App\Http\Controllers\Guru\ReflectionController as GuruReflectionController;
+use App\Http\Controllers\Guru\ReflectionMeetingController;
 use App\Http\Controllers\Guru\LKPDController as GuruLKPDController;
 use App\Http\Controllers\Guru\VideoController as GuruVideoController;
+use App\Http\Controllers\Guru\VideoMeetingAdminController;
 use App\Http\Controllers\Guru\QuizController as GuruQuizController;
+use App\Http\Controllers\Guru\QuizMeetingAdminController;
 use App\Http\Controllers\Guru\QuizRankingController;
 use App\Http\Controllers\Guru\GameController as GuruGameController;
+use App\Http\Controllers\Guru\AssignmentController;
+use App\Http\Controllers\Guru\AssignmentGroupController;
+use App\Http\Controllers\Guru\AssignmentSubmissionController;
+use App\Http\Controllers\Guru\AssignmentMeetingController;
 
 use App\Http\Controllers\MaterialControllerSiswa;
 use App\Http\Controllers\ReflectionControllerSiswa;
@@ -46,23 +55,61 @@ Route::get('/dashboard', [
 
 /*
 |--------------------------------------------------------------------------
-| HALAMAN AWAL / ABSENSI
+| HALAMAN AWAL
 |--------------------------------------------------------------------------
+|
+| Dashboard utama LARASKU.
+|
+| Guru  → Login
+| Siswa → Absensi
+|
 */
 
 Route::get('/', function () {
-    return redirect()->route('attendance.index');
-});
+    return view('welcome');
+})->name('home');
+
 
 Route::get('/absensi', [
     AttendanceController::class,
     'index',
 ])->name('attendance.index');
 
+
 Route::post('/absensi', [
     AttendanceController::class,
     'store',
 ])->name('attendance.store');
+
+
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATION GURU
+|--------------------------------------------------------------------------
+|
+| Guru login menggunakan:
+|
+| Username : dellasalsabila
+| Password : ppgupi123
+|
+*/
+
+Route::get('/login', [
+    LoginController::class,
+    'showLoginForm',
+])->name('login');
+
+
+Route::post('/login', [
+    LoginController::class,
+    'login',
+])->name('login.submit');
+
+
+Route::post('/logout', [
+    LoginController::class,
+    'logout',
+])->name('logout');
 
 
 /*
@@ -75,6 +122,7 @@ Route::get('/materi', [
     MaterialControllerSiswa::class,
     'index',
 ])->name('materials.index');
+
 
 Route::get('/materi/{material}', [
     MaterialControllerSiswa::class,
@@ -105,6 +153,7 @@ Route::get('/refleksi', [
     'index',
 ])->name('reflections.index');
 
+
 Route::post('/refleksi', [
     ReflectionControllerSiswa::class,
     'store',
@@ -121,6 +170,7 @@ Route::get('/lkpd', [
     LKPDControllerSiswa::class,
     'index',
 ])->name('lkpd.index');
+
 
 Route::post('/lkpd', [
     LKPDControllerSiswa::class,
@@ -139,10 +189,12 @@ Route::get('/quiz', [
     'index',
 ])->name('quiz.index');
 
+
 Route::post('/quiz/{quiz}/submit', [
     QuizControllerSiswa::class,
     'submit',
 ])->name('quiz.submit');
+
 
 Route::get('/quiz/{quiz}/hasil', [
     QuizControllerSiswa::class,
@@ -172,10 +224,14 @@ Route::get('/game', function () {
 |--------------------------------------------------------------------------
 | PANEL GURU
 |--------------------------------------------------------------------------
+|
+| Semua halaman /guru wajib login.
+|
 */
 
 Route::prefix('guru')
     ->name('guru.')
+    ->middleware('auth')
     ->group(function () {
 
 
@@ -218,61 +274,63 @@ Route::prefix('guru')
 
 
         /*
-|--------------------------------------------------------------------------
-| ABSENSI GURU
-|--------------------------------------------------------------------------
-*/
+        |--------------------------------------------------------------------------
+        | ABSENSI GURU
+        |--------------------------------------------------------------------------
+        */
 
-Route::get('/attendance', [
-    GuruAttendanceController::class,
-    'index',
-])->name('attendance.index');
-
-
-Route::get('/attendance/rekap', [
-    GuruAttendanceController::class,
-    'rekap',
-])->name('attendance.rekap');
+        Route::get('/attendance', [
+            GuruAttendanceController::class,
+            'index',
+        ])->name('attendance.index');
 
 
-/*
-|--------------------------------------------------------------------------
-| BUKA PERTEMUAN
-|--------------------------------------------------------------------------
-|
-| Guru membuka pertemuan untuk kelas tertentu.
-|
-| Jika guru membuka Pertemuan 3:
-|
-| Pertemuan 1 = terbuka
-| Pertemuan 2 = terbuka
-| Pertemuan 3 = terbuka
-| Pertemuan 4-8 = terkunci
-|
-*/
-
-Route::post('/attendance/open-meeting', [
-    GuruAttendanceController::class,
-    'openMeeting',
-])->name('attendance.open-meeting');
+        Route::get('/attendance/rekap', [
+            GuruAttendanceController::class,
+            'rekap',
+        ])->name('attendance.rekap');
 
 
-/*
-|--------------------------------------------------------------------------
-| SIMPAN ABSENSI
-|--------------------------------------------------------------------------
-*/
+        /*
+        |--------------------------------------------------------------------------
+        | BUKA PERTEMUAN
+        |--------------------------------------------------------------------------
+        |
+        | Guru membuka pertemuan untuk kelas tertentu.
+        |
+        | Jika guru membuka Pertemuan 3:
+        |
+        | Pertemuan 1 = terbuka
+        | Pertemuan 2 = terbuka
+        | Pertemuan 3 = terbuka
+        | Pertemuan 4-8 = terkunci
+        |
+        */
 
-Route::post('/attendance', [
-    GuruAttendanceController::class,
-    'update',
-])->name('attendance.update');
+        Route::post('/attendance/open-meeting', [
+            GuruAttendanceController::class,
+            'openMeeting',
+        ])->name('attendance.open-meeting');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN ABSENSI
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post('/attendance', [
+            GuruAttendanceController::class,
+            'update',
+        ])->name('attendance.update');
+
 
         /*
         |--------------------------------------------------------------------------
         | MATERI PEMBELAJARAN GURU
         |--------------------------------------------------------------------------
         */
+
 
         /*
         |--------------------------------------------------------------------------
@@ -311,6 +369,35 @@ Route::post('/attendance', [
             'show',
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN VIDEO GURU
+        |--------------------------------------------------------------------------
+        |
+        | Pertemuan Video berdiri sendiri.
+        | Tidak bergantung pada Material.
+        |
+        */
+
+        Route::post('/videos/meetings', [
+            VideoMeetingAdminController::class,
+            'store',
+        ])->name('videos.meetings.store');
+
+
+        Route::delete('/videos/meetings/{videoMeetingAdmin}', [
+            VideoMeetingAdminController::class,
+            'destroy',
+        ])->name('videos.meetings.destroy');
+
+        Route::patch(
+            '/videos/meetings/{videoMeetingAdmin}/toggle',
+            [
+                VideoMeetingAdminController::class,
+                'toggle',
+            ]
+        )->name('videos.meetings.toggle');
+
 
         /*
         |--------------------------------------------------------------------------
@@ -323,20 +410,57 @@ Route::post('/attendance', [
             'index',
         ])->name('quizzes.index');
 
+
+        Route::get('/quizzes/create', [
+            GuruQuizController::class,
+            'create',
+        ])->name('quizzes.create');
+
+
+        Route::post('/quizzes', [
+            GuruQuizController::class,
+            'store',
+        ])->name('quizzes.store');
+
+
         Route::get('/quizzes/{quiz}', [
             GuruQuizController::class,
             'show',
         ])->name('quizzes.show');
+
 
         Route::get('/quizzes/{quiz}/edit', [
             GuruQuizController::class,
             'edit',
         ])->name('quizzes.edit');
 
+
         Route::put('/quizzes/{quiz}', [
             GuruQuizController::class,
             'update',
         ])->name('quizzes.update');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN QUIZ GURU
+        |--------------------------------------------------------------------------
+        |
+        | Pertemuan Quiz berdiri sendiri.
+        | Tidak bergantung pada Material.
+        |
+        */
+
+        Route::post('/quizzes/meetings', [
+            QuizMeetingAdminController::class,
+            'store',
+        ])->name('quizzes.meetings.store');
+
+
+        Route::delete('/quizzes/meetings/{quizMeetingAdmin}', [
+            QuizMeetingAdminController::class,
+            'destroy',
+        ])->name('quizzes.meetings.destroy');
 
 
         /*
@@ -366,6 +490,7 @@ Route::post('/attendance', [
             'index',
         ])->name('games.index');
 
+
         Route::put('/games', [
             GuruGameController::class,
             'update',
@@ -374,7 +499,275 @@ Route::post('/attendance', [
 
         /*
         |--------------------------------------------------------------------------
-        | REKAP REFLEKSI GURU
+        | TUGAS PENGUMPULAN GURU
+        |--------------------------------------------------------------------------
+        |
+        | Tugas dapat berupa:
+        | - Individu
+        | - Kelompok
+        |
+        | Pertemuan tugas berdiri sendiri.
+        | Tidak bergantung pada Material.
+        | Tidak bergantung pada Video.
+        |
+        */
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FORM TAMBAH TUGAS
+        |--------------------------------------------------------------------------
+        |
+        | Route ini HARUS berada sebelum:
+        | /assignments/{assignment}
+        |
+        | agar "create" tidak dianggap sebagai
+        | nilai parameter {assignment}.
+        |
+        */
+
+        Route::get('/assignments/create', [
+            AssignmentController::class,
+            'create',
+        ])->name('assignments.create');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FORM EDIT TUGAS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/assignments/{assignment}/edit', [
+            AssignmentController::class,
+            'edit',
+        ])->name('assignments.edit');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CRUD TUGAS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource(
+            'assignments',
+            AssignmentController::class
+        )->except([
+            'create',
+            'edit',
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN TUGAS GURU
+        |--------------------------------------------------------------------------
+        |
+        | Pertemuan dibuat manual berdasarkan kelas.
+        | Contoh:
+        | Kelas 8A → Pertemuan 4
+        | Kelas 8A → Pertemuan 5
+        | Kelas 9A → Pertemuan 4
+        |
+        */
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR PERTEMUAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/assignments-meetings',
+            [
+                AssignmentMeetingController::class,
+                'index',
+            ]
+        )->name('assignments.meetings.index');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TAMBAH PERTEMUAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/assignments-meetings',
+            [
+                AssignmentMeetingController::class,
+                'store',
+            ]
+        )->name('assignments.meetings.store');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AKTIF / NONAKTIF PERTEMUAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::patch(
+            '/assignments-meetings/{assignmentMeeting}/toggle',
+            [
+                AssignmentMeetingController::class,
+                'toggle',
+            ]
+        )->name('assignments.meetings.toggle');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS PERTEMUAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete(
+            '/assignments-meetings/{assignmentMeeting}',
+            [
+                AssignmentMeetingController::class,
+                'destroy',
+            ]
+        )->name('assignments.meetings.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AKTIF / NONAKTIF TUGAS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::patch('/assignments/{assignment}/toggle', [
+            AssignmentController::class,
+            'toggle',
+        ])->name('assignments.toggle');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CARI SISWA UNTUK ANGGOTA KELOMPOK
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/assignments/{assignment}/students/search', [
+            AssignmentController::class,
+            'searchStudents',
+        ])->name('assignments.students.search');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KELOMPOK TUGAS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post('/assignments/{assignment}/groups', [
+            AssignmentGroupController::class,
+            'store',
+        ])->name('assignments.groups.store');
+
+
+        Route::delete('/assignments/{assignment}/groups/{group}', [
+            AssignmentGroupController::class,
+            'destroy',
+        ])->name('assignments.groups.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ANGGOTA KELOMPOK
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/assignments/{assignment}/groups/{group}/members',
+            [
+                AssignmentGroupController::class,
+                'addMember',
+            ]
+        )->name('assignments.groups.members.store');
+
+
+        Route::post(
+            '/assignments/{assignment}/groups/{group}/members/bulk',
+            [
+                AssignmentGroupController::class,
+                'addMembers',
+            ]
+        )->name('assignments.groups.members.bulk');
+
+
+        Route::delete(
+            '/assignments/{assignment}/groups/{group}/members/{member}',
+            [
+                AssignmentGroupController::class,
+                'removeMember',
+            ]
+        )->name('assignments.groups.members.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PENGUMPULAN TUGAS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/assignments/{assignment}/submissions',
+            [
+                AssignmentSubmissionController::class,
+                'index',
+            ]
+        )->name('assignments.submissions.index');
+
+
+        Route::get(
+            '/assignments/{assignment}/submissions/{submission}',
+            [
+                AssignmentSubmissionController::class,
+                'show',
+            ]
+        )->name('assignments.submissions.show');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PENILAIAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::patch(
+            '/assignments/{assignment}/submissions/{submission}/grade',
+            [
+                AssignmentSubmissionController::class,
+                'grade',
+            ]
+        )->name('assignments.submissions.grade');
+
+
+        Route::patch(
+            '/assignments/{assignment}/submissions/{submission}/complete',
+            [
+                AssignmentSubmissionController::class,
+                'complete',
+            ]
+        )->name('assignments.submissions.complete');
+
+
+        Route::delete(
+            '/assignments/{assignment}/submissions/{submission}',
+            [
+                AssignmentSubmissionController::class,
+                'destroy',
+            ]
+        )->name('assignments.submissions.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REFLEKSI GURU
         |--------------------------------------------------------------------------
         */
 
@@ -383,15 +776,86 @@ Route::post('/attendance', [
             'index',
         ])->name('reflections.index');
 
+
+        Route::get('/reflections/create', [
+            GuruReflectionController::class,
+            'create',
+        ])->name('reflections.create');
+
+
+        Route::post('/reflections', [
+            GuruReflectionController::class,
+            'store',
+        ])->name('reflections.store');
+
+
         Route::get('/reflections/{reflection}', [
             GuruReflectionController::class,
             'show',
         ])->name('reflections.show');
 
 
+        Route::get('/reflections/{reflection}/edit', [
+            GuruReflectionController::class,
+            'edit',
+        ])->name('reflections.edit');
+
+
+        Route::put('/reflections/{reflection}', [
+            GuruReflectionController::class,
+            'update',
+        ])->name('reflections.update');
+
+
         /*
         |--------------------------------------------------------------------------
-        | REKAP LKPD GURU
+        | HAPUS REFLEKSI
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete('/reflections/{reflection}', [
+            GuruReflectionController::class,
+            'destroy',
+        ])->name('reflections.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PENILAIAN REFLEKSI
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post('/reflections/{reflection}/grade', [
+            GuruReflectionController::class,
+            'grade',
+        ])->name('reflections.grade');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN REFLEKSI GURU
+        |--------------------------------------------------------------------------
+        |
+        | Pertemuan Refleksi berdiri sendiri.
+        | Tidak bergantung pada Material.
+        |
+        */
+
+        Route::post('/reflections/meetings', [
+            ReflectionMeetingController::class,
+            'store',
+        ])->name('reflections.meetings.store');
+
+
+        Route::delete('/reflections/meetings/{reflectionMeeting}', [
+            ReflectionMeetingController::class,
+            'destroy',
+        ])->name('reflections.meetings.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LKPD GURU
         |--------------------------------------------------------------------------
         */
 
@@ -400,14 +864,52 @@ Route::post('/attendance', [
             'index',
         ])->name('lkpd.index');
 
+
+        Route::get('/lkpd/create', [
+            GuruLKPDController::class,
+            'create',
+        ])->name('lkpd.create');
+
+
+        Route::post('/lkpd', [
+            GuruLKPDController::class,
+            'store',
+        ])->name('lkpd.store');
+
+
         Route::get('/lkpd/{lkpd}', [
             GuruLKPDController::class,
             'show',
         ])->name('lkpd.show');
 
-        Route::post('/lkpd/{lkpd}/approve', [
+
+        Route::get('/lkpd/{lkpd}/edit', [
             GuruLKPDController::class,
-            'approve',
-        ])->name('lkpd.approve');
+            'edit',
+        ])->name('lkpd.edit');
+
+
+        Route::put('/lkpd/{lkpd}', [
+            GuruLKPDController::class,
+            'update',
+        ])->name('lkpd.update');
+
+
+        Route::post('/lkpd/{lkpd}/grade', [
+            GuruLKPDController::class,
+            'grade',
+        ])->name('lkpd.grade');
+
+
+        Route::post('/lkpd/{lkpd}/finalize', [
+            GuruLKPDController::class,
+            'finalize',
+        ])->name('lkpd.finalize');
+
+
+        Route::delete('/lkpd/{lkpd}', [
+            GuruLKPDController::class,
+            'destroy',
+        ])->name('lkpd.destroy');
 
     });

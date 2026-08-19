@@ -9,24 +9,56 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reflections', function (Blueprint $table) {
+
             $table->id();
 
-            $table->string('nama');
-            $table->string('nomor_absen', 20);
+            /*
+            |--------------------------------------------------------------------------
+            | PERTEMUAN
+            |--------------------------------------------------------------------------
+            |
+            | Mengikuti pertemuan yang tersedia pada Material.
+            | Tidak dibatasi 1-8.
+            |
+            */
 
-            $table->unsignedTinyInteger('pertemuan');
+            $table->unsignedInteger('pertemuan');
 
-            $table->text('jawaban_1');
-            $table->text('jawaban_2');
-            $table->text('jawaban_3');
-            $table->text('jawaban_4');
-            $table->text('jawaban_5');
+            /*
+            |--------------------------------------------------------------------------
+            | INFORMASI REFLEKSI
+            |--------------------------------------------------------------------------
+            */
+
+            $table->string('judul');
+
+            $table->text('deskripsi')
+                ->nullable();
+
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS
+            |--------------------------------------------------------------------------
+            |
+            | true  = aktif dan dapat dilihat siswa
+            | false = nonaktif / disembunyikan
+            |
+            */
+
+            $table->boolean('aktif')
+                ->default(false);
 
             $table->timestamps();
 
+            /*
+            |--------------------------------------------------------------------------
+            | SATU REFLEKSI PER PERTEMUAN
+            |--------------------------------------------------------------------------
+            */
+
             $table->unique(
-                ['nama', 'nomor_absen', 'pertemuan'],
-                'reflection_student_meeting_unique'
+                'pertemuan',
+                'reflections_pertemuan_unique'
             );
         });
     }

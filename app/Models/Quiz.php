@@ -19,7 +19,6 @@ class Quiz extends Model
         'aktif' => 'boolean',
     ];
 
-
     /**
      * Soal-soal dalam quiz.
      */
@@ -30,7 +29,6 @@ class Quiz extends Model
             'quiz_id'
         )->orderBy('urutan');
     }
-
 
     /**
      * Hasil pengerjaan siswa.

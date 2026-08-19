@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use App\Models\Video;
+use App\Models\VideoMeetingAdmin;
 use Illuminate\Http\Request;
 
 class VideoController extends Controller
@@ -13,21 +14,64 @@ class VideoController extends Controller
      */
     public function index(Request $request)
     {
-        $pertemuan = (int) $request->get('pertemuan', 1);
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL DAFTAR PERTEMUAN VIDEO
+        |--------------------------------------------------------------------------
+        */
 
-        if ($pertemuan < 1 || $pertemuan > 8) {
-            $pertemuan = 1;
+        $meetings = VideoMeetingAdmin::query()
+            ->orderBy('pertemuan')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN AKTIF
+        |--------------------------------------------------------------------------
+        */
+
+        $pertemuan = (int) $request->get(
+            'pertemuan',
+            $meetings->first()?->pertemuan ?? 1
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | JIKA PERTEMUAN TIDAK TERSEDIA
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $meetings->isNotEmpty() &&
+            !$meetings->contains('pertemuan', $pertemuan)
+        ) {
+            $pertemuan = $meetings->first()->pertemuan;
         }
 
-        $videos = Video::where('pertemuan', $pertemuan)
+
+        /*
+        |--------------------------------------------------------------------------
+        | VIDEO PADA PERTEMUAN TERPILIH
+        |--------------------------------------------------------------------------
+        */
+
+        $videos = Video::query()
+            ->where('pertemuan', $pertemuan)
             ->orderBy('urutan')
             ->orderBy('id')
             ->get();
 
-        return view('guru.videos.index', compact(
-            'videos',
-            'pertemuan'
-        ));
+
+        return view(
+            'guru.videos.index',
+            compact(
+                'videos',
+                'pertemuan',
+                'meetings'
+            )
+        );
     }
 
 
@@ -36,15 +80,50 @@ class VideoController extends Controller
      */
     public function create(Request $request)
     {
-        $pertemuan = (int) $request->get('pertemuan', 1);
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL DAFTAR PERTEMUAN VIDEO
+        |--------------------------------------------------------------------------
+        */
 
-        if ($pertemuan < 1 || $pertemuan > 8) {
-            $pertemuan = 1;
+        $meetings = VideoMeetingAdmin::query()
+            ->orderBy('pertemuan')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN AKTIF
+        |--------------------------------------------------------------------------
+        */
+
+        $pertemuan = (int) $request->get(
+            'pertemuan',
+            $meetings->first()?->pertemuan ?? 1
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PASTIKAN PERTEMUAN TERSEDIA
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $meetings->isNotEmpty() &&
+            !$meetings->contains('pertemuan', $pertemuan)
+        ) {
+            $pertemuan = $meetings->first()->pertemuan;
         }
 
-        return view('guru.videos.create', compact(
-            'pertemuan'
-        ));
+
+        return view(
+            'guru.videos.create',
+            compact(
+                'pertemuan',
+                'meetings'
+            )
+        );
     }
 
 
@@ -58,7 +137,8 @@ class VideoController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'max:8',
+                'max:255',
+                'exists:video_meetings,pertemuan',
             ],
 
             'judul' => [
@@ -78,19 +158,25 @@ class VideoController extends Controller
                 'string',
                 'max:5000',
             ],
+        ], [
+            'pertemuan.exists' =>
+                'Pertemuan Video tersebut belum tersedia.',
         ]);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Maksimal 10 video per pertemuan
+        | MAKSIMAL 10 VIDEO PER PERTEMUAN
         |--------------------------------------------------------------------------
         */
 
-        $jumlahVideo = Video::where(
-            'pertemuan',
-            $validated['pertemuan']
-        )->count();
+        $jumlahVideo = Video::query()
+            ->where(
+                'pertemuan',
+                $validated['pertemuan']
+            )
+            ->count();
+
 
         if ($jumlahVideo >= 10) {
 
@@ -105,26 +191,45 @@ class VideoController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Tentukan urutan otomatis
+        | TENTUKAN URUTAN OTOMATIS
         |--------------------------------------------------------------------------
         */
 
         $urutan = $jumlahVideo + 1;
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN VIDEO
+        |--------------------------------------------------------------------------
+        */
+
         Video::create([
-            'pertemuan' => $validated['pertemuan'],
-            'judul' => $validated['judul'],
-            'youtube_url' => $validated['youtube_url'],
-            'deskripsi' => $validated['deskripsi'] ?? null,
-            'urutan' => $urutan,
+            'pertemuan' =>
+                $validated['pertemuan'],
+
+            'judul' =>
+                $validated['judul'],
+
+            'youtube_url' =>
+                $validated['youtube_url'],
+
+            'deskripsi' =>
+                $validated['deskripsi'] ?? null,
+
+            'urutan' =>
+                $urutan,
         ]);
 
 
         return redirect()
-            ->route('guru.videos.index', [
-                'pertemuan' => $validated['pertemuan'],
-            ])
+            ->route(
+                'guru.videos.index',
+                [
+                    'pertemuan' =>
+                        $validated['pertemuan'],
+                ]
+            )
             ->with(
                 'success',
                 'Video berhasil ditambahkan.'
@@ -137,9 +242,23 @@ class VideoController extends Controller
      */
     public function edit(Video $video)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR PERTEMUAN VIDEO
+        |--------------------------------------------------------------------------
+        */
+
+        $meetings = VideoMeetingAdmin::query()
+            ->orderBy('pertemuan')
+            ->get();
+
+
         return view(
             'guru.videos.edit',
-            compact('video')
+            compact(
+                'video',
+                'meetings'
+            )
         );
     }
 
@@ -156,7 +275,8 @@ class VideoController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'max:8',
+                'max:255',
+                'exists:video_meetings,pertemuan',
             ],
 
             'judul' => [
@@ -176,12 +296,15 @@ class VideoController extends Controller
                 'string',
                 'max:5000',
             ],
+        ], [
+            'pertemuan.exists' =>
+                'Pertemuan Video tersebut belum tersedia.',
         ]);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Jika pindah pertemuan
+        | JIKA PINDAH PERTEMUAN
         |--------------------------------------------------------------------------
         */
 
@@ -190,16 +313,18 @@ class VideoController extends Controller
             (int) $validated['pertemuan']
         ) {
 
-            $jumlahVideo = Video::where(
-                'pertemuan',
-                $validated['pertemuan']
-            )
+            $jumlahVideo = Video::query()
+                ->where(
+                    'pertemuan',
+                    $validated['pertemuan']
+                )
                 ->where(
                     'id',
                     '!=',
                     $video->id
                 )
                 ->count();
+
 
             if ($jumlahVideo >= 10) {
 
@@ -217,13 +342,23 @@ class VideoController extends Controller
         }
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE
+        |--------------------------------------------------------------------------
+        */
+
         $video->update($validated);
 
 
         return redirect()
-            ->route('guru.videos.index', [
-                'pertemuan' => $video->pertemuan,
-            ])
+            ->route(
+                'guru.videos.index',
+                [
+                    'pertemuan' =>
+                        $video->pertemuan,
+                ]
+            )
             ->with(
                 'success',
                 'Video berhasil diperbarui.'
@@ -240,19 +375,26 @@ class VideoController extends Controller
             $video->pertemuan;
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS VIDEO
+        |--------------------------------------------------------------------------
+        */
+
         $video->delete();
 
 
         /*
         |--------------------------------------------------------------------------
-        | Rapikan urutan video setelah penghapusan
+        | RAPIKAN URUTAN VIDEO
         |--------------------------------------------------------------------------
         */
 
-        $videos = Video::where(
-            'pertemuan',
-            $pertemuan
-        )
+        $videos = Video::query()
+            ->where(
+                'pertemuan',
+                $pertemuan
+            )
             ->orderBy('urutan')
             ->orderBy('id')
             ->get();
@@ -261,15 +403,20 @@ class VideoController extends Controller
         foreach ($videos as $index => $item) {
 
             $item->update([
-                'urutan' => $index + 1,
+                'urutan' =>
+                    $index + 1,
             ]);
         }
 
 
         return redirect()
-            ->route('guru.videos.index', [
-                'pertemuan' => $pertemuan,
-            ])
+            ->route(
+                'guru.videos.index',
+                [
+                    'pertemuan' =>
+                        $pertemuan,
+                ]
+            )
             ->with(
                 'success',
                 'Video berhasil dihapus.'

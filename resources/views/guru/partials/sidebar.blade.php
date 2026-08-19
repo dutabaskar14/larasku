@@ -5,7 +5,7 @@
     ========================================================== */
 
     #guruSidebar {
-        width: 240px;
+        width: 220px;
         height: 100vh;
 
         position: fixed;
@@ -56,7 +56,7 @@
     @media (max-width: 1023px) {
 
         #guruSidebar {
-            width: 240px;
+            width: 220px;
 
             transform: translateX(-100%);
 
@@ -105,7 +105,7 @@
         fixed
         inset-y-0
         left-0
-        w-[240px]
+        w-[220px]
         bg-white
         border-r
         border-slate-200
@@ -379,6 +379,37 @@
 
         </a>
 
+
+
+        {{-- TUGAS PENGUMPULAN --}}
+
+        <a
+            href="{{ route('guru.assignments.index') }}"
+            class="
+                sidebar-link
+                flex
+                items-center
+                gap-3
+                px-3
+                py-2.5
+                rounded-xl
+                text-sm
+                {{ request()->routeIs('guru.assignments.*')
+                    ? 'active'
+                    : 'text-slate-500' }}
+            "
+        >
+
+            <i
+                data-lucide="clipboard-pen-line"
+                class="w-4 h-4 min-w-[16px]"
+            ></i>
+
+            <span>
+                Tugas
+            </span>
+
+        </a>
 
 
         {{-- VIDEO --}}

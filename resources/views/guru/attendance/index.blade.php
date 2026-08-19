@@ -33,123 +33,175 @@
 
 <body class="bg-slate-50 text-slate-800">
 
+
 <div class="min-h-screen">
 
+{{-- =========================================================
+     SIDEBAR GLOBAL
+========================================================== --}}
+
+@include('guru.partials.sidebar')
+
+
+{{-- =========================================================
+     MAIN CONTENT
+========================================================== --}}
+
+<main
+    id="mainContent"
+    class="main-content lg:ml-64 transition-all duration-300"
+>
+
 
     {{-- =========================================================
-         SIDEBAR GLOBAL
+         HEADBAR GURU
     ========================================================== --}}
 
-    @include('guru.partials.sidebar')
+    @include('guru.partials.header')
 
 
     {{-- =========================================================
-         MAIN CONTENT
+         CONTENT
     ========================================================== --}}
 
-    <main
-        id="mainContent"
-        class="main-content lg:ml-64 transition-all duration-300"
-    >
-
-        <div class="max-w-7xl mx-auto px-5 py-8">
+    <div class="max-w-7xl mx-auto px-5 py-8">
 
 
-            {{-- =================================================
-                 HEADER
-            ================================================== --}}
+        {{-- =================================================
+             HEADER
+        ================================================== --}}
 
-            <div class="mb-8">
+        <div class="mb-8">
 
-                <p class="text-sm text-blue-600 font-semibold">
-                    Panel Guru
-                </p>
+            <p class="text-sm text-blue-600 font-semibold">
+                Panel Guru
+            </p>
 
-                <h1 class="text-3xl font-bold text-slate-900 mt-1">
-                    Kelola Absensi
-                </h1>
+            <h1 class="text-3xl font-bold text-slate-900 mt-1">
+                Kelola Absensi
+            </h1>
 
-                <p class="text-sm text-slate-500 mt-1">
-                    {{ $kelas ?: 'Belum memilih kelas' }}
+            <p class="text-sm text-slate-500 mt-1">
+
+                {{ $kelas ?: 'Belum memilih kelas' }}
+
+                @if($pertemuan)
                     · Pertemuan {{ $pertemuan }}
-                </p>
+                @endif
 
-            </div>
+            </p>
+
+        </div>
 
 
-            {{-- =================================================
-                 FILTER KELAS
-            ================================================== --}}
+        {{-- =================================================
+             FILTER KELAS
+        ================================================== --}}
 
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6">
+        <div
+            class="
+                bg-white
+                border
+                border-slate-200
+                rounded-2xl
+                p-5
+                mb-6
+            "
+        >
 
-                <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-1 gap-4">
 
-                    {{-- KELAS --}}
 
-                    <div>
+                {{-- KELAS --}}
 
-                        <label class="block text-sm font-semibold mb-2">
-                            Kelas
-                        </label>
+                <div>
 
-                        <select
-                            name="kelas"
-                            onchange="window.location.href='{{ route('guru.attendance.index') }}?kelas=' + encodeURIComponent(this.value)"
-                            class="
-                                w-full
-                                border
-                                border-slate-200
-                                rounded-xl
-                                px-4
-                                py-3
-                                bg-white
-                                focus:outline-none
-                                focus:ring-2
-                                focus:ring-blue-100
-                            "
-                        >
+                    <label
+                        class="
+                            block
+                            text-sm
+                            font-semibold
+                            mb-2
+                        "
+                    >
+                        Kelas
+                    </label>
 
-                            @if($classes->isEmpty())
 
-                                <option value="">
-                                    Belum ada kelas
+                    <select
+                        name="kelas"
+                        onchange="window.location.href='{{ route('guru.attendance.index') }}?kelas=' + encodeURIComponent(this.value)"
+                        class="
+                            w-full
+                            border
+                            border-slate-200
+                            rounded-xl
+                            px-4
+                            py-3
+                            bg-white
+                            focus:outline-none
+                            focus:ring-2
+                            focus:ring-blue-100
+                        "
+                    >
+
+                        @if($classes->isEmpty())
+
+                            <option value="">
+                                Belum ada kelas
+                            </option>
+
+                        @else
+
+                            @foreach($classes as $class)
+
+                                <option
+                                    value="{{ $class->nama }}"
+                                    @selected($kelas === $class->nama)
+                                >
+                                    {{ $class->nama }}
                                 </option>
 
-                            @else
+                            @endforeach
 
-                                @foreach($classes as $class)
+                        @endif
 
-                                    <option
-                                        value="{{ $class->nama }}"
-                                        @selected($kelas === $class->nama)
-                                    >
-                                        {{ $class->nama }}
-                                    </option>
-
-                                @endforeach
-
-                            @endif
-
-                        </select>
-
-                    </div>
+                    </select>
 
                 </div>
 
             </div>
 
+        </div>
 
-            {{-- =================================================
-                 STATUS PERTEMUAN
-            ================================================== --}}
+
+        {{-- =================================================
+             STATUS PERTEMUAN
+        ================================================== --}}
 
             @if($selectedClass)
 
                 @php
-                    $pertemuanAktif = (int) $selectedClass->pertemuan_aktif;
-                    $pertemuanBerikutnya = $pertemuanAktif + 1;
+                    $pertemuanAktif =
+                        (int) $selectedClass->pertemuan_aktif;
+
+                    $pertemuanBerikutnya =
+                        $pertemuanAktif + 1;
+
+                    $pertemuanTersedia =
+                        collect($pertemuans)
+                            ->map(fn ($item) => (int) $item)
+                            ->sort()
+                            ->values();
+
+                    $pertemuanBerikutnyaTersedia =
+                        $pertemuanTersedia
+                            ->first(
+                                fn ($item) =>
+                                    $item > $pertemuanAktif
+                            );
                 @endphp
+
 
                 <div class="
                     bg-white
@@ -160,6 +212,7 @@
                     mb-6
                 ">
 
+
                     <div class="
                         flex
                         flex-col
@@ -168,6 +221,7 @@
                         lg:justify-between
                         gap-5
                     ">
+
 
                         <div>
 
@@ -191,25 +245,34 @@
 
                                 </div>
 
+
                                 <div>
 
                                     <h2 class="font-bold text-lg text-slate-900">
                                         Pertemuan Pembelajaran
                                     </h2>
 
+
                                     <p class="text-sm text-slate-500 mt-0.5">
 
-                                        @if($pertemuanAktif === 0)
+                                        @if($pertemuanTersedia->isEmpty())
+
+                                            Belum ada pertemuan materi yang dibuat.
+
+                                        @elseif($pertemuanAktif === 0)
 
                                             Belum ada pertemuan yang dibuka.
 
-                                        @elseif($pertemuanAktif >= 8)
-
-                                            Semua 8 pertemuan sudah dibuka.
-
                                         @else
 
-                                            Pertemuan 1–{{ $pertemuanAktif }}
+                                            Pertemuan
+                                            {{ $pertemuanTersedia
+                                                ->filter(
+                                                    fn ($item) =>
+                                                        $item <= $pertemuanAktif
+                                                )
+                                                ->implode(', ') }}
+
                                             sudah terbuka.
 
                                         @endif
@@ -227,7 +290,7 @@
                              BUKA PERTEMUAN BERIKUTNYA
                         ================================================== --}}
 
-                        @if($pertemuanBerikutnya <= 8)
+                        @if($pertemuanBerikutnyaTersedia)
 
                             <form
                                 method="POST"
@@ -245,7 +308,7 @@
                                 <input
                                     type="hidden"
                                     name="pertemuan"
-                                    value="{{ $pertemuanBerikutnya }}"
+                                    value="{{ $pertemuanBerikutnyaTersedia }}"
                                 >
 
                                 <button
@@ -272,13 +335,14 @@
                                         class="w-4 h-4"
                                     ></i>
 
-                                    Buka Pertemuan {{ $pertemuanBerikutnya }}
+                                    Buka Pertemuan
+                                    {{ $pertemuanBerikutnyaTersedia }}
 
                                 </button>
 
                             </form>
 
-                        @else
+                        @elseif($pertemuanTersedia->isNotEmpty())
 
                             <div class="
                                 inline-flex
@@ -299,7 +363,7 @@
                                     class="w-4 h-4"
                                 ></i>
 
-                                Semua Pertemuan Terbuka
+                                Semua Pertemuan Materi Terbuka
 
                             </div>
 
@@ -312,107 +376,49 @@
                          DAFTAR PERTEMUAN
                     ================================================== --}}
 
-                    <div class="
-                        grid
-                        grid-cols-2
-                        sm:grid-cols-4
-                        lg:grid-cols-8
-                        gap-3
-                        mt-5
-                        pt-5
-                        border-t
-                        border-slate-100
-                    ">
+                    @if($pertemuanTersedia->isNotEmpty())
 
-                        @for($i = 1; $i <= 8; $i++)
+                        <div class="
+                            grid
+                            grid-cols-2
+                            sm:grid-cols-4
+                            lg:grid-cols-8
+                            gap-3
+                            mt-5
+                            pt-5
+                            border-t
+                            border-slate-100
+                        ">
 
-                            @php
-                                $isOpen = $i <= $pertemuanAktif;
-                                $isCurrent = $pertemuan === $i;
-                            @endphp
+                            @foreach($pertemuanTersedia as $item)
 
-                            @if($isOpen)
+                                @php
+                                    $isOpen =
+                                        $item <= $pertemuanAktif;
 
-                                <a
-                                    href="{{ route('guru.attendance.index', [
-                                        'kelas' => $kelas,
-                                        'pertemuan' => $i,
-                                    ]) }}"
-                                    class="
-                                        group
-                                        rounded-xl
-                                        border
-                                        px-3
-                                        py-3
-                                        transition
-                                        {{ $isCurrent
-                                            ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
-                                            : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300'
-                                        }}
-                                    "
-                                >
+                                    $isCurrent =
+                                        $pertemuan === $item;
+                                @endphp
 
-                                    <div class="
-                                        flex
-                                        items-center
-                                        justify-between
-                                        gap-2
-                                    ">
 
-                                        <span class="text-xs font-bold">
-                                            P{{ $i }}
-                                        </span>
+                                @if($isOpen)
 
-                                        <i
-                                            data-lucide="unlock"
-                                            class="w-3.5 h-3.5"
-                                        ></i>
-
-                                    </div>
-
-                                    <p class="text-xs mt-1 font-medium">
-                                        Terbuka
-                                    </p>
-
-                                </a>
-
-                            @elseif($i === $pertemuanBerikutnya)
-
-                                <form
-                                    method="POST"
-                                    action="{{ route('guru.attendance.open-meeting') }}"
-                                >
-
-                                    @csrf
-
-                                    <input
-                                        type="hidden"
-                                        name="kelas"
-                                        value="{{ $kelas }}"
-                                    >
-
-                                    <input
-                                        type="hidden"
-                                        name="pertemuan"
-                                        value="{{ $i }}"
-                                    >
-
-                                    <button
-                                        type="submit"
+                                    <a
+                                        href="{{ route('guru.attendance.index', [
+                                            'kelas' => $kelas,
+                                            'pertemuan' => $item,
+                                        ]) }}"
                                         class="
                                             group
-                                            w-full
-                                            text-left
                                             rounded-xl
                                             border
-                                            border-blue-200
-                                            bg-blue-50
-                                            text-blue-700
                                             px-3
                                             py-3
                                             transition
-                                            hover:bg-blue-100
-                                            hover:border-blue-300
+                                            {{ $isCurrent
+                                                ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
+                                                : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300'
+                                            }}
                                         "
                                     >
 
@@ -424,66 +430,152 @@
                                         ">
 
                                             <span class="text-xs font-bold">
-                                                P{{ $i }}
+                                                P{{ $item }}
                                             </span>
 
                                             <i
-                                                data-lucide="lock-keyhole-open"
+                                                data-lucide="unlock"
                                                 class="w-3.5 h-3.5"
                                             ></i>
 
                                         </div>
 
-                                        <p class="text-xs mt-1 font-semibold">
-                                            Buka
+                                        <p class="text-xs mt-1 font-medium">
+                                            Terbuka
                                         </p>
 
-                                    </button>
+                                    </a>
 
-                                </form>
 
-                            @else
+                                @elseif(
+                                    $pertemuanBerikutnyaTersedia === $item
+                                )
 
-                                <div class="
-                                    rounded-xl
-                                    border
-                                    border-slate-200
-                                    bg-slate-50
-                                    text-slate-400
-                                    px-3
-                                    py-3
-                                    cursor-not-allowed
-                                ">
+                                    <form
+                                        method="POST"
+                                        action="{{ route('guru.attendance.open-meeting') }}"
+                                    >
+
+                                        @csrf
+
+                                        <input
+                                            type="hidden"
+                                            name="kelas"
+                                            value="{{ $kelas }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="pertemuan"
+                                            value="{{ $item }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="
+                                                group
+                                                w-full
+                                                text-left
+                                                rounded-xl
+                                                border
+                                                border-blue-200
+                                                bg-blue-50
+                                                text-blue-700
+                                                px-3
+                                                py-3
+                                                transition
+                                                hover:bg-blue-100
+                                                hover:border-blue-300
+                                            "
+                                        >
+
+                                            <div class="
+                                                flex
+                                                items-center
+                                                justify-between
+                                                gap-2
+                                            ">
+
+                                                <span class="text-xs font-bold">
+                                                    P{{ $item }}
+                                                </span>
+
+                                                <i
+                                                    data-lucide="lock-keyhole-open"
+                                                    class="w-3.5 h-3.5"
+                                                ></i>
+
+                                            </div>
+
+                                            <p class="text-xs mt-1 font-semibold">
+                                                Buka
+                                            </p>
+
+                                        </button>
+
+                                    </form>
+
+
+                                @else
 
                                     <div class="
-                                        flex
-                                        items-center
-                                        justify-between
-                                        gap-2
+                                        rounded-xl
+                                        border
+                                        border-slate-200
+                                        bg-slate-50
+                                        text-slate-400
+                                        px-3
+                                        py-3
+                                        cursor-not-allowed
                                     ">
 
-                                        <span class="text-xs font-bold">
-                                            P{{ $i }}
-                                        </span>
+                                        <div class="
+                                            flex
+                                            items-center
+                                            justify-between
+                                            gap-2
+                                        ">
 
-                                        <i
-                                            data-lucide="lock"
-                                            class="w-3.5 h-3.5"
-                                        ></i>
+                                            <span class="text-xs font-bold">
+                                                P{{ $item }}
+                                            </span>
+
+                                            <i
+                                                data-lucide="lock"
+                                                class="w-3.5 h-3.5"
+                                            ></i>
+
+                                        </div>
+
+                                        <p class="text-xs mt-1 font-medium">
+                                            Terkunci
+                                        </p>
 
                                     </div>
 
-                                    <p class="text-xs mt-1 font-medium">
-                                        Terkunci
-                                    </p>
+                                @endif
 
-                                </div>
+                            @endforeach
 
-                            @endif
+                        </div>
 
-                        @endfor
+                    @else
 
-                    </div>
+                        <div class="
+                            mt-5
+                            pt-5
+                            border-t
+                            border-slate-100
+                            text-sm
+                            text-slate-400
+                        ">
+
+                            Belum ada pertemuan karena belum ada materi
+                            yang dibuat.
+
+                        </div>
+
+                    @endif
 
                 </div>
 
@@ -605,6 +697,7 @@
 
             @if(
                 $selectedClass
+                && $pertemuan
                 && $pertemuan > 0
                 && $pertemuan <= (int) $selectedClass->pertemuan_aktif
             )
@@ -982,7 +1075,8 @@
 
                 </form>
 
-            @elseif($selectedClass)
+
+            @elseif($selectedClass && $pertemuan)
 
                 {{-- =================================================
                      PERTEMUAN TERKUNCI
@@ -1018,6 +1112,7 @@
 
                     </div>
 
+
                     <h2 class="
                         mt-5
                         text-lg
@@ -1027,16 +1122,21 @@
                         Pertemuan Belum Dibuka
                     </h2>
 
+
                     <p class="
                         mt-2
                         text-sm
                         text-slate-500
                     ">
-                        Pertemuan {{ $pertemuan }} belum dibuka
+                        Pertemuan {{ $pertemuan }}
+                        belum dibuka
                         untuk kelas {{ $kelas }}.
                     </p>
 
-                    @if($pertemuanBerikutnya <= 8)
+
+                    @if(
+                        $pertemuanBerikutnyaTersedia === $pertemuan
+                    )
 
                         <form
                             method="POST"
@@ -1055,7 +1155,7 @@
                             <input
                                 type="hidden"
                                 name="pertemuan"
-                                value="{{ $pertemuanBerikutnya }}"
+                                value="{{ $pertemuan }}"
                             >
 
                             <button
@@ -1080,7 +1180,7 @@
                                     class="w-4 h-4"
                                 ></i>
 
-                                Buka Pertemuan {{ $pertemuanBerikutnya }}
+                                Buka Pertemuan {{ $pertemuan }}
 
                             </button>
 

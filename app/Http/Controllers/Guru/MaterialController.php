@@ -17,17 +17,36 @@ class MaterialController extends Controller
 
         $materials = Material::query()
             ->when($pertemuan, function ($query) use ($pertemuan) {
-                $query->where('pertemuan', $pertemuan);
+                $query->where(
+                    'pertemuan',
+                    $pertemuan
+                );
             })
             ->orderBy('pertemuan')
             ->orderBy('id')
             ->get();
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR PERTEMUAN MATERI
+        |--------------------------------------------------------------------------
+        */
+
+        $pertemuans = Material::query()
+            ->whereNotNull('pertemuan')
+            ->select('pertemuan')
+            ->distinct()
+            ->orderBy('pertemuan')
+            ->pluck('pertemuan');
+
+
         return view(
             'guru.materials.index',
             compact(
                 'materials',
-                'pertemuan'
+                'pertemuan',
+                'pertemuans'
             )
         );
     }
@@ -38,8 +57,17 @@ class MaterialController extends Controller
      */
     public function create()
     {
+        $pertemuans = Material::query()
+            ->whereNotNull('pertemuan')
+            ->select('pertemuan')
+            ->distinct()
+            ->orderBy('pertemuan')
+            ->pluck('pertemuan');
+
+
         return view(
-            'guru.materials.create'
+            'guru.materials.create',
+            compact('pertemuans')
         );
     }
 
@@ -55,7 +83,6 @@ class MaterialController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'max:8',
             ],
 
             'judul' => [
@@ -74,12 +101,6 @@ class MaterialController extends Controller
                 'nullable',
                 'string',
             ],
-
-            /*
-            |--------------------------------------------------------------------------
-            | GAMBAR UTAMA
-            |--------------------------------------------------------------------------
-            */
 
             'gambar' => [
                 'nullable',
@@ -110,7 +131,7 @@ class MaterialController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | UPLOAD GAMBAR UTAMA
+        | UPLOAD GAMBAR
         |--------------------------------------------------------------------------
         */
 
@@ -138,7 +159,7 @@ class MaterialController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | SIMPAN MATERI
+        | SIMPAN
         |--------------------------------------------------------------------------
         */
 
@@ -164,9 +185,6 @@ class MaterialController extends Controller
 
     /**
      * Upload gambar untuk Rich Text Editor.
-     *
-     * Gambar yang dimasukkan ke dalam
-     * isi materi disimpan sebagai file.
      */
     public function uploadImage(Request $request)
     {
@@ -205,8 +223,9 @@ class MaterialController extends Controller
     /**
      * Menampilkan detail materi.
      */
-    public function show(Material $material)
-    {
+    public function show(
+        Material $material
+    ) {
         return view(
             'guru.materials.show',
             compact('material')
@@ -217,11 +236,23 @@ class MaterialController extends Controller
     /**
      * Form edit materi.
      */
-    public function edit(Material $material)
-    {
+    public function edit(
+        Material $material
+    ) {
+        $pertemuans = Material::query()
+            ->whereNotNull('pertemuan')
+            ->select('pertemuan')
+            ->distinct()
+            ->orderBy('pertemuan')
+            ->pluck('pertemuan');
+
+
         return view(
             'guru.materials.edit',
-            compact('material')
+            compact(
+                'material',
+                'pertemuans'
+            )
         );
     }
 
@@ -239,7 +270,6 @@ class MaterialController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'max:8',
             ],
 
             'judul' => [
@@ -258,12 +288,6 @@ class MaterialController extends Controller
                 'nullable',
                 'string',
             ],
-
-            /*
-            |--------------------------------------------------------------------------
-            | GAMBAR UTAMA
-            |--------------------------------------------------------------------------
-            */
 
             'gambar' => [
                 'nullable',
@@ -294,7 +318,7 @@ class MaterialController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | GAMBAR UTAMA BARU
+        | UPLOAD GAMBAR BARU
         |--------------------------------------------------------------------------
         */
 
@@ -310,11 +334,6 @@ class MaterialController extends Controller
 
         } else {
 
-            /*
-            | Tidak ada gambar baru.
-            | Gambar lama tetap dipertahankan.
-            */
-
             unset(
                 $validated['gambar']
             );
@@ -323,7 +342,7 @@ class MaterialController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | STATUS
+        | STATUS AKTIF
         |--------------------------------------------------------------------------
         */
 
@@ -359,6 +378,16 @@ class MaterialController extends Controller
 
     /**
      * Menghapus materi.
+     *
+     * Materi berdiri sendiri.
+     *
+     * Menghapus materi TIDAK akan menghapus:
+     * - Quiz
+     * - Reflection
+     * - Soal Quiz
+     * - Jawaban Quiz
+     * - Soal Reflection
+     * - Jawaban Reflection
      */
     public function destroy(
         Material $material
@@ -366,6 +395,12 @@ class MaterialController extends Controller
         $pertemuan =
             $material->pertemuan;
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS MATERI SAJA
+        |--------------------------------------------------------------------------
+        */
 
         $material->delete();
 
@@ -380,7 +415,7 @@ class MaterialController extends Controller
             )
             ->with(
                 'success',
-                'Materi berhasil dihapus.'
+                'Materi berhasil dihapus. Quiz dan Refleksi tetap aman.'
             );
     }
 }

@@ -2,6 +2,7 @@
 <html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -12,17 +13,22 @@
     <title>Hasil Quiz — LARASKU</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script src="https://unpkg.com/lucide@latest"></script>
 
+
     <style>
+
         * {
             box-sizing: border-box;
         }
+
 
         body {
             margin: 0;
             background: #f4f7fb;
             color: #172033;
+
             font-family:
                 Inter,
                 ui-sans-serif,
@@ -33,41 +39,51 @@
                 sans-serif;
         }
 
+
         .main-content {
-            margin-left: 256px;
+            margin-left: 240px;
             min-height: 100vh;
-            transition: margin-left .3s ease;
         }
 
+
         @media (max-width: 1023px) {
+
             .main-content {
                 margin-left: 0;
             }
+
         }
+
 
         .result-row {
             transition: .2s ease;
         }
 
+
         .result-row:hover {
             background: #fafbfc;
         }
+
 
         .score-high {
             background: #dcfce7;
             color: #15803d;
         }
 
+
         .score-medium {
             background: #fef3c7;
             color: #a16207;
         }
 
+
         .score-low {
             background: #fee2e2;
             color: #b91c1c;
         }
+
     </style>
+
 </head>
 
 
@@ -75,76 +91,32 @@
 
 
     {{-- =========================================================
-         SIDEBAR GLOBAL
-    ========================================================== --}}
+     SIDEBAR
+========================================================== --}}
 
-    @include('guru.partials.sidebar')
-
-
-    {{-- =========================================================
-         MAIN
-    ========================================================== --}}
-
-    <main class="main-content">
+@include('guru.partials.sidebar')
 
 
-        {{-- =====================================================
-             TOPBAR
-        ====================================================== --}}
+{{-- =========================================================
+     MAIN
+========================================================== --}}
 
-        <header
-            class="
-                h-16
-                bg-white
-                border-b
-                border-slate-200
-                flex
-                items-center
-                justify-between
-                px-5
-                lg:px-8
-                sticky
-                top-0
-                z-20
-            "
-        >
-
-            <div>
-
-                <p class="text-xs text-slate-400">
-                    Panel Guru
-                </p>
-
-                <h2 class="font-bold text-slate-900">
-                    Hasil Quiz
-                </h2>
-
-            </div>
+<main
+    id="mainContent"
+    class="main-content"
+>
 
 
-            <div
-                class="
-                    w-9
-                    h-9
-                    rounded-full
-                    bg-blue-600
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                "
-            >
-                G
-            </div>
+    {{-- =====================================================
+         HEADBAR GURU
+    ====================================================== --}}
 
-        </header>
+    @include('guru.partials.header')
 
 
-
-        {{-- =====================================================
-             CONTENT
-        ====================================================== --}}
+    {{-- =====================================================
+         CONTENT
+    ====================================================== --}}
 
         <div
             class="
@@ -157,12 +129,17 @@
         >
 
 
-            {{-- KEMBALI --}}
+            {{-- =================================================
+                 KEMBALI
+            ================================================== --}}
 
             <a
-                href="{{ route('guru.quizzes.index', [
-                    'pertemuan' => $quiz->pertemuan
-                ]) }}"
+                href="{{ route(
+                    'guru.quizzes.index',
+                    [
+                        'pertemuan' => $quiz->pertemuan
+                    ]
+                ) }}"
                 class="
                     inline-flex
                     items-center
@@ -186,7 +163,9 @@
 
 
 
-            {{-- HEADER --}}
+            {{-- =================================================
+                 HEADER
+            ================================================== --}}
 
             <section class="mb-6">
 
@@ -236,8 +215,8 @@
                         mt-2
                     "
                 >
-                    Daftar siswa yang telah menyelesaikan
-                    Quiz Pertemuan {{ $quiz->pertemuan }}.
+                    Daftar hasil siswa untuk Quiz
+                    Pertemuan {{ $quiz->pertemuan }}.
                 </p>
 
             </section>
@@ -344,8 +323,8 @@
                                 px-3
                                 py-2
                                 rounded-xl
-                                bg-red-50
-                                text-red-600
+                                bg-slate-100
+                                text-slate-500
                                 text-xs
                                 font-bold
                             "
@@ -356,7 +335,7 @@
                                     w-1.5
                                     h-1.5
                                     rounded-full
-                                    bg-red-500
+                                    bg-slate-400
                                 "
                             ></span>
 
@@ -419,11 +398,214 @@
                             font-bold
                         "
                     >
-                        {{ $quiz->attempts->count() }}
-                        Siswa Mengerjakan
+                        {{ $attempts->count() }}
+                        Hasil Ditampilkan
                     </span>
 
                 </div>
+
+            </section>
+
+
+
+            {{-- =================================================
+                 FILTER KELAS
+            ================================================== --}}
+
+            <section
+                class="
+                    bg-white
+                    border
+                    border-slate-200
+                    rounded-2xl
+                    shadow-sm
+                    p-5
+                    mb-5
+                "
+            >
+
+                <form
+                    method="GET"
+                    action="{{ route(
+                        'guru.quizzes.show',
+                        $quiz
+                    ) }}"
+                    class="
+                        flex
+                        flex-col
+                        md:flex-row
+                        md:items-end
+                        gap-4
+                    "
+                >
+
+                    <div class="flex-1">
+
+                        <label
+                            for="kelas"
+                            class="
+                                block
+                                text-xs
+                                font-black
+                                uppercase
+                                tracking-wider
+                                text-slate-500
+                                mb-2
+                            "
+                        >
+                            Filter Kelas
+                        </label>
+
+
+                        <select
+                            id="kelas"
+                            name="kelas"
+                            class="
+                                w-full
+                                border
+                                border-slate-200
+                                rounded-xl
+                                px-4
+                                py-3
+                                text-sm
+                                font-semibold
+                                text-slate-700
+                                bg-white
+                                focus:border-blue-500
+                                focus:ring-2
+                                focus:ring-blue-100
+                            "
+                        >
+
+                            <option value="">
+                                Semua Kelas
+                            </option>
+
+
+                            @foreach($classes as $class)
+
+                                <option
+                                    value="{{ $class->nama }}"
+                                    @selected(
+                                        $kelas === $class->nama
+                                    )
+                                >
+                                    {{ $class->nama }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            gap-2
+                        "
+                    >
+
+                        <button
+                            type="submit"
+                            class="
+                                inline-flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-5
+                                py-3
+                                rounded-xl
+                                bg-blue-600
+                                hover:bg-blue-700
+                                text-white
+                                text-sm
+                                font-bold
+                                transition
+                            "
+                        >
+
+                            <i
+                                data-lucide="filter"
+                                class="w-4 h-4"
+                            ></i>
+
+                            Terapkan
+
+                        </button>
+
+
+                        @if($kelas)
+
+                            <a
+                                href="{{ route(
+                                    'guru.quizzes.show',
+                                    $quiz
+                                ) }}"
+                                class="
+                                    inline-flex
+                                    items-center
+                                    justify-center
+                                    gap-2
+                                    px-5
+                                    py-3
+                                    rounded-xl
+                                    border
+                                    border-slate-200
+                                    bg-white
+                                    hover:bg-slate-50
+                                    text-slate-600
+                                    text-sm
+                                    font-bold
+                                    transition
+                                "
+                            >
+
+                                <i
+                                    data-lucide="x"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Reset
+
+                            </a>
+
+                        @endif
+
+                    </div>
+
+                </form>
+
+
+                @if($kelas)
+
+                    <div
+                        class="
+                            mt-4
+                            flex
+                            items-center
+                            gap-2
+                            text-xs
+                            text-blue-600
+                            font-semibold
+                        "
+                    >
+
+                        <i
+                            data-lucide="info"
+                            class="w-4 h-4"
+                        ></i>
+
+                        Menampilkan hasil untuk kelas:
+                        <strong>
+                            {{ $kelas }}
+                        </strong>
+
+                    </div>
+
+                @endif
 
             </section>
 
@@ -435,18 +617,21 @@
 
             @php
 
-                $totalAttempts = $quiz->attempts->count();
+                $totalAttempts =
+                    $attempts->count();
 
-                $averageScore = $totalAttempts > 0
-                    ? round(
-                        $quiz->attempts->avg('nilai'),
-                        2
-                    )
-                    : 0;
+                $averageScore =
+                    $totalAttempts > 0
+                        ? round(
+                            $attempts->avg('nilai'),
+                            2
+                        )
+                        : 0;
 
-                $highestScore = $totalAttempts > 0
-                    ? $quiz->attempts->max('nilai')
-                    : 0;
+                $highestScore =
+                    $totalAttempts > 0
+                        ? $attempts->max('nilai')
+                        : 0;
 
             @endphp
 
@@ -481,8 +666,9 @@
                             text-slate-400
                         "
                     >
-                        Sudah Mengerjakan
+                        Siswa Mengerjakan
                     </p>
+
 
                     <p
                         class="
@@ -493,10 +679,6 @@
                         "
                     >
                         {{ $totalAttempts }}
-                    </p>
-
-                    <p class="text-xs text-slate-400 mt-1">
-                        siswa
                     </p>
 
                 </div>
@@ -525,6 +707,7 @@
                         Rata-rata Nilai
                     </p>
 
+
                     <p
                         class="
                             text-3xl
@@ -533,11 +716,10 @@
                             mt-2
                         "
                     >
-                        {{ number_format((float) $averageScore, 1) }}
-                    </p>
-
-                    <p class="text-xs text-slate-400 mt-1">
-                        nilai rata-rata
+                        {{ number_format(
+                            (float) $averageScore,
+                            1
+                        ) }}
                     </p>
 
                 </div>
@@ -566,6 +748,7 @@
                         Nilai Tertinggi
                     </p>
 
+
                     <p
                         class="
                             text-3xl
@@ -574,11 +757,10 @@
                             mt-2
                         "
                     >
-                        {{ number_format((float) $highestScore, 0) }}
-                    </p>
-
-                    <p class="text-xs text-slate-400 mt-1">
-                        skor tertinggi
+                        {{ number_format(
+                            (float) $highestScore,
+                            0
+                        ) }}
                     </p>
 
                 </div>
@@ -588,7 +770,7 @@
 
 
             {{-- =================================================
-                 DAFTAR HASIL
+                 DAFTAR NILAI
             ================================================== --}}
 
             <section
@@ -605,9 +787,11 @@
                 <div
                     class="
                         flex
-                        items-center
-                        justify-between
-                        gap-4
+                        flex-col
+                        sm:flex-row
+                        sm:items-center
+                        sm:justify-between
+                        gap-3
                         px-5
                         py-5
                         border-b
@@ -627,6 +811,7 @@
                             Daftar Nilai Siswa
                         </h2>
 
+
                         <p
                             class="
                                 text-xs
@@ -634,7 +819,17 @@
                                 mt-1
                             "
                         >
-                            Siswa yang sudah menyelesaikan Quiz
+
+                            @if($kelas)
+
+                                Hasil kelas {{ $kelas }}
+
+                            @else
+
+                                Semua kelas
+
+                            @endif
+
                         </p>
 
                     </div>
@@ -658,12 +853,16 @@
 
 
 
-                @if($quiz->attempts->count())
-
+                @if($attempts->count())
 
                     <div class="overflow-x-auto">
 
-                        <table class="w-full min-w-[850px]">
+                        <table
+                            class="
+                                w-full
+                                min-w-[850px]
+                            "
+                        >
 
                             <thead class="bg-slate-50">
 
@@ -684,6 +883,7 @@
                                         No
                                     </th>
 
+
                                     <th
                                         class="
                                             px-5
@@ -698,6 +898,7 @@
                                     >
                                         Nama Siswa
                                     </th>
+
 
                                     <th
                                         class="
@@ -714,6 +915,7 @@
                                         Kelas
                                     </th>
 
+
                                     <th
                                         class="
                                             px-5
@@ -728,6 +930,7 @@
                                     >
                                         Absen
                                     </th>
+
 
                                     <th
                                         class="
@@ -744,6 +947,7 @@
                                         Benar
                                     </th>
 
+
                                     <th
                                         class="
                                             px-5
@@ -758,6 +962,7 @@
                                     >
                                         Nilai
                                     </th>
+
 
                                     <th
                                         class="
@@ -781,20 +986,35 @@
 
                             <tbody>
 
-                                @foreach($quiz->attempts as $attempt)
+                                @foreach(
+                                    $attempts
+                                    as $attempt
+                                )
 
                                     @php
 
-                                        $student = $attempt->student;
+                                        $student =
+                                            $attempt->student;
 
-                                        $nilai = (float) $attempt->nilai;
+                                        $nilai =
+                                            (float)
+                                            $attempt->nilai;
 
                                         if ($nilai >= 80) {
-                                            $scoreClass = 'score-high';
+
+                                            $scoreClass =
+                                                'score-high';
+
                                         } elseif ($nilai >= 60) {
-                                            $scoreClass = 'score-medium';
+
+                                            $scoreClass =
+                                                'score-medium';
+
                                         } else {
-                                            $scoreClass = 'score-low';
+
+                                            $scoreClass =
+                                                'score-low';
+
                                         }
 
                                     @endphp
@@ -808,8 +1028,6 @@
                                         "
                                     >
 
-                                        {{-- NO --}}
-
                                         <td
                                             class="
                                                 px-5
@@ -822,8 +1040,6 @@
                                             {{ $loop->iteration }}
                                         </td>
 
-
-                                        {{-- NAMA --}}
 
                                         <td class="px-5 py-4">
 
@@ -839,6 +1055,7 @@
                                                     {{ $student->nama }}
                                                 </div>
 
+
                                                 <div
                                                     class="
                                                         text-[11px]
@@ -846,7 +1063,8 @@
                                                         mt-1
                                                     "
                                                 >
-                                                    ID Siswa #{{ $student->id }}
+                                                    ID Siswa
+                                                    #{{ $student->id }}
                                                 </div>
 
                                             @else
@@ -866,11 +1084,12 @@
                                         </td>
 
 
-                                        {{-- KELAS --}}
-
                                         <td class="px-5 py-4">
 
-                                            @if($student && $student->kelas)
+                                            @if(
+                                                $student &&
+                                                $student->kelas
+                                            )
 
                                                 <span
                                                     class="
@@ -888,13 +1107,13 @@
                                                 </span>
 
                                             @else
+
                                                 —
+
                                             @endif
 
                                         </td>
 
-
-                                        {{-- ABSEN --}}
 
                                         <td
                                             class="
@@ -908,7 +1127,10 @@
 
                                             @if($student)
 
-                                                {{ $student->nomor_absen ?? '—' }}
+                                                {{
+                                                    $student->nomor_absen
+                                                    ?? '—'
+                                                }}
 
                                             @else
 
@@ -918,8 +1140,6 @@
 
                                         </td>
 
-
-                                        {{-- BENAR --}}
 
                                         <td class="px-5 py-4">
 
@@ -933,7 +1153,9 @@
 
                                                 {{ $attempt->jumlah_benar }}
 
-                                                <span class="text-slate-400">
+                                                <span
+                                                    class="text-slate-400"
+                                                >
                                                     /
                                                 </span>
 
@@ -943,8 +1165,6 @@
 
                                         </td>
 
-
-                                        {{-- NILAI --}}
 
                                         <td class="px-5 py-4">
 
@@ -961,17 +1181,20 @@
                                                     {{ $scoreClass }}
                                                 "
                                             >
-                                                {{ number_format($nilai, 0) }}
+                                                {{ number_format(
+                                                    $nilai,
+                                                    0
+                                                ) }}
                                             </span>
 
                                         </td>
 
 
-                                        {{-- WAKTU --}}
-
                                         <td class="px-5 py-4">
 
-                                            @if($attempt->dikerjakan_at)
+                                            @if(
+                                                $attempt->dikerjakan_at
+                                            )
 
                                                 <div
                                                     class="
@@ -980,8 +1203,15 @@
                                                         text-slate-600
                                                     "
                                                 >
-                                                    {{ $attempt->dikerjakan_at->format('d/m/Y') }}
+                                                    {{
+                                                        $attempt
+                                                            ->dikerjakan_at
+                                                            ->format(
+                                                                'd/m/Y'
+                                                            )
+                                                    }}
                                                 </div>
+
 
                                                 <div
                                                     class="
@@ -990,7 +1220,13 @@
                                                         mt-1
                                                     "
                                                 >
-                                                    {{ $attempt->dikerjakan_at->format('H:i') }}
+                                                    {{
+                                                        $attempt
+                                                            ->dikerjakan_at
+                                                            ->format(
+                                                                'H:i'
+                                                            )
+                                                    }}
                                                 </div>
 
                                             @else
@@ -1011,11 +1247,7 @@
 
                     </div>
 
-
                 @else
-
-
-                    {{-- EMPTY --}}
 
                     <div
                         class="
@@ -1040,39 +1272,68 @@
                         >
 
                             <i
-                                data-lucide="bar-chart-3"
+                                data-lucide="users-round"
                                 class="w-7 h-7 text-slate-400"
                             ></i>
 
                         </div>
 
 
-                        <h3
-                            class="
-                                text-base
-                                font-black
-                                text-slate-700
-                            "
-                        >
-                            Belum ada siswa yang mengerjakan
-                        </h3>
+                        @if($kelas)
+
+                            <h3
+                                class="
+                                    text-base
+                                    font-black
+                                    text-slate-700
+                                "
+                            >
+                                Belum Ada Hasil
+                            </h3>
 
 
-                        <p
-                            class="
-                                max-w-md
-                                mx-auto
-                                text-sm
-                                text-slate-400
-                                mt-2
-                                leading-relaxed
-                            "
-                        >
-                            Belum ada hasil pengerjaan Quiz
-                            Pertemuan {{ $quiz->pertemuan }}.
-                            Hasil siswa akan muncul otomatis setelah
-                            mereka menyelesaikan Quiz.
-                        </p>
+                            <p
+                                class="
+                                    max-w-md
+                                    mx-auto
+                                    text-sm
+                                    text-slate-400
+                                    mt-2
+                                "
+                            >
+                                Belum ada siswa dari kelas
+                                <strong>{{ $kelas }}</strong>
+                                yang mengerjakan Quiz ini.
+                            </p>
+
+                        @else
+
+                            <h3
+                                class="
+                                    text-base
+                                    font-black
+                                    text-slate-700
+                                "
+                            >
+                                Belum Ada Siswa yang Mengerjakan
+                            </h3>
+
+
+                            <p
+                                class="
+                                    max-w-md
+                                    mx-auto
+                                    text-sm
+                                    text-slate-400
+                                    mt-2
+                                "
+                            >
+                                Belum ada hasil pengerjaan
+                                Quiz Pertemuan
+                                {{ $quiz->pertemuan }}.
+                            </p>
+
+                        @endif
 
                     </div>
 
@@ -1088,14 +1349,25 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
 
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
+
+                if (
+                    typeof lucide !== 'undefined'
+                ) {
+
+                    lucide.createIcons();
+
+                }
+
             }
+        );
 
-        });
     </script>
 
+
 </body>
+
 </html>

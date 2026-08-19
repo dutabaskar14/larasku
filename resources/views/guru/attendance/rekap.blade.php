@@ -86,87 +86,43 @@
 
 <body class="min-h-screen text-slate-800">
 
+
 <div class="min-h-screen">
 
 
     {{-- =========================================================
-         SIDEBAR GLOBAL
-    ========================================================== --}}
+     SIDEBAR GLOBAL
+========================================================== --}}
 
-    @include('guru.partials.sidebar')
-
-
-    {{-- =========================================================
-         MAIN
-    ========================================================== --}}
-
-    <main
-        class="main-content lg:ml-64 transition-all duration-300"
-    >
-
-        {{-- =====================================================
-             HEADER
-        ====================================================== --}}
-
-        <header
-            class="
-                h-16
-                bg-white
-                border-b
-                border-slate-200
-                flex
-                items-center
-                justify-between
-                px-5
-                lg:px-8
-                sticky
-                top-0
-                z-20
-            "
-        >
-
-            <div>
-
-                <p class="text-xs text-slate-400">
-                    Panel Guru
-                </p>
-
-                <h2 class="font-bold text-slate-900">
-                    Rekap Absensi
-                </h2>
-
-            </div>
+@include('guru.partials.sidebar')
 
 
-            <div
-                class="
-                    w-9
-                    h-9
-                    rounded-full
-                    bg-blue-600
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                "
-            >
-                G
-            </div>
+{{-- =========================================================
+     MAIN
+========================================================== --}}
 
-        </header>
+<main
+    class="main-content lg:ml-64 transition-all duration-300"
+>
 
 
-        {{-- =====================================================
-             CONTENT
-        ====================================================== --}}
+    {{-- =====================================================
+         HEADBAR GURU
+    ====================================================== --}}
 
-        <div class="p-5 lg:p-8 max-w-[1500px] mx-auto">
+    @include('guru.partials.header')
 
 
-            {{-- =================================================
-                 PAGE HEADER
-            ================================================== --}}
+    {{-- =====================================================
+         CONTENT
+    ====================================================== --}}
+
+    <div class="p-5 lg:p-8 max-w-[1500px] mx-auto">
+
+
+        {{-- =================================================
+             PAGE HEADER
+        ================================================== --}}
 
             <div
                 class="
@@ -210,7 +166,7 @@
 
 
                         <span class="text-xs text-slate-400">
-                            / Rekap 8 Pertemuan
+                            / Rekap Pertemuan
                         </span>
 
                     </div>
@@ -223,7 +179,7 @@
 
                     <p class="text-sm text-slate-500 mt-1">
                         Rekap kehadiran dan nilai absensi siswa
-                        selama 8 pertemuan.
+                        berdasarkan pertemuan yang telah dibuat.
                     </p>
 
                 </div>
@@ -544,7 +500,17 @@
                         </h2>
 
                         <p class="text-xs text-slate-400 mt-1">
-                            Pertemuan 1 sampai 8
+
+                            @if($pertemuans->isNotEmpty())
+
+                                {{ $pertemuans->count() }} pertemuan
+
+                            @else
+
+                                Belum ada pertemuan
+
+                            @endif
+
                         </p>
 
                     </div>
@@ -633,7 +599,7 @@
                                 </th>
 
 
-                                @for($i = 1; $i <= 8; $i++)
+                                @foreach($pertemuans as $item)
 
                                     <th
                                         class="
@@ -645,10 +611,10 @@
                                             text-slate-500
                                         "
                                     >
-                                        P{{ $i }}
+                                        P{{ $item }}
                                     </th>
 
-                                @endfor
+                                @endforeach
 
 
                                 <th
@@ -799,15 +765,15 @@
                                     </td>
 
 
-                                    {{-- PERTEMUAN 1-8 --}}
+                                    {{-- PERTEMUAN DINAMIS --}}
 
-                                    @for($i = 1; $i <= 8; $i++)
+                                    @foreach($pertemuans as $item)
 
                                         @php
 
                                             $attendance =
                                                 $studentAttendances
-                                                    ->get($i);
+                                                    ->get($item);
 
                                             $status =
                                                 $attendance?->status;
@@ -853,7 +819,7 @@
 
                                         </td>
 
-                                    @endfor
+                                    @endforeach
 
 
                                     {{-- SCORE --}}
@@ -887,7 +853,7 @@
                                 <tr>
 
                                     <td
-                                        colspan="11"
+                                        colspan="{{ 3 + $pertemuans->count() }}"
                                         class="px-5 py-16 text-center"
                                     >
 
@@ -1074,7 +1040,8 @@
 
                 <p>
                     Skor dihitung otomatis berdasarkan seluruh data absensi
-                    siswa pada 8 pertemuan. Nilai maksimum 100 dan minimum 0.
+                    siswa pada pertemuan yang telah dibuat. Nilai maksimum
+                    100 dan minimum 0.
                 </p>
 
             </div>
@@ -1104,6 +1071,7 @@
     );
 
 </script>
+
 
 </body>
 
