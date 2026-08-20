@@ -156,18 +156,91 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | AKTIVITAS QUIZ TERBARU
+        | AKTIVITAS SISWA
+        |--------------------------------------------------------------------------
+        |
+        | Menggabungkan aktivitas absensi dan quiz terbaru.
+        | Tidak mengubah data atau alur fitur yang sudah ada.
+        |
+        */
+
+        $studentActivities = collect();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AKTIVITAS QUIZ
         |--------------------------------------------------------------------------
         */
 
-        $recentQuizAttempts = QuizAttempt::query()
+        $quizActivities = QuizAttempt::query()
             ->with([
                 'student',
                 'quiz',
             ])
             ->latest('dikerjakan_at')
             ->limit(8)
-            ->get();
+            ->get()
+            ->map(function ($attempt) {
+
+                return [
+                    'student' => $attempt->student?->nama ?? 'Siswa',
+                    'description' =>
+                        'Mengerjakan Quiz: ' .
+                        ($attempt->quiz?->judul ?? 'Quiz'),
+                    'icon' => 'clipboard-check',
+                    'value' => $attempt->nilai !== null
+                        ? number_format($attempt->nilai, 0)
+                        : null,
+                    'time' => $attempt->dikerjakan_at
+                        ? $attempt->dikerjakan_at->format('d/m/Y H:i')
+                        : null,
+                    'timestamp' => $attempt->dikerjakan_at,
+                ];
+            });
+
+
+        $studentActivities = $studentActivities
+            ->merge($quizActivities);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AKTIVITAS ABSENSI
+        |--------------------------------------------------------------------------
+        */
+
+        $attendanceActivities = Attendance::query()
+            ->with('student')
+            ->latest('created_at')
+            ->limit(8)
+            ->get()
+            ->map(function ($attendance) {
+
+                return [
+                    'student' => $attendance->student?->nama ?? 'Siswa',
+                    'description' =>
+                        'Absensi: ' .
+                        ucfirst($attendance->status) .
+                        ' — Pertemuan ' .
+                        $attendance->pertemuan,
+                    'icon' => 'calendar-check',
+                    'value' => null,
+                    'time' => $attendance->created_at
+                        ? $attendance->created_at->format('d/m/Y H:i')
+                        : null,
+                    'timestamp' => $attendance->created_at,
+                ];
+            });
+
+
+        $studentActivities = $studentActivities
+            ->merge($attendanceActivities)
+            ->sortByDesc(
+                fn ($activity) => $activity['timestamp']
+            )
+            ->take(12)
+            ->values();
 
 
         /*
@@ -228,7 +301,7 @@ class DashboardController extends Controller
                 'reflectionCount',
                 'videoCount',
                 'materialCount',
-                'recentQuizAttempts',
+                'studentActivities',
                 'attendanceSummary'
             )
         );

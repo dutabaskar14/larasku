@@ -277,91 +277,121 @@ class LKPDController extends Controller
 
 
     /**
-     * Menyimpan LKPD baru.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
+ * Menyimpan LKPD baru.
+ */
+public function store(Request $request)
+{
+    $validated = $request->validate([
 
-            'pertemuan' => [
-                'required',
-                'integer',
-                'min:1',
-                'max:255',
-                Rule::unique(
-                    'lkpds',
-                    'pertemuan'
-                ),
-            ],
+        'pertemuan' => [
+            'required',
+            'integer',
+            'min:1',
+            'max:255',
+            Rule::unique(
+                'lkpds',
+                'pertemuan'
+            ),
+        ],
 
-            'judul' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+        'judul' => [
+            'required',
+            'string',
+            'max:255',
+        ],
 
-            'deskripsi' => [
-                'nullable',
-                'string',
-            ],
+        'deskripsi' => [
+            'nullable',
+            'string',
+        ],
 
-            'aktif' => [
-                'nullable',
-                'boolean',
-            ],
+        'aktif' => [
+            'nullable',
+            'boolean',
+        ],
 
-            'questions' => [
-                'required',
-                'array',
-                'min:1',
-            ],
+        'questions' => [
+            'required',
+            'array',
+            'min:1',
+        ],
 
-            'questions.*.jenis' => [
-                'required',
-                Rule::in([
-                    'pilihan_ganda',
-                    'essay',
-                ]),
-            ],
+        'questions.*.jenis' => [
+            'required',
+            Rule::in([
+                'pilihan_ganda',
+                'essay',
+            ]),
+        ],
 
-            'questions.*.pertanyaan' => [
-                'required',
-                'string',
-            ],
+        'questions.*.pertanyaan' => [
+            'required',
+            'string',
+        ],
 
-            'questions.*.opsi_a' => [
-                'nullable',
-                'string',
-            ],
+        'questions.*.opsi_a' => [
+            'nullable',
+            'string',
+        ],
 
-            'questions.*.opsi_b' => [
-                'nullable',
-                'string',
-            ],
+        'questions.*.opsi_b' => [
+            'nullable',
+            'string',
+        ],
 
-            'questions.*.opsi_c' => [
-                'nullable',
-                'string',
-            ],
+        'questions.*.opsi_c' => [
+            'nullable',
+            'string',
+        ],
 
-            'questions.*.opsi_d' => [
-                'nullable',
-                'string',
-            ],
+        'questions.*.opsi_d' => [
+            'nullable',
+            'string',
+        ],
 
-            'questions.*.jawaban_benar' => [
-                'nullable',
-                Rule::in([
-                    'A',
-                    'B',
-                    'C',
-                    'D',
-                ]),
-            ],
+        'questions.*.jawaban_benar' => [
+            'nullable',
+            Rule::in([
+                'A',
+                'B',
+                'C',
+                'D',
+            ]),
+        ],
 
-        ]);
+    ], [
+        'pertemuan.required' =>
+            'Pertemuan wajib dipilih.',
 
+        'pertemuan.integer' =>
+            'Nomor pertemuan harus berupa angka.',
 
+        'pertemuan.min' =>
+            'Nomor pertemuan minimal 1.',
+
+        'pertemuan.max' =>
+            'Nomor pertemuan maksimal 255.',
+
+        'pertemuan.unique' =>
+            'LKPD untuk pertemuan ini sudah dibuat. Silakan pilih pertemuan lain.',
+
+        'judul.required' =>
+            'Judul LKPD wajib diisi.',
+
+        'questions.required' =>
+            'Minimal harus ada satu soal.',
+
+        'questions.min' =>
+            'Minimal harus ada satu soal.',
+
+        'questions.*.jenis.required' =>
+            'Jenis soal wajib dipilih.',
+
+        'questions.*.pertanyaan.required' =>
+            'Pertanyaan wajib diisi.',
+    ]);
+
+    
         DB::transaction(
             function () use ($validated) {
 

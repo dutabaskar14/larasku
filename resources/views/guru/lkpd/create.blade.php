@@ -2,1588 +2,230 @@
 <html lang="id">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <title>Buat LKPD — LARASKU</title>
 
-    <title>Tambah Materi — LARASKU</title>
-
-
-    {{-- =========================================================
-         TAILWIND
-    ========================================================== --}}
     <script src="https://cdn.tailwindcss.com"></script>
-
-
-    {{-- =========================================================
-         LUCIDE
-    ========================================================== --}}
     <script src="https://unpkg.com/lucide@latest"></script>
 
-
-    {{-- =========================================================
-         GOOGLE FONT
-    ========================================================== --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lora:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap"
-        rel="stylesheet"
-    >
-
-
-    {{-- =========================================================
-         QUILL
-    ========================================================== --}}
-    <link
-        href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
-        rel="stylesheet"
-    >
-
-
-    {{-- =========================================================
-         QUILL RESIZE MODULE - COMPATIBLE QUILL 2
-    ========================================================== --}}
-    <link
-        href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.1.3/dist/resize.css"
-        rel="stylesheet"
-    >
-
-
     <style>
-
         * {
             box-sizing: border-box;
         }
 
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-
         body {
-            background: #f4f7fb;
-            color: #1e293b;
-
-            font-family:
-                Inter,
-                ui-sans-serif,
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
-        }
-
-
-        /* =========================================================
-           FORM
-        ========================================================== */
-
-        .form-card {
-            background: #ffffff;
-
-            border:
-                1px solid
-                #e2e8f0;
-
-            border-radius: 20px;
-
-            box-shadow:
-                0 8px 30px
-                rgba(15, 23, 42, .045);
-
-            overflow: hidden;
-        }
-
-
-        .form-section {
-            padding: 26px;
-        }
-
-
-        .form-section + .form-section {
-            border-top:
-                1px solid
-                #eef2f7;
-        }
-
-
-        .section-heading {
-            display: flex;
-            align-items: flex-start;
-
-            gap: 13px;
-
-            margin-bottom: 22px;
-        }
-
-
-        .section-icon {
-            width: 40px;
-            height: 40px;
-
-            min-width: 40px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 11px;
-
-            background: #eff6ff;
-            color: #2563eb;
-        }
-
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 800;
-
-            color: #0f172a;
-        }
-
-
-        .section-description {
-            margin-top: 3px;
-
-            font-size: 12px;
-            line-height: 1.6;
-
-            color: #94a3b8;
-        }
-
-
-        .field-label {
-            display: block;
-
-            margin-bottom: 8px;
-
-            font-size: 12px;
-            font-weight: 750;
-
-            color: #334155;
-        }
-
-
-        .required {
-            color: #ef4444;
-        }
-
-
-        .field-help {
-            margin-top: 6px;
-
-            font-size: 11px;
-            line-height: 1.5;
-
-            color: #94a3b8;
-        }
-
-
-        .field-error {
-            margin-top: 6px;
-
-            font-size: 11px;
-            font-weight: 600;
-
-            color: #dc2626;
-        }
-
-
-        .input,
-        .select {
-
-            width: 100%;
-
-            height: 46px;
-
-            padding:
-                0 13px;
-
-            border:
-                1px solid
-                #dbe3ed;
-
-            background: #ffffff;
-
-            border-radius: 11px;
-
-            color: #0f172a;
-
-            font-size: 13px;
-
-            outline: none;
-
-            transition:
-                .18s ease;
-        }
-
-
-        .input:focus,
-        .select:focus {
-
-            border-color:
-                #60a5fa;
-
-            box-shadow:
-                0 0 0 4px
-                rgba(59, 130, 246, .08);
-        }
-
-
-        .input::placeholder {
-            color: #c0c8d4;
-        }
-
-
-        /* =========================================================
-           HERO
-        ========================================================== */
-
-        .hero {
-
-            position: relative;
-
-            overflow: hidden;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #ffffff 0%,
-                    #f8fbff 100%
-                );
-
-            border:
-                1px solid
-                #e2e8f0;
-
-            border-radius: 20px;
-
-            padding: 26px;
-
-            margin-bottom: 22px;
-
-            box-shadow:
-                0 8px 30px
-                rgba(15, 23, 42, .035);
-        }
-
-
-        .hero::after {
-
-            content: "";
-
-            position: absolute;
-
-            width: 190px;
-            height: 190px;
-
-            right: -70px;
-            top: -90px;
-
-            border-radius: 999px;
-
-            background:
-                rgba(59, 130, 246, .07);
-        }
-
-
-        .hero-content {
-
-            position: relative;
-
-            z-index: 2;
-        }
-
-
-        .hero-eyebrow {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 7px;
-
-            color: #2563eb;
-
-            font-size: 11px;
-
-            font-weight: 850;
-
-            text-transform:
-                uppercase;
-
-            letter-spacing:
-                .09em;
-
-            margin-bottom: 8px;
-        }
-
-
-        .hero-title {
-
             margin: 0;
+            background: #f5f7fb;
+            color: #172033;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+                BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
 
-            font-size: 28px;
+        .main-content {
+            min-height: 100vh;
+        }
 
-            line-height: 1.2;
+        .question-card {
+            transition: .18s ease;
+        }
 
-            font-weight: 900;
+        .question-card:hover {
+            border-color: #cbd5e1;
+        }
 
-            letter-spacing:
-                -.035em;
-
+        .input {
+            width: 100%;
+            height: 44px;
+            padding: 0 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
             color: #0f172a;
+            font-size: 14px;
+            outline: none;
+            transition: .18s ease;
         }
 
+        .input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px #dbeafe;
+        }
 
-        .hero-description {
+        textarea.input {
+            height: auto;
+            min-height: 110px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            resize: vertical;
+        }
 
-            max-width: 680px;
+        select.input {
+            cursor: pointer;
+        }
 
-            margin-top: 8px;
-
+        .option-input {
+            width: 100%;
+            height: 42px;
+            padding: 0 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+            background: #fff;
             font-size: 13px;
-
-            line-height: 1.7;
-
-            color: #64748b;
-        }
-
-
-        /* =========================================================
-           GRID
-        ========================================================== */
-
-        .grid-2 {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    2,
-                    minmax(0, 1fr)
-                );
-
-            gap: 18px;
-        }
-
-
-        /* =========================================================
-           RICH EDITOR
-        ========================================================== */
-
-        .editor-wrapper {
-
-            border:
-                1px solid
-                #dbe3ed;
-
-            border-radius: 14px;
-
-            overflow: visible;
-
-            background:
-                #ffffff;
-        }
-
-
-        #toolbar {
-
-            background:
-                #f8fafc;
-
-            border:
-                0;
-
-            border-bottom:
-                1px solid
-                #e2e8f0;
-
-            border-radius:
-                13px 13px 0 0;
-
-            padding: 10px;
-        }
-
-
-        .ql-toolbar.ql-snow {
-
-            border: 0;
-
-            background:
-                #f8fafc;
-        }
-
-
-        .ql-container.ql-snow {
-
-            border: 0;
-
-            border-radius:
-                0 0 13px 13px;
-        }
-
-
-        #editor {
-
-            min-height: 430px;
-
-            font-size: 15px;
-
-            line-height: 1.85;
-
-            color: #334155;
-        }
-
-
-        .ql-editor {
-
-            min-height: 430px;
-
-            padding: 22px;
-
-            overflow-wrap:
-                break-word;
-        }
-
-
-        .ql-editor.ql-blank::before {
-
-            color:
-                #c0c8d4;
-
-            font-style:
-                normal;
-
-            left:
-                22px;
-        }
-
-
-        .ql-editor h1 {
-
-            font-size: 30px;
-
-            line-height: 1.25;
-
-            font-weight: 850;
-
-            color:
-                #0f172a;
-        }
-
-
-        .ql-editor h2 {
-
-            font-size: 23px;
-
-            line-height: 1.3;
-
-            font-weight: 850;
-
-            color:
-                #0f172a;
-        }
-
-
-        .ql-editor h3 {
-
-            font-size: 18px;
-
-            line-height: 1.4;
-
-            font-weight: 800;
-
-            color:
-                #1e293b;
-        }
-
-
-        .ql-editor blockquote {
-
-            border-left:
-                4px solid
-                #3b82f6;
-
-            background:
-                #f8fafc;
-
-            padding:
-                12px 16px;
-
-            border-radius:
-                0 10px 10px 0;
-
-            color:
-                #475569;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | IMAGE EDITOR
-        |--------------------------------------------------------------------------
-        */
-
-        .ql-editor img {
-
-            max-width:
-                100%;
-
-            height:
-                auto;
-
-            border-radius:
-                10px;
-
-            margin:
-                12px 0;
-
-            cursor:
-                pointer;
-
-            transition:
-                box-shadow .15s ease;
-        }
-
-
-        .ql-editor img:hover {
-
-            box-shadow:
-                0 0 0 3px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    .10
-                );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ALIGNMENT GAMBAR
-        |--------------------------------------------------------------------------
-        */
-
-        .ql-editor .ql-align-center img {
-
-            display:
-                block;
-
-            margin-left:
-                auto;
-
-            margin-right:
-                auto;
-        }
-
-
-        .ql-editor .ql-align-right img {
-
-            display:
-                block;
-
-            margin-left:
-                auto;
-        }
-
-
-        .ql-editor .ql-align-left img {
-
-            display:
-                block;
-
-            margin-left:
-                0;
-
-            margin-right:
-                auto;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FONT
-        |--------------------------------------------------------------------------
-        */
-
-        .ql-font-poppins {
-
-            font-family:
-                Poppins,
-                sans-serif;
-        }
-
-
-        .ql-font-montserrat {
-
-            font-family:
-                Montserrat,
-                sans-serif;
-        }
-
-
-        .ql-font-playfair {
-
-            font-family:
-                "Playfair Display",
-                serif;
-        }
-
-
-        .ql-font-lora {
-
-            font-family:
-                Lora,
-                serif;
-        }
-
-
-        .ql-font-roboto {
-
-            font-family:
-                Roboto,
-                sans-serif;
-        }
-
-
-        .ql-font-serif {
-
-            font-family:
-                Georgia,
-                serif;
-        }
-
-
-        .ql-font-monospace {
-
-            font-family:
-                "SFMono-Regular",
-                Consolas,
-                monospace;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FONT PICKER
-        |--------------------------------------------------------------------------
-        */
-
-        .ql-snow
-        .ql-picker.ql-font {
-
-            width:
-                145px;
-        }
-
-
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-label[data-value="poppins"]::before,
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-item[data-value="poppins"]::before {
-
-            content:
-                "Poppins";
-        }
-
-
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-label[data-value="montserrat"]::before,
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-item[data-value="montserrat"]::before {
-
-            content:
-                "Montserrat";
-        }
-
-
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-label[data-value="playfair"]::before,
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-item[data-value="playfair"]::before {
-
-            content:
-                "Playfair Display";
-        }
-
-
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-label[data-value="lora"]::before,
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-item[data-value="lora"]::before {
-
-            content:
-                "Lora";
-        }
-
-
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-label[data-value="roboto"]::before,
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-item[data-value="roboto"]::before {
-
-            content:
-                "Roboto";
-        }
-
-
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-label[data-value="serif"]::before,
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-item[data-value="serif"]::before {
-
-            content:
-                "Serif";
-        }
-
-
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-label[data-value="monospace"]::before,
-        .ql-snow
-        .ql-picker.ql-font
-        .ql-picker-item[data-value="monospace"]::before {
-
-            content:
-                "Mono";
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SIZE PICKER
-        |--------------------------------------------------------------------------
-        */
-
-        .ql-snow
-        .ql-picker.ql-size {
-
-            width:
-                105px;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | QUILL TOOLBAR
-        |--------------------------------------------------------------------------
-        */
-
-        .ql-snow
-        .ql-picker {
-
-            font-size:
-                12px;
-        }
-
-
-        .ql-snow
-        .ql-picker-label {
-
-            border-radius:
-                7px;
-        }
-
-
-        .ql-snow button:hover,
-        .ql-snow
-        .ql-picker-label:hover {
-
-            color:
-                #2563eb;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | RESIZE MODULE
-        |--------------------------------------------------------------------------
-        */
-
-        .ql-image-resize {
-
-            z-index:
-                50;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | IMAGE RESIZE HANDLE
-        |--------------------------------------------------------------------------
-        */
-
-        .ql-editor img {
-
-            max-width:
-                100%;
-        }
-
-
-        /* =========================================================
-           IMAGE PREVIEW
-        ========================================================== */
-
-        .image-preview {
-
-            display:
-                none;
-
-            margin-top:
-                12px;
-
-            border:
-                1px solid
-                #e2e8f0;
-
-            border-radius:
-                13px;
-
-            padding:
-                10px;
-
-            background:
-                #f8fafc;
-        }
-
-
-        .image-preview img {
-
-            display:
-                block;
-
-            width:
-                100%;
-
-            max-height:
-                240px;
-
-            object-fit:
-                contain;
-
-            border-radius:
-                9px;
-        }
-
-
-        .image-preview.active {
-
-            display:
-                block;
-        }
-
-
-        /* =========================================================
-           UPLOAD
-        ========================================================== */
-
-        .upload-box {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                14px;
-
-            padding:
-                15px;
-
-            border:
-                1px dashed
-                #cbd5e1;
-
-            border-radius:
-                13px;
-
-            background:
-                #f8fafc;
-
-            cursor:
-                pointer;
-
-            transition:
-                .18s ease;
-        }
-
-
-        .upload-box:hover {
-
-            border-color:
-                #60a5fa;
-
-            background:
-                #eff6ff;
-        }
-
-
-        .upload-icon {
-
-            width:
-                42px;
-
-            height:
-                42px;
-
-            min-width:
-                42px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            border-radius:
-                11px;
-
-            background:
-                #ffffff;
-
-            color:
-                #2563eb;
-
-            box-shadow:
-                0 2px 8px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    .05
-                );
-        }
-
-
-        .upload-title {
-
-            font-size:
-                12px;
-
-            font-weight:
-                800;
-
-            color:
-                #334155;
-        }
-
-
-        .upload-description {
-
-            margin-top:
-                2px;
-
-            font-size:
-                10px;
-
-            color:
-                #94a3b8;
-        }
-
-
-        /* =========================================================
-           STATUS
-        ========================================================== */
-
-        .status-box {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            gap:
-                15px;
-
-            padding:
-                15px;
-
-            border:
-                1px solid
-                #e2e8f0;
-
-            border-radius:
-                13px;
-
-            background:
-                #f8fafc;
-        }
-
-
-        .status-info {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                12px;
-        }
-
-
-        .status-icon {
-
-            width:
-                38px;
-
-            height:
-                38px;
-
-            border-radius:
-                10px;
-
-            background:
-                #dcfce7;
-
-            color:
-                #16a34a;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-        }
-
-
-        .status-title {
-
-            font-size:
-                12px;
-
-            font-weight:
-                800;
-
-            color:
-                #334155;
-        }
-
-
-        .status-description {
-
-            margin-top:
-                2px;
-
-            font-size:
-                10px;
-
-            color:
-                #94a3b8;
-        }
-
-
-        .switch {
-
-            position:
-                relative;
-
-            width:
-                48px;
-
-            height:
-                27px;
-
-            flex-shrink:
-                0;
+            outline: none;
         }
 
-
-        .switch input {
-
-            opacity:
-                0;
-
-            width:
-                0;
-
-            height:
-                0;
-        }
-
-
-        .slider {
-
-            position:
-                absolute;
-
-            inset:
-                0;
-
-            cursor:
-                pointer;
-
-            background:
-                #cbd5e1;
-
-            border-radius:
-                999px;
-
-            transition:
-                .2s;
-        }
-
-
-        .slider::before {
-
-            content:
-                "";
-
-            position:
-                absolute;
-
-            width:
-                21px;
-
-            height:
-                21px;
-
-            left:
-                3px;
-
-            top:
-                3px;
-
-            background:
-                #ffffff;
-
-            border-radius:
-                50%;
-
-            box-shadow:
-                0 1px 4px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    .2
-                );
-
-            transition:
-                .2s;
-        }
-
-
-        .switch input:checked + .slider {
-
-            background:
-                #2563eb;
-        }
-
-
-        .switch input:checked + .slider::before {
-
-            transform:
-                translateX(21px);
-        }
-
-
-        /* =========================================================
-           BUTTON
-        ========================================================== */
-
-        .form-actions {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            gap:
-                15px;
-
-            padding:
-                20px 26px;
-
-            border-top:
-                1px solid
-                #eef2f7;
-
-            background:
-                #fbfcfe;
-        }
-
-
-        .cancel-button,
-        .submit-button {
-
-            min-height:
-                44px;
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            gap:
-                8px;
-
-            padding:
-                0 17px;
-
-            border-radius:
-                11px;
-
-            font-size:
-                12px;
-
-            font-weight:
-                800;
-
-            text-decoration:
-                none;
-
-            transition:
-                .18s ease;
-
-            cursor:
-                pointer;
-        }
-
-
-        .cancel-button {
-
-            border:
-                1px solid
-                #e2e8f0;
-
-            background:
-                #ffffff;
-
-            color:
-                #64748b;
-        }
-
-
-        .cancel-button:hover {
-
-            background:
-                #f8fafc;
-
-            color:
-                #334155;
-        }
-
-
-        .submit-button {
-
-            border:
-                1px solid
-                #2563eb;
-
-            background:
-                #2563eb;
-
-            color:
-                #ffffff;
-
-            box-shadow:
-                0 5px 14px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    .18
-                );
-        }
-
-
-        .submit-button:hover {
-
-            background:
-                #1d4ed8;
-
-            transform:
-                translateY(-1px);
+        .option-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px #ede9fe;
         }
-
-
-        /* =========================================================
-           ERROR
-        ========================================================== */
-
-        .error-alert {
 
-            margin-bottom:
-                20px;
-
-            padding:
-                15px 17px;
-
-            border:
-                1px solid
-                #fecaca;
-
-            border-radius:
-                13px;
-
-            background:
-                #fef2f2;
-
-            color:
-                #991b1b;
-
-            font-size:
-                12px;
+        .radio-card {
+            cursor: pointer;
+            transition: .18s ease;
         }
-
 
-        .error-alert-title {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                8px;
-
-            font-weight:
-                800;
-
-            margin-bottom:
-                7px;
+        .radio-card:hover {
+            border-color: #93c5fd;
+            background: #f8fbff;
         }
-
-
-        .error-alert ul {
 
-            margin:
-                0;
-
-            padding-left:
-                27px;
+        .radio-card.active-pg {
+            border-color: #c4b5fd;
+            background: #faf5ff;
         }
-
-
-        .error-alert li {
 
-            margin-bottom:
-                3px;
+        .radio-card.active-essay {
+            border-color: #fcd34d;
+            background: #fffbeb;
         }
-
-
-        /* =========================================================
-           RESPONSIVE
-        ========================================================== */
-
-        @media (max-width: 700px) {
-
-            .grid-2 {
 
-                grid-template-columns:
-                    1fr;
+        @media (max-width: 1023px) {
+            .main-content {
+                margin-left: 0 !important;
             }
-
-
-            .hero {
-
-                padding:
-                    21px;
-            }
-
-
-            .hero-title {
-
-                font-size:
-                    24px;
-            }
-
-
-            .form-section {
-
-                padding:
-                    20px;
-            }
-
-
-            .form-actions {
-
-                padding:
-                    17px 20px;
-
-                flex-direction:
-                    column-reverse;
-
-                align-items:
-                    stretch;
-            }
-
-
-            .cancel-button,
-            .submit-button {
-
-                width:
-                    100%;
-            }
-
-
-            .status-box {
-
-                align-items:
-                    flex-start;
-            }
-
-
-            .ql-toolbar.ql-snow {
-
-                overflow-x:
-                    auto;
-
-                white-space:
-                    nowrap;
-            }
-
-
-            #editor,
-            .ql-editor {
-
-                min-height:
-                    360px;
-            }
-
         }
-
-
     </style>
-
 </head>
 
 
-<body class="min-h-screen text-slate-800">
+<body>
 
+<div class="min-h-screen">
 
-    {{-- =========================================================
-     SIDEBAR GLOBAL
-========================================================== --}}
-
-@include('guru.partials.sidebar')
-
-
-{{-- =========================================================
-     MAIN
-========================================================== --}}
-
-<main
-    class="main-content lg:ml-64 transition-all duration-300"
->
+    @include('guru.partials.sidebar')
 
 
     {{-- =====================================================
-         HEADBAR GURU
+         MAIN
     ====================================================== --}}
 
-    @include('guru.partials.header')
+    <main
+        class="main-content lg:ml-64 transition-all duration-300"
+    >
 
 
-    {{-- =====================================================
-         CONTENT
-    ====================================================== --}}
+        {{-- =====================================================
+             HEADBAR GURU
+        ====================================================== --}}
 
-    <div class="p-5 lg:p-8 max-w-[1500px] mx-auto">
+        @include('guru.partials.header')
 
 
-       
-            {{-- =====================================================
-                 HERO
-            ====================================================== --}}
+        <div
+            class="p-5 lg:p-8 max-w-[1200px] mx-auto"
+        >
 
-            <section class="hero">
 
-                <div class="hero-content">
+        
+            {{-- BACK --}}
+            <a
+                href="{{ route('guru.lkpd.index') }}"
+                class="inline-flex items-center gap-2
+                       mb-6 text-sm font-semibold
+                       text-slate-500 hover:text-slate-900"
+            >
 
-                    <div class="hero-eyebrow">
+                <i
+                    data-lucide="arrow-left"
+                    class="w-4 h-4"
+                ></i>
+
+                Kembali ke LKPD
+
+            </a>
+
+
+            {{-- HEADER --}}
+            <section class="mb-7">
+
+                <div class="mb-2">
+
+                    <span
+                        class="inline-flex items-center gap-2
+                               text-xs font-semibold text-blue-600
+                               bg-blue-50 px-3 py-1.5 rounded-full"
+                    >
 
                         <i
-                            data-lucide="book-plus"
-                            class="w-4 h-4"
+                            data-lucide="clipboard-plus"
+                            class="w-3.5 h-3.5"
                         ></i>
 
-                        Materi Pembelajaran
+                        LKPD Baru
 
-                    </div>
-
-
-                    <h1 class="hero-title">
-                        Buat Materi Baru
-                    </h1>
-
-
-                    <p class="hero-description">
-                        Susun materi pembelajaran dengan teks,
-                        gambar, format tulisan, video, dan audio
-                        agar lebih menarik dan mudah dipahami siswa.
-                    </p>
+                    </span>
 
                 </div>
+
+
+                <h1
+                    class="text-3xl font-black
+                           tracking-tight text-slate-900"
+                >
+                    Buat LKPD
+                </h1>
+
+
+                <p
+                    class="text-sm text-slate-500 mt-2"
+                >
+                    Buat LKPD berdasarkan pertemuan dengan soal
+                    pilihan ganda, essay, atau kombinasi keduanya.
+                </p>
 
             </section>
 
 
-            {{-- =====================================================
-                 ERROR
-            ====================================================== --}}
-
+            {{-- ERROR --}}
             @if($errors->any())
 
-                <div class="error-alert">
+                <div
+                    class="mb-6 p-5 rounded-2xl
+                           border border-red-200
+                           bg-red-50 text-red-700"
+                >
 
-                    <div class="error-alert-title">
+                    <div
+                        class="flex items-center gap-2
+                               font-bold text-sm mb-2"
+                    >
 
                         <i
                             data-lucide="circle-alert"
                             class="w-4 h-4"
                         ></i>
 
-                        Periksa kembali data materi
+                        Periksa kembali data LKPD
 
                     </div>
 
 
-                    <ul>
+                    <ul
+                        class="list-disc pl-5 text-sm
+                               space-y-1"
+                    >
 
                         @foreach($errors->all() as $error)
 
@@ -1600,48 +242,66 @@
             @endif
 
 
-            {{-- =====================================================
-                 FORM
-            ====================================================== --}}
-
             <form
-                action="{{ route('guru.materials.store') }}"
+                action="{{ route('guru.lkpd.store') }}"
                 method="POST"
-                enctype="multipart/form-data"
-                id="materialForm"
-                class="form-card"
+                id="lkpdForm"
             >
 
                 @csrf
 
 
                 {{-- =================================================
-                     INFORMASI DASAR
+                     INFORMASI LKPD
                 ================================================== --}}
 
-                <section class="form-section">
+                <section
+                    class="bg-white border border-slate-200
+                           rounded-2xl shadow-sm overflow-hidden
+                           mb-6"
+                >
 
-                    <div class="section-heading">
+                    <div
+                        class="px-6 py-5 border-b
+                               border-slate-100"
+                    >
 
-                        <div class="section-icon">
+                        <div
+                            class="flex items-center gap-3"
+                        >
 
-                            <i
-                                data-lucide="file-text"
-                                class="w-5 h-5"
-                            ></i>
+                            <div
+                                class="w-10 h-10 rounded-xl
+                                       bg-blue-50 text-blue-600
+                                       flex items-center
+                                       justify-center"
+                            >
 
-                        </div>
+                                <i
+                                    data-lucide="file-text"
+                                    class="w-5 h-5"
+                                ></i>
 
-
-                        <div>
-
-                            <div class="section-title">
-                                Informasi Materi
                             </div>
 
-                            <div class="section-description">
-                                Tentukan identitas dan posisi materi
-                                dalam pembelajaran.
+
+                            <div>
+
+                                <h2
+                                    class="font-black
+                                           text-slate-900"
+                                >
+                                    Informasi LKPD
+                                </h2>
+
+                                <p
+                                    class="text-xs
+                                           text-slate-400 mt-1"
+                                >
+                                    Tentukan pertemuan dan identitas
+                                    LKPD.
+                                </p>
+
                             </div>
 
                         </div>
@@ -1649,92 +309,45 @@
                     </div>
 
 
-                    <div class="grid-2">
-
-
-                        {{-- JUDUL --}}
-
-                        <div class="md:col-span-2">
-
-                            <label
-                                for="judul"
-                                class="field-label"
-                            >
-
-                                Judul Materi
-
-                                <span class="required">
-                                    *
-                                </span>
-
-                            </label>
-
-
-                            <input
-                                type="text"
-                                id="judul"
-                                name="judul"
-                                value="{{ old('judul') }}"
-                                class="input"
-                                placeholder="Contoh: Mengenal Musik Tradisional Nusantara"
-                                required
-                            >
-
-
-                            @error('judul')
-
-                                <div class="field-error">
-                                    {{ $message }}
-                                </div>
-
-                            @enderror
-
-                        </div>
-
+                    <div class="p-6 space-y-5">
 
                         {{-- PERTEMUAN --}}
-
                         <div>
 
                             <label
                                 for="pertemuan"
-                                class="field-label"
+                                class="block text-xs
+                                       font-bold text-slate-600
+                                       mb-2"
                             >
-
                                 Pertemuan
-
-                                <span class="required">
-                                    *
-                                </span>
-
                             </label>
 
 
                             <div
-                                class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3"
+                                class="grid grid-cols-1
+                                       sm:grid-cols-[1fr_auto]
+                                       gap-3"
                             >
 
                                 <select
-                                    id="pertemuan"
                                     name="pertemuan"
-                                    class="select"
+                                    id="pertemuan"
                                     required
+                                    class="input"
                                 >
 
                                     <option value="">
                                         Pilih Pertemuan
                                     </option>
 
-
-                                    @foreach($pertemuans as $item)
+                                    @foreach($pertemuans ?? [] as $item)
 
                                         <option
                                             value="{{ $item }}"
                                             {{ old('pertemuan') == $item ? 'selected' : '' }}
                                         >
-
                                             Pertemuan {{ $item }}
-
                                         </option>
 
                                     @endforeach
@@ -1745,7 +358,16 @@
                                 <button
                                     type="button"
                                     id="addMeetingBtn"
-                                    class="h-[46px] px-4 rounded-[11px] border border-blue-200 bg-blue-50 text-blue-700 text-[12px] font-extrabold inline-flex items-center justify-center gap-2 transition hover:bg-blue-100 hover:border-blue-300"
+                                    class="h-[44px] px-4
+                                           rounded-xl
+                                           border border-blue-200
+                                           bg-blue-50
+                                           text-blue-700
+                                           text-sm font-bold
+                                           inline-flex
+                                           items-center
+                                           justify-center
+                                           gap-2 hover:bg-blue-100"
                                 >
 
                                     <i
@@ -1760,62 +382,126 @@
                             </div>
 
 
-                            <div class="field-help">
-
-                                Pilih pertemuan yang sudah tersedia,
-                                atau klik <strong>Tambah Pertemuan</strong>
-                                untuk menambahkan nomor pertemuan baru.
-
-                            </div>
-
-
-                            @error('pertemuan')
-
-                                <div class="field-error">
-                                    {{ $message }}
-                                </div>
-
-                            @enderror
+                            <p
+                                class="mt-2 text-xs
+                                       text-slate-400"
+                            >
+                                Pertemuan LKPD berdiri sendiri dan
+                                tidak bergantung pada materi.
+                            </p>
 
                         </div>
 
 
-                        {{-- KATEGORI --}}
-
+                        {{-- JUDUL --}}
                         <div>
 
                             <label
-                                for="kategori"
-                                class="field-label"
+                                for="judul"
+                                class="block text-xs
+                                       font-bold text-slate-600
+                                       mb-2"
                             >
-
-                                Kategori
-
+                                Judul LKPD
                             </label>
-
 
                             <input
                                 type="text"
-                                id="kategori"
-                                name="kategori"
-                                value="{{ old('kategori') }}"
+                                name="judul"
+                                id="judul"
+                                required
+                                value="{{ old('judul') }}"
                                 class="input"
-                                placeholder="Contoh: Teori Musik"
+                                placeholder="Contoh: LKPD Analisis Musik Tradisional"
                             >
 
-
-                            <div class="field-help">
-                                Kategori bersifat opsional.
-                            </div>
+                        </div>
 
 
-                            @error('kategori')
+                        {{-- DESKRIPSI --}}
+                        <div>
 
-                                <div class="field-error">
-                                    {{ $message }}
+                            <label
+                                for="deskripsi"
+                                class="block text-xs
+                                       font-bold text-slate-600
+                                       mb-2"
+                            >
+                                Deskripsi / Petunjuk
+                            </label>
+
+                            <textarea
+                                name="deskripsi"
+                                id="deskripsi"
+                                class="input"
+                                placeholder="Tuliskan petunjuk pengerjaan LKPD..."
+                            >{{ old('deskripsi') }}</textarea>
+
+                        </div>
+
+
+                        {{-- AKTIF --}}
+                        <div
+                            class="flex items-center
+                                   justify-between gap-4
+                                   p-4 rounded-xl
+                                   border border-slate-200
+                                   bg-slate-50"
+                        >
+
+                            <div>
+
+                                <div
+                                    class="text-sm font-bold
+                                           text-slate-800"
+                                >
+                                    Aktifkan untuk siswa
                                 </div>
 
-                            @enderror
+                                <div
+                                    class="text-xs
+                                           text-slate-400 mt-1"
+                                >
+                                    Jika aktif, LKPD dapat dikerjakan
+                                    oleh siswa.
+                                </div>
+
+                            </div>
+
+
+                            <label
+                                class="relative inline-flex
+                                       items-center cursor-pointer"
+                            >
+
+                                <input
+                                    type="checkbox"
+                                    name="aktif"
+                                    value="1"
+                                    class="sr-only peer"
+                                    {{ old('aktif', true) ? 'checked' : '' }}
+                                >
+
+                                <div
+                                    class="w-11 h-6
+                                           bg-slate-300
+                                           peer-focus:outline-none
+                                           rounded-full peer
+                                           peer-checked:bg-blue-600
+                                           after:content-['']
+                                           after:absolute
+                                           after:top-[2px]
+                                           after:left-[2px]
+                                           after:bg-white
+                                           after:border-gray-300
+                                           after:border
+                                           after:rounded-full
+                                           after:h-5 after:w-5
+                                           after:transition-all
+                                           peer-checked:after:translate-x-full"
+                                ></div>
+
+                            </label>
 
                         </div>
 
@@ -1825,353 +511,569 @@
 
 
                 {{-- =================================================
-                     EDITOR
+                     SOAL
                 ================================================== --}}
 
-                <section class="form-section">
-
-
-                    <div class="section-heading">
-
-                        <div class="section-icon">
-
-                            <i
-                                data-lucide="pen-line"
-                                class="w-5 h-5"
-                            ></i>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="section-title">
-                                Isi Materi
-                            </div>
-
-                            <div class="section-description">
-
-                                Buat materi seperti halaman
-                                pembelajaran profesional dengan
-                                teks, gambar, font, warna, dan
-                                format tulisan.
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <label class="field-label">
-
-                        Konten Pembelajaran
-
-                        <span class="required">
-                            *
-                        </span>
-
-                    </label>
-
-
-                    {{-- =================================================
-                         EDITOR WRAPPER
-                    ================================================== --}}
-
-                    <div class="editor-wrapper">
-
-
-                        {{-- =================================================
-                             TOOLBAR
-                        ================================================== --}}
-
-                        <div id="toolbar">
-
-
-                            {{-- FONT + SIZE --}}
-
-                            <span class="ql-formats">
-
-                                <select class="ql-font">
-
-                                    <option selected value="sans">
-                                        Sans
-                                    </option>
-
-                                    <option value="poppins">
-                                        Poppins
-                                    </option>
-
-                                    <option value="montserrat">
-                                        Montserrat
-                                    </option>
-
-                                    <option value="roboto">
-                                        Roboto
-                                    </option>
-
-                                    <option value="playfair">
-                                        Playfair
-                                    </option>
-
-                                    <option value="lora">
-                                        Lora
-                                    </option>
-
-                                    <option value="serif">
-                                        Serif
-                                    </option>
-
-                                    <option value="monospace">
-                                        Mono
-                                    </option>
-
-                                </select>
-
-
-                                <select class="ql-size">
-
-                                    <option value="small">
-                                        Kecil
-                                    </option>
-
-                                    <option selected value="">
-                                        Normal
-                                    </option>
-
-                                    <option value="large">
-                                        Besar
-                                    </option>
-
-                                    <option value="huge">
-                                        Sangat Besar
-                                    </option>
-
-                                </select>
-
-                            </span>
-
-
-                            {{-- TEXT FORMAT --}}
-
-                            <span class="ql-formats">
-
-                                <button
-                                    class="ql-bold"
-                                ></button>
-
-                                <button
-                                    class="ql-italic"
-                                ></button>
-
-                                <button
-                                    class="ql-underline"
-                                ></button>
-
-                                <button
-                                    class="ql-strike"
-                                ></button>
-
-                            </span>
-
-
-                            {{-- HEADING --}}
-
-                            <span class="ql-formats">
-
-                                <select class="ql-header">
-
-                                    <option selected></option>
-
-                                    <option value="1"></option>
-
-                                    <option value="2"></option>
-
-                                    <option value="3"></option>
-
-                                </select>
-
-                            </span>
-
-
-                            {{-- COLOR --}}
-
-                            <span class="ql-formats">
-
-                                <select class="ql-color"></select>
-
-                                <select class="ql-background"></select>
-
-                            </span>
-
-
-                            {{-- LIST --}}
-
-                            <span class="ql-formats">
-
-                                <button
-                                    class="ql-list"
-                                    value="ordered"
-                                ></button>
-
-                                <button
-                                    class="ql-list"
-                                    value="bullet"
-                                ></button>
-
-                                <button
-                                    class="ql-blockquote"
-                                ></button>
-
-                            </span>
-
-
-                            {{-- ALIGNMENT --}}
-
-                            <span class="ql-formats">
-
-                                <button
-                                    class="ql-align"
-                                    value=""
-                                ></button>
-
-                                <button
-                                    class="ql-align"
-                                    value="center"
-                                ></button>
-
-                                <button
-                                    class="ql-align"
-                                    value="right"
-                                ></button>
-
-                                <button
-                                    class="ql-align"
-                                    value="justify"
-                                ></button>
-
-                            </span>
-
-
-                            {{-- LINK + IMAGE --}}
-
-                            <span class="ql-formats">
-
-                                <button
-                                    class="ql-link"
-                                ></button>
-
-                                <button
-                                    class="ql-image"
-                                    type="button"
-                                ></button>
-
-                                <button
-                                    class="ql-clean"
-                                ></button>
-
-                            </span>
-
-                        </div>
-
-
-                        {{-- =================================================
-                             EDITOR
-                        ================================================== --}}
-
-                        <div id="editor"></div>
-
-                    </div>
-
-
-                    {{-- =================================================
-                         HIDDEN CONTENT
-                    ================================================== --}}
-
-                    <textarea
-                        name="isi"
-                        id="isi"
-                        class="hidden"
-                    >{{ old('isi') }}</textarea>
-
-
-                    <div class="field-help mt-3">
-
-                        <strong>Tips:</strong>
-
-                        Klik ikon gambar untuk memasukkan gambar.
-
-                        Setelah gambar dipilih, klik gambar tersebut
-                        untuk menampilkan kontrol resize.
-
-                        <strong>
-                            Tarik handle gambar
-                        </strong>
-                        untuk memperbesar atau memperkecil.
-
-                        Toolbar gambar juga dapat digunakan untuk
-                        mengatur posisi gambar.
-
-                    </div>
-
-
-                    @error('isi')
-
-                        <div class="field-error">
-                            {{ $message }}
-                        </div>
-
-                    @enderror
-
-                </section>
-
-                {{-- =================================================
-                     STATUS
-                ================================================== --}}
-
-                <section class="form-section">
-
-
-                    <div class="section-heading">
-
-                        <div class="section-icon">
-
-                            <i
-                                data-lucide="settings-2"
-                                class="w-5 h-5"
-                            ></i>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="section-title">
-                                Publikasi Materi
-                            </div>
-
-                            <div class="section-description">
-
-                                Tentukan apakah materi langsung
-                                dapat diakses oleh siswa.
+                <section
+                    class="bg-white border border-slate-200
+                           rounded-2xl shadow-sm overflow-hidden
+                           mb-6"
+                >
+
+                    <div
+                        class="px-6 py-5 border-b
+                               border-slate-100"
+                    >
+
+                        <div
+                            class="flex flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4"
+                        >
+
+                            <div
+                                class="flex items-center gap-3"
+                            >
+
+                                <div
+                                    class="w-10 h-10 rounded-xl
+                                           bg-violet-50
+                                           text-violet-600
+                                           flex items-center
+                                           justify-center"
+                                >
+
+                                    <i
+                                        data-lucide="list-checks"
+                                        class="w-5 h-5"
+                                    ></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <h2
+                                        class="font-black
+                                               text-slate-900"
+                                    >
+                                        Soal LKPD
+                                    </h2>
+
+                                    <p
+                                        class="text-xs
+                                               text-slate-400 mt-1"
+                                    >
+                                        Tambahkan soal sesuai kebutuhan.
+                                    </p>
+
+                                </div>
 
                             </div>
 
-                        </div>
 
-                    </div>
-
-
-                    <div class="status-box">
-
-
-                        <div class="status-info">
-
-                            <div class="status-icon">
+                            <button
+                                type="button"
+                                id="addQuestionBtn"
+                                class="inline-flex items-center
+                                       justify-center gap-2
+                                       px-4 py-2.5
+                                       rounded-xl
+                                       bg-slate-900
+                                       hover:bg-slate-800
+                                       text-white text-sm
+                                       font-bold"
+                            >
 
                                 <i
-                                    data-lucide="eye"
-                                    class="w-5 h-5"
+                                    data-lucide="plus"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Tambah Soal
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="questionsContainer"
+                        class="p-6 space-y-5"
+                    >
+
+                        {{-- EMPTY STATE --}}
+                        <div
+                            id="emptyQuestions"
+                            class="py-12 text-center
+                                   border-2 border-dashed
+                                   border-slate-200
+                                   rounded-2xl"
+                        >
+
+                            <div
+                                class="w-14 h-14 mx-auto
+                                       rounded-2xl
+                                       bg-slate-100
+                                       flex items-center
+                                       justify-center mb-4"
+                            >
+
+                                <i
+                                    data-lucide="file-question"
+                                    class="w-6 h-6
+                                           text-slate-400"
+                                ></i>
+
+                            </div>
+
+
+                            <div
+                                class="font-bold
+                                       text-slate-700"
+                            >
+                                Belum ada soal
+                            </div>
+
+
+                            <div
+                                class="text-sm
+                                       text-slate-400 mt-1"
+                            >
+                                Klik "Tambah Soal" untuk membuat
+                                pertanyaan pertama.
+                            </div>
+
+
+                            <button
+                                type="button"
+                                id="emptyAddQuestionBtn"
+                                class="mt-5 inline-flex
+                                       items-center gap-2
+                                       px-4 py-2.5
+                                       rounded-xl
+                                       bg-slate-900
+                                       text-white text-sm
+                                       font-bold"
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Tambah Soal
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                {{-- =================================================
+                     FOOTER ACTION
+                ================================================== --}}
+
+                <section
+                    class="bg-white border border-slate-200
+                           rounded-2xl p-5 shadow-sm"
+                >
+
+                    <div
+                        class="flex flex-col-reverse
+                               sm:flex-row
+                               sm:items-center
+                               sm:justify-between
+                               gap-3"
+                    >
+
+                        <a
+                            href="{{ route('guru.lkpd.index') }}"
+                            class="inline-flex items-center
+                                   justify-center gap-2
+                                   px-5 py-3 rounded-xl
+                                   border border-slate-200
+                                   bg-white
+                                   hover:bg-slate-50
+                                   text-slate-600
+                                   text-sm font-bold"
+                        >
+
+                            Batal
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            id="saveBtn"
+                            class="inline-flex items-center
+                                   justify-center gap-2
+                                   px-6 py-3 rounded-xl
+                                   bg-blue-600
+                                   hover:bg-blue-700
+                                   text-white text-sm
+                                   font-bold shadow-sm"
+                        >
+
+                            <i
+                                data-lucide="save"
+                                class="w-4 h-4"
+                            ></i>
+
+                            Simpan LKPD
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+{{-- =============================================================
+     MODAL TAMBAH PERTEMUAN
+============================================================== --}}
+
+<div
+    id="meetingModal"
+    class="hidden fixed inset-0 z-50
+           bg-slate-900/50 backdrop-blur-sm
+           items-center justify-center p-5"
+>
+
+    <div
+        class="w-full max-w-md bg-white
+               rounded-2xl shadow-2xl overflow-hidden"
+    >
+
+        <div
+            class="px-6 py-5 border-b
+                   border-slate-100
+                   flex items-center
+                   justify-between"
+        >
+
+            <div>
+
+                <h3
+                    class="font-black text-slate-900"
+                >
+                    Tambah Pertemuan
+                </h3>
+
+                <p
+                    class="text-xs text-slate-400 mt-1"
+                >
+                    Tentukan nomor pertemuan LKPD.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="closeMeetingModal"
+                class="w-9 h-9 rounded-xl
+                       bg-slate-100
+                       text-slate-500
+                       flex items-center
+                       justify-center"
+            >
+
+                <i
+                    data-lucide="x"
+                    class="w-4 h-4"
+                ></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="p-6">
+
+            <label
+                class="block text-xs font-bold
+                       text-slate-600 mb-2"
+            >
+                Nomor Pertemuan
+            </label>
+
+            <input
+                type="number"
+                id="newMeetingNumber"
+                min="1"
+                max="255"
+                class="input"
+                placeholder="Contoh: 9"
+            >
+
+
+            <p
+                id="meetingError"
+                class="hidden mt-2
+                       text-xs font-semibold
+                       text-red-600"
+            ></p>
+
+
+            <div
+                class="flex justify-end gap-3 mt-5"
+            >
+
+                <button
+                    type="button"
+                    id="cancelMeeting"
+                    class="px-4 py-2.5 rounded-xl
+                           border border-slate-200
+                           text-sm font-bold
+                           text-slate-600"
+                >
+                    Batal
+                </button>
+
+
+                <button
+                    type="button"
+                    id="saveMeeting"
+                    class="px-5 py-2.5 rounded-xl
+                           bg-blue-600
+                           hover:bg-blue-700
+                           text-white text-sm
+                           font-bold"
+                >
+                    Tambahkan
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+
+    /* =========================================================
+       ELEMENT
+    ========================================================= */
+
+    const questionsContainer =
+        document.getElementById('questionsContainer');
+
+    const emptyQuestions =
+        document.getElementById('emptyQuestions');
+
+    const addQuestionBtn =
+        document.getElementById('addQuestionBtn');
+
+    const emptyAddQuestionBtn =
+        document.getElementById('emptyAddQuestionBtn');
+
+    const form =
+        document.getElementById('lkpdForm');
+
+
+    /* =========================================================
+       QUESTION COUNTER
+    ========================================================= */
+
+    let questionIndex = 0;
+
+
+    /* =========================================================
+       ESCAPE HTML
+    ========================================================= */
+
+    function escapeHtml(value) {
+
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+    }
+
+
+    /* =========================================================
+       EMPTY STATE
+    ========================================================= */
+
+    function updateEmptyState() {
+
+        const cards =
+            questionsContainer.querySelectorAll(
+                '.question-card'
+            );
+
+        if (cards.length === 0) {
+
+            emptyQuestions.classList.remove('hidden');
+
+        } else {
+
+            emptyQuestions.classList.add('hidden');
+
+        }
+
+    }
+
+
+    /* =========================================================
+       ADD QUESTION
+    ========================================================= */
+
+    function addQuestion(type = 'pilihan_ganda') {
+
+        const index = questionIndex++;
+
+        const card =
+            document.createElement('div');
+
+        card.className =
+            'question-card border border-slate-200 rounded-2xl overflow-hidden bg-white';
+
+        card.dataset.index = index;
+
+
+        card.innerHTML = `
+
+            <div
+                class="px-5 py-4 bg-slate-50
+                       border-b border-slate-200
+                       flex items-center
+                       justify-between gap-3"
+            >
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="question-number
+                               w-9 h-9 rounded-xl
+                               bg-slate-900
+                               text-white
+                               flex items-center
+                               justify-center
+                               text-xs font-black"
+                    >
+                        ${index + 1}
+                    </div>
+
+                    <div>
+
+                        <div
+                            class="font-black
+                                   text-slate-900"
+                        >
+                            Soal ${index + 1}
+                        </div>
+
+                        <div
+                            class="text-xs
+                                   text-slate-400"
+                        >
+                            Tentukan jenis soal
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="remove-question
+                           w-9 h-9 rounded-xl
+                           bg-white
+                           border border-slate-200
+                           text-slate-400
+                           hover:text-red-600
+                           hover:border-red-200
+                           flex items-center
+                           justify-center"
+                >
+
+                    <i
+                        data-lucide="trash-2"
+                        class="w-4 h-4"
+                    ></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="p-5">
+
+                {{-- TYPE --}}
+                <div
+                    class="grid grid-cols-1
+                           sm:grid-cols-2 gap-3 mb-5"
+                >
+
+                    <label
+                        class="radio-card
+                               type-pg
+                               ${type === 'pilihan_ganda'
+                                   ? 'active-pg'
+                                   : ''}
+                               border border-slate-200
+                               rounded-xl p-4"
+                    >
+
+                        <input
+                            type="radio"
+                            name="questions[${index}][jenis]"
+                            value="pilihan_ganda"
+                            class="sr-only type-radio"
+                            ${type === 'pilihan_ganda'
+                                ? 'checked'
+                                : ''}
+                        >
+
+                        <div
+                            class="flex items-start
+                                   gap-3"
+                        >
+
+                            <div
+                                class="w-9 h-9
+                                       rounded-lg
+                                       bg-violet-50
+                                       text-violet-600
+                                       flex items-center
+                                       justify-center"
+                            >
+
+                                <i
+                                    data-lucide="list-checks"
+                                    class="w-4 h-4"
                                 ></i>
 
                             </div>
@@ -2179,1122 +1081,910 @@
 
                             <div>
 
-                                <div class="status-title">
-                                    Materi Aktif
+                                <div
+                                    class="text-sm
+                                           font-black
+                                           text-slate-800"
+                                >
+                                    Pilihan Ganda
                                 </div>
 
-                                <div class="status-description">
-                                    Materi dapat dilihat siswa
-                                    ketika status aktif.
+                                <div
+                                    class="text-xs
+                                           text-slate-400
+                                           mt-1"
+                                >
+                                    Nilai otomatis
                                 </div>
 
                             </div>
 
                         </div>
 
+                    </label>
 
-                        <label class="switch">
 
-                            <input
-                                type="checkbox"
-                                name="aktif"
-                                value="1"
-                                {{ old('aktif', true) ? 'checked' : '' }}
+                    <label
+                        class="radio-card
+                               type-essay
+                               ${type === 'essay'
+                                   ? 'active-essay'
+                                   : ''}
+                               border border-slate-200
+                               rounded-xl p-4"
+                    >
+
+                        <input
+                            type="radio"
+                            name="questions[${index}][jenis]"
+                            value="essay"
+                            class="sr-only type-radio"
+                            ${type === 'essay'
+                                ? 'checked'
+                                : ''}
+                        >
+
+                        <div
+                            class="flex items-start
+                                   gap-3"
+                        >
+
+                            <div
+                                class="w-9 h-9
+                                       rounded-lg
+                                       bg-amber-50
+                                       text-amber-600
+                                       flex items-center
+                                       justify-center"
                             >
 
-                            <span class="slider"></span>
+                                <i
+                                    data-lucide="file-pen-line"
+                                    class="w-4 h-4"
+                                ></i>
 
-                        </label>
-
-                    </div>
-
-                </section>
-
-
-                {{-- =================================================
-                     ACTIONS
-                ================================================== --}}
-
-                <div class="form-actions">
+                            </div>
 
 
-                    <a
-                        href="{{ route('guru.materials.index') }}"
-                        class="cancel-button"
-                    >
+                            <div>
 
-                        <i
-                            data-lucide="arrow-left"
-                            class="w-4 h-4"
-                        ></i>
+                                <div
+                                    class="text-sm
+                                           font-black
+                                           text-slate-800"
+                                >
+                                    Essay
+                                </div>
 
-                        Batal
+                                <div
+                                    class="text-xs
+                                           text-slate-400
+                                           mt-1"
+                                >
+                                    Dinilai manual guru
+                                </div>
 
-                    </a>
+                            </div>
 
+                        </div>
 
-                    <button
-                        type="submit"
-                        class="submit-button"
-                        id="submitButton"
-                    >
-
-                        <i
-                            data-lucide="save"
-                            class="w-4 h-4"
-                        ></i>
-
-                        Simpan Materi
-
-                    </button>
+                    </label>
 
                 </div>
 
 
-            </form>
+                {{-- QUESTION --}}
+                <div>
 
+                    <label
+                        class="block text-xs
+                               font-bold text-slate-600
+                               mb-2"
+                    >
+                        Pertanyaan
+                    </label>
+
+                    <textarea
+                        name="questions[${index}][pertanyaan]"
+                        required
+                        class="input"
+                        placeholder="Tuliskan pertanyaan..."
+                    ></textarea>
+
+                </div>
+
+
+                {{-- PG --}}
+                <div
+                    class="pg-fields mt-5
+                           ${type === 'essay'
+                               ? 'hidden'
+                               : ''}"
+                >
+
+                    <div
+                        class="flex items-center
+                               justify-between
+                               mb-3"
+                    >
+
+                        <div>
+
+                            <div
+                                class="text-sm
+                                       font-black
+                                       text-slate-800"
+                            >
+                                Pilihan Jawaban
+                            </div>
+
+                            <div
+                                class="text-xs
+                                       text-slate-400 mt-1"
+                            >
+                                Tentukan satu jawaban yang benar.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="grid grid-cols-1
+                               md:grid-cols-2 gap-3"
+                    >
+
+                        ${createOption(
+                            index,
+                            'A'
+                        )}
+
+                        ${createOption(
+                            index,
+                            'B'
+                        )}
+
+                        ${createOption(
+                            index,
+                            'C'
+                        )}
+
+                        ${createOption(
+                            index,
+                            'D'
+                        )}
+
+                    </div>
+
+
+                    <div class="mt-4">
+
+                        <label
+                            class="block text-xs
+                                   font-bold
+                                   text-slate-600 mb-2"
+                        >
+                            Kunci Jawaban
+                        </label>
+
+                        <select
+                            name="questions[${index}][jawaban_benar]"
+                            class="input"
+                        >
+
+                            <option value="">
+                                Pilih jawaban benar
+                            </option>
+
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                {{-- ESSAY --}}
+                <div
+                    class="essay-info mt-5
+                           ${type === 'pilihan_ganda'
+                               ? 'hidden'
+                               : ''}"
+                >
+
+                    <div
+                        class="p-4 rounded-xl
+                               border border-amber-200
+                               bg-amber-50"
+                    >
+
+                        <div
+                            class="flex items-start
+                                   gap-3"
+                        >
+
+                            <i
+                                data-lucide="info"
+                                class="w-5 h-5
+                                       text-amber-600
+                                       flex-shrink-0"
+                            ></i>
+
+                            <div>
+
+                                <div
+                                    class="text-sm
+                                           font-bold
+                                           text-amber-800"
+                                >
+                                    Penilaian manual
+                                </div>
+
+                                <div
+                                    class="text-xs
+                                           text-amber-700
+                                           mt-1 leading-5"
+                                >
+                                    Jawaban essay akan diperiksa
+                                    dan diberi nilai secara manual
+                                    oleh guru.
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+
+        questionsContainer.appendChild(card);
+
+        updateEmptyState();
+
+        bindQuestion(card);
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+    }
+
+
+    /* =========================================================
+       OPTION
+    ========================================================= */
+
+    function createOption(index, letter) {
+
+        return `
 
             <div
-                class="
-                    text-center
-                    text-[11px]
-                    text-slate-400
-                    mt-6
-                "
+                class="flex items-center gap-2"
             >
 
-                LARASKU · Panel Guru
+                <div
+                    class="w-9 h-[42px]
+                           rounded-lg
+                           bg-slate-100
+                           text-slate-600
+                           flex items-center
+                           justify-center
+                           text-xs font-black
+                           flex-shrink-0"
+                >
+                    ${letter}
+                </div>
+
+                <input
+                    type="text"
+                    name="questions[${index}][opsi_${letter.toLowerCase()}]"
+                    class="option-input"
+                    placeholder="Pilihan ${letter}"
+                >
 
             </div>
 
+        `;
 
-        </div>
+    }
 
-    </main>
 
+    /* =========================================================
+       BIND QUESTION
+    ========================================================= */
 
-    {{-- =========================================================
-         QUILL JS
-    ========================================================== --}}
+    function bindQuestion(card) {
 
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        const radios =
+            card.querySelectorAll('.type-radio');
 
+        const pgFields =
+            card.querySelector('.pg-fields');
 
-    {{-- =========================================================
-         QUILL RESIZE MODULE - QUILL 2
-    ========================================================== --}}
+        const essayInfo =
+            card.querySelector('.essay-info');
 
-    <script src="https://cdn.jsdelivr.net/npm/quill-resize-module@2.1.3/dist/resize.js"></script>
+        const pgCard =
+            card.querySelector('.type-pg');
 
+        const essayCard =
+            card.querySelector('.type-essay');
 
-    <script>
 
+        radios.forEach(radio => {
 
-        /* =========================================================
-           LUCIDE
-        ========================================================== */
+            radio.addEventListener(
+                'change',
+                function () {
 
-        document.addEventListener(
-            'DOMContentLoaded',
-            function () {
+                    const isPg =
+                        this.value === 'pilihan_ganda';
 
-                if (
-                    typeof lucide !== 'undefined'
-                ) {
 
-                    lucide.createIcons();
+                    if (isPg) {
 
-                }
+                        pgFields.classList.remove(
+                            'hidden'
+                        );
 
-            }
-        );
+                        essayInfo.classList.add(
+                            'hidden'
+                        );
 
+                        pgCard.classList.add(
+                            'active-pg'
+                        );
 
-        /* =========================================================
-           REGISTER FONT
-        ========================================================== */
+                        essayCard.classList.remove(
+                            'active-essay'
+                        );
 
-        const Font =
-            Quill.import(
-                'formats/font'
-            );
+                    } else {
 
+                        pgFields.classList.add(
+                            'hidden'
+                        );
 
-        Font.whitelist = [
+                        essayInfo.classList.remove(
+                            'hidden'
+                        );
 
-            'sans',
+                        pgCard.classList.remove(
+                            'active-pg'
+                        );
 
-            'poppins',
-
-            'montserrat',
-
-            'roboto',
-
-            'playfair',
-
-            'lora',
-
-            'serif',
-
-            'monospace'
-
-        ];
-
-
-        Quill.register(
-            Font,
-            true
-        );
-
-
-        /* =========================================================
-           REGISTER RESIZE MODULE
-        ========================================================== */
-
-        if (
-            typeof QuillResizeModule !==
-            'undefined'
-        ) {
-
-            Quill.register(
-                'modules/resize',
-                QuillResizeModule
-            );
-
-        }
-
-
-        /* =========================================================
-           QUILL EDITOR
-        ========================================================== */
-
-        const editor =
-            new Quill(
-                '#editor',
-                {
-
-                    theme:
-                        'snow',
-
-
-                    placeholder:
-                        'Tulis isi materi pembelajaran di sini...',
-
-
-                    modules: {
-
-
-                        /* =========================================
-                           TOOLBAR
-                        ========================================== */
-
-                        toolbar: {
-
-                            container:
-                                '#toolbar',
-
-                            handlers: {
-
-                                image:
-                                    function () {
-
-                                        openImagePicker();
-
-                                    }
-
-                            }
-
-                        },
-
-
-                        /* =========================================
-                           RESIZE GAMBAR
-                        ========================================== */
-
-                        resize: {
-
-                            modules: [
-
-                                'Resize',
-
-                                'DisplaySize',
-
-                                'Toolbar'
-
-                            ],
-
-
-                            parchment: {
-
-                                image: {
-
-                                    attribute: [
-                                        'width'
-                                    ],
-
-                                    limit: {
-
-                                        minWidth:
-                                            80,
-
-                                        maxWidth:
-                                            900,
-
-                                        minHeight:
-                                            40,
-
-                                        maxHeight:
-                                            900
-
-                                    }
-
-                                }
-
-                            },
-
-
-                            locale: {
-
-                                left:
-                                    'Kiri',
-
-                                center:
-                                    'Tengah',
-
-                                right:
-                                    'Kanan',
-
-                                restore:
-                                    'Reset'
-
-                            }
-
-                        }
+                        essayCard.classList.add(
+                            'active-essay'
+                        );
 
                     }
 
                 }
             );
 
-
-        /* =========================================================
-           LOAD OLD CONTENT
-        ========================================================== */
-
-        const oldContent =
-            @json(old('isi', ''));
+        });
 
 
-        if (
-            oldContent &&
-            oldContent.trim() !== ''
-        ) {
-
-            editor.clipboard.dangerouslyPasteHTML(
-                oldContent
-            );
-
-        }
+        const removeButton =
+            card.querySelector('.remove-question');
 
 
-        /* =========================================================
-           HIDDEN INPUT
-        ========================================================== */
-
-        const hiddenInput =
-            document.getElementById(
-                'isi'
-            );
-
-
-        function syncEditor() {
-
-            hiddenInput.value =
-                editor.root.innerHTML;
-
-        }
-
-
-        editor.on(
-            'text-change',
+        removeButton.addEventListener(
+            'click',
             function () {
 
-                syncEditor();
+                if (
+                    !confirm(
+                        'Hapus soal ini?'
+                    )
+                ) {
+                    return;
+                }
+
+                card.remove();
+
+                renumberQuestions();
+
+                updateEmptyState();
 
             }
         );
 
+    }
 
-        /* =========================================================
-           IMAGE PICKER
-        ========================================================== */
 
-        function openImagePicker() {
+    /* =========================================================
+       RENUMBER
+    ========================================================= */
 
-            const input =
-                document.createElement(
-                    'input'
+    function renumberQuestions() {
+
+        const cards =
+            questionsContainer.querySelectorAll(
+                '.question-card'
+            );
+
+        cards.forEach((card, position) => {
+
+            const number =
+                card.querySelector(
+                    '.question-number'
+                );
+
+            if (number) {
+                number.textContent =
+                    position + 1;
+            }
+
+        });
+
+    }
+
+
+    /* =========================================================
+       ADD BUTTONS
+    ========================================================= */
+
+    addQuestionBtn.addEventListener(
+        'click',
+        function () {
+            addQuestion();
+        }
+    );
+
+
+    emptyAddQuestionBtn.addEventListener(
+        'click',
+        function () {
+            addQuestion();
+        }
+    );
+
+
+    /* =========================================================
+       MEETING MODAL
+    ========================================================= */
+
+    const meetingModal =
+        document.getElementById(
+            'meetingModal'
+        );
+
+    const addMeetingBtn =
+        document.getElementById(
+            'addMeetingBtn'
+        );
+
+    const closeMeetingModal =
+        document.getElementById(
+            'closeMeetingModal'
+        );
+
+    const cancelMeeting =
+        document.getElementById(
+            'cancelMeeting'
+        );
+
+    const saveMeeting =
+        document.getElementById(
+            'saveMeeting'
+        );
+
+    const newMeetingNumber =
+        document.getElementById(
+            'newMeetingNumber'
+        );
+
+    const meetingError =
+        document.getElementById(
+            'meetingError'
+        );
+
+    const meetingSelect =
+        document.getElementById(
+            'pertemuan'
+        );
+
+
+    function openMeetingModal() {
+
+        meetingError.classList.add(
+            'hidden'
+        );
+
+        meetingError.textContent = '';
+
+        newMeetingNumber.value = '';
+
+        meetingModal.classList.remove(
+            'hidden'
+        );
+
+        meetingModal.classList.add(
+            'flex'
+        );
+
+        setTimeout(
+            () => newMeetingNumber.focus(),
+            100
+        );
+
+    }
+
+
+    function closeModal() {
+
+        meetingModal.classList.add(
+            'hidden'
+        );
+
+        meetingModal.classList.remove(
+            'flex'
+        );
+
+    }
+
+
+    addMeetingBtn.addEventListener(
+        'click',
+        openMeetingModal
+    );
+
+
+    closeMeetingModal.addEventListener(
+        'click',
+        closeModal
+    );
+
+
+    cancelMeeting.addEventListener(
+        'click',
+        closeModal
+    );
+
+
+    saveMeeting.addEventListener(
+        'click',
+        function () {
+
+            const value =
+                parseInt(
+                    newMeetingNumber.value,
+                    10
                 );
 
 
-            input.type =
-                'file';
+            if (
+                !value ||
+                value < 1 ||
+                value > 255
+            ) {
+
+                meetingError.textContent =
+                    'Nomor pertemuan harus antara 1 sampai 255.';
+
+                meetingError.classList.remove(
+                    'hidden'
+                );
+
+                return;
+
+            }
 
 
-            input.accept =
-                'image/jpeg,image/png,image/webp';
+            let exists = false;
 
 
-            input.click();
+            Array.from(
+                meetingSelect.options
+            ).forEach(option => {
+
+                if (
+                    parseInt(
+                        option.value,
+                        10
+                    ) === value
+                ) {
+                    exists = true;
+                }
+
+            });
 
 
-            input.onchange =
-                function () {
+            if (exists) {
+
+                meetingError.textContent =
+                    'Pertemuan tersebut sudah tersedia.';
+
+                meetingError.classList.remove(
+                    'hidden'
+                );
+
+                meetingSelect.value =
+                    String(value);
+
+                closeModal();
+
+                return;
+
+            }
+
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+            option.value =
+                value;
+
+            option.textContent =
+                'Pertemuan ' + value;
+
+
+            meetingSelect.appendChild(
+                option
+            );
+
+
+            meetingSelect.value =
+                String(value);
+
+
+            closeModal();
+
+        }
+    );
+
+
+    newMeetingNumber.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key === 'Enter'
+            ) {
+
+                event.preventDefault();
+
+                saveMeeting.click();
+
+            }
+
+        }
+    );
+
+
+    meetingModal.addEventListener(
+        'click',
+        function (event) {
+
+            if (
+                event.target === meetingModal
+            ) {
+                closeModal();
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       FORM VALIDATION
+    ========================================================= */
+
+    form.addEventListener(
+        'submit',
+        function (event) {
+
+            const cards =
+                questionsContainer.querySelectorAll(
+                    '.question-card'
+                );
+
+
+            if (!meetingSelect.value) {
+
+                event.preventDefault();
+
+                alert(
+                    'Silakan pilih pertemuan terlebih dahulu.'
+                );
+
+                meetingSelect.focus();
+
+                return;
+
+            }
+
+
+            if (cards.length === 0) {
+
+                event.preventDefault();
+
+                alert(
+                    'Tambahkan minimal satu soal.'
+                );
+
+                return;
+
+            }
+
+
+            let invalid = false;
+
+
+            cards.forEach(card => {
+
+                const type =
+                    card.querySelector(
+                        '.type-radio:checked'
+                    )?.value;
+
+
+                const question =
+                    card.querySelector(
+                        'textarea[name*="[pertanyaan]"]'
+                    );
+
+
+                if (
+                    !question ||
+                    !question.value.trim()
+                ) {
+
+                    invalid = true;
+
+                    question?.focus();
+
+                    return;
+
+                }
+
+
+                if (
+                    type ===
+                    'pilihan_ganda'
+                ) {
+
+                    const options = [
+                        card.querySelector(
+                            '[name*="[opsi_a]"]'
+                        ),
+                        card.querySelector(
+                            '[name*="[opsi_b]"]'
+                        ),
+                        card.querySelector(
+                            '[name*="[opsi_c]"]'
+                        ),
+                        card.querySelector(
+                            '[name*="[opsi_d]"]'
+                        )
+                    ];
+
+
+                    const correct =
+                        card.querySelector(
+                            '[name*="[jawaban_benar]"]'
+                        );
+
 
                     if (
-                        !input.files ||
-                        !input.files.length
+                        options.some(
+                            input =>
+                                !input ||
+                                !input.value.trim()
+                        )
                     ) {
+
+                        invalid = true;
+
+                        alert(
+                            'Semua pilihan A, B, C, dan D harus diisi.'
+                        );
 
                         return;
 
                     }
 
 
-                    uploadEditorImage(
-                        input.files[0]
-                    );
-
-                };
-
-        }
-
-
-        /* =========================================================
-           UPLOAD IMAGE
-        ========================================================== */
-
-        async function uploadEditorImage(
-            file
-        ) {
-
-            if (
-                !file ||
-                !file.type.startsWith(
-                    'image/'
-                )
-            ) {
-
-                alert(
-                    'File harus berupa gambar.'
-                );
-
-                return;
-
-            }
-
-
-            const maxSize =
-                5 * 1024 * 1024;
-
-
-            if (
-                file.size >
-                maxSize
-            ) {
-
-                alert(
-                    'Ukuran gambar maksimal 5 MB.'
-                );
-
-                return;
-
-            }
-
-
-            const formData =
-                new FormData();
-
-
-            formData.append(
-                'image',
-                file
-            );
-
-
-            const csrf =
-                document
-                    .querySelector(
-                        'input[name="_token"]'
-                    )
-                    .value;
-
-
-            try {
-
-
-                const response =
-                    await fetch(
-
-                        "{{ route('guru.materials.upload-image') }}",
-
-                        {
-
-                            method:
-                                'POST',
-
-                            headers: {
-
-                                'X-CSRF-TOKEN':
-                                    csrf,
-
-                                'Accept':
-                                    'application/json'
-
-                            },
-
-                            body:
-                                formData
-
-                        }
-
-                    );
-
-
-                if (
-                    !response.ok
-                ) {
-
-                    throw new Error(
-                        'Upload gambar gagal.'
-                    );
-
-                }
-
-
-                const data =
-                    await response.json();
-
-
-                if (
-                    !data.success ||
-                    !data.url
-                ) {
-
-                    throw new Error(
-                        'URL gambar tidak diterima.'
-                    );
-
-                }
-
-
-                let range =
-                    editor.getSelection(
-                        true
-                    );
-
-
-                if (!range) {
-
-                    range = {
-
-                        index:
-                            editor.getLength(),
-
-                        length:
-                            0
-
-                    };
-
-                }
-
-
-                editor.insertEmbed(
-
-                    range.index,
-
-                    'image',
-
-                    data.url,
-
-                    'user'
-
-                );
-
-
-                editor.setSelection(
-
-                    range.index + 1,
-
-                    0
-
-                );
-
-
-                syncEditor();
-
-
-            } catch (error) {
-
-
-                console.error(
-                    error
-                );
-
-
-                alert(
-                    'Gambar gagal diupload. Silakan coba lagi.'
-                );
-
-            }
-
-        }
-
-
-        /* =========================================================
-           DRAG & DROP IMAGE
-        ========================================================== */
-
-        editor.root.addEventListener(
-            'drop',
-            function (event) {
-
-
-                const files =
-                    event.dataTransfer.files;
-
-
-                if (
-                    !files ||
-                    !files.length
-                ) {
-
-                    return;
-
-                }
-
-
-                const image =
-                    Array
-                        .from(files)
-                        .find(
-                            file =>
-                                file.type
-                                    .startsWith(
-                                        'image/'
-                                    )
+                    if (
+                        !correct ||
+                        !correct.value
+                    ) {
+
+                        invalid = true;
+
+                        alert(
+                            'Pilih kunci jawaban untuk soal pilihan ganda.'
                         );
-
-
-                if (!image) {
-
-                    return;
-
-                }
-
-
-                event.preventDefault();
-
-
-                uploadEditorImage(
-                    image
-                );
-
-            }
-        );
-
-
-        /* =========================================================
-           PASTE IMAGE
-        ========================================================== */
-
-        editor.root.addEventListener(
-            'paste',
-            function (event) {
-
-
-                const clipboard =
-                    event.clipboardData;
-
-
-                if (!clipboard) {
-
-                    return;
-
-                }
-
-
-                const items =
-                    Array.from(
-                        clipboard.items || []
-                    );
-
-
-                const imageItem =
-                    items.find(
-                        item =>
-                            item.type
-                                .startsWith(
-                                    'image/'
-                                )
-                    );
-
-
-                if (!imageItem) {
-
-                    return;
-
-                }
-
-
-                const file =
-                    imageItem.getAsFile();
-
-
-                if (!file) {
-
-                    return;
-
-                }
-
-
-                event.preventDefault();
-
-
-                uploadEditorImage(
-                    file
-                );
-
-            }
-        );
-
-
-        /* =========================================================
-           MAIN IMAGE PREVIEW
-        ========================================================== */
-
-        function previewMainImage(
-            input
-        ) {
-
-
-            const preview =
-                document.getElementById(
-                    'mainImagePreview'
-                );
-
-
-            const image =
-                document.getElementById(
-                    'mainImagePreviewImg'
-                );
-
-
-            const name =
-                document.getElementById(
-                    'gambarName'
-                );
-
-
-            if (
-                !input.files ||
-                !input.files.length
-            ) {
-
-                preview.classList.remove(
-                    'active'
-                );
-
-
-                name.textContent =
-                    'JPG, JPEG, PNG, WEBP';
-
-
-                return;
-
-            }
-
-
-            const file =
-                input.files[0];
-
-
-            name.textContent =
-                file.name;
-
-
-            const reader =
-                new FileReader();
-
-
-            reader.onload =
-                function (event) {
-
-
-                    image.src =
-                        event.target.result;
-
-
-                    preview.classList.add(
-                        'active'
-                    );
-
-                };
-
-
-            reader.readAsDataURL(
-                file
-            );
-
-        }
-
-
-        /* =========================================================
-           MEETING MODAL
-        ========================================================= */
-
-        const meetingModal =
-            document.getElementById(
-                'meetingModal'
-            );
-
-        const addMeetingBtn =
-            document.getElementById(
-                'addMeetingBtn'
-            );
-
-        const closeMeetingModal =
-            document.getElementById(
-                'closeMeetingModal'
-            );
-
-        const cancelMeeting =
-            document.getElementById(
-                'cancelMeeting'
-            );
-
-        const saveMeeting =
-            document.getElementById(
-                'saveMeeting'
-            );
-
-        const newMeetingNumber =
-            document.getElementById(
-                'newMeetingNumber'
-            );
-
-        const meetingError =
-            document.getElementById(
-                'meetingError'
-            );
-
-        const meetingSelect =
-            document.getElementById(
-                'pertemuan'
-            );
-
-
-        function openMeetingModal() {
-
-            meetingError.classList.add(
-                'hidden'
-            );
-
-            meetingError.textContent =
-                '';
-
-            newMeetingNumber.value =
-                '';
-
-            meetingModal.classList.remove(
-                'hidden'
-            );
-
-            meetingModal.classList.add(
-                'flex'
-            );
-
-            setTimeout(
-                () => newMeetingNumber.focus(),
-                100
-            );
-
-        }
-
-
-        function closeModal() {
-
-            meetingModal.classList.add(
-                'hidden'
-            );
-
-            meetingModal.classList.remove(
-                'flex'
-            );
-
-        }
-
-
-        addMeetingBtn.addEventListener(
-            'click',
-            openMeetingModal
-        );
-
-
-        closeMeetingModal.addEventListener(
-            'click',
-            closeModal
-        );
-
-
-        cancelMeeting.addEventListener(
-            'click',
-            closeModal
-        );
-
-
-        saveMeeting.addEventListener(
-            'click',
-            function () {
-
-                const value =
-                    parseInt(
-                        newMeetingNumber.value,
-                        10
-                    );
-
-
-                if (
-                    !value ||
-                    value < 1 ||
-                    value > 255
-                ) {
-
-                    meetingError.textContent =
-                        'Nomor pertemuan harus antara 1 sampai 255.';
-
-                    meetingError.classList.remove(
-                        'hidden'
-                    );
-
-                    return;
-
-                }
-
-
-                let exists =
-                    false;
-
-
-                Array.from(
-                    meetingSelect.options
-                ).forEach(
-                    option => {
-
-                        if (
-                            parseInt(
-                                option.value,
-                                10
-                            ) === value
-                        ) {
-
-                            exists =
-                                true;
-
-                        }
 
                     }
+
+                }
+
+            });
+
+
+            if (invalid) {
+
+                event.preventDefault();
+
+                return;
+
+            }
+
+
+            const saveBtn =
+                document.getElementById(
+                    'saveBtn'
                 );
 
 
-                if (exists) {
+            saveBtn.disabled = true;
 
-                    meetingError.textContent =
-                        'Pertemuan tersebut sudah tersedia.';
-
-                    meetingError.classList.remove(
-                        'hidden'
-                    );
-
-                    meetingSelect.value =
-                        String(
-                            value
-                        );
-
-                    return;
-
-                }
-
-
-                const option =
-                    document.createElement(
-                        'option'
-                    );
-
-                option.value =
-                    value;
-
-                option.textContent =
-                    'Pertemuan ' +
-                    value;
-
-
-                meetingSelect.appendChild(
-                    option
-                );
-
-
-                meetingSelect.value =
-                    String(
-                        value
-                    );
-
-
-                closeModal();
-
-            }
-        );
-
-
-        newMeetingNumber.addEventListener(
-            'keydown',
-            function (event) {
-
-                if (
-                    event.key === 'Enter'
-                ) {
-
-                    event.preventDefault();
-
-                    saveMeeting.click();
-
-                }
-
-            }
-        );
-
-
-        meetingModal.addEventListener(
-            'click',
-            function (event) {
-
-                if (
-                    event.target === meetingModal
-                ) {
-
-                    closeModal();
-
-                }
-
-            }
-        );
-
-
-        document.addEventListener(
-            'keydown',
-            function (event) {
-
-                if (
-                    event.key === 'Escape' &&
-                    meetingModal.classList.contains(
-                        'flex'
-                    )
-                ) {
-
-                    closeModal();
-
-                }
-
-            }
-        );
-
-
-        /* =========================================================
-           FORM SUBMIT
-        ========================================================== */
-
-        const form =
-            document.getElementById(
-                'materialForm'
+            saveBtn.classList.add(
+                'opacity-60',
+                'cursor-not-allowed'
             );
 
 
-        form.addEventListener(
-            'submit',
-            function () {
+            saveBtn.innerHTML = `
+
+                <svg
+                    class="animate-spin w-4 h-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                >
+                    <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                    ></circle>
+
+                    <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+
+                </svg>
+
+                Menyimpan...
+
+            `;
+
+        }
+    );
 
 
-                syncEditor();
+    /* =========================================================
+       INITIAL
+    ========================================================= */
 
+    updateEmptyState();
 
-                const submitButton =
-                    document.getElementById(
-                        'submitButton'
-                    );
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 
+});
 
-                if (
-                    submitButton
-                ) {
-
-
-                    submitButton.disabled =
-                        true;
-
-
-                    submitButton.classList.add(
-                        'opacity-70',
-                        'cursor-not-allowed'
-                    );
-
-
-                    submitButton.innerHTML = `
-
-                        <svg
-                            class="w-4 h-4 animate-spin"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-
-                            <circle
-                                cx="12"
-                                cy="12"
-                                r="9"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                opacity=".3"
-                            ></circle>
-
-                            <path
-                                d="M21 12a9 9 0 0 0-9-9"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                            ></path>
-
-                        </svg>
-
-                        Menyimpan...
-
-                    `;
-
-                }
-
-            }
-        );
-
-
-        /* =========================================================
-           INITIAL SYNC
-        ========================================================== */
-
-        syncEditor();
-
-
-    </script>
-
+</script>
 
 </body>
-
 </html>

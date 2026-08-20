@@ -1545,676 +1545,10 @@
 
 
             {{-- =================================================
-                 MONITORING
-                 KEHADIRAN + KONTEN PEMBELAJARAN
+                 AKTIVITAS SISWA
             ================================================== --}}
 
-            <div
-                class="
-                    grid
-                    grid-cols-1
-                    lg:grid-cols-2
-                    gap-5
-                    mb-7
-                    max-w-5xl
-                    mx-auto
-                "
-            >
-
-
-                {{-- =================================================
-                     KEHADIRAN
-                ================================================== --}}
-
-                <section
-                    class="
-                        bg-white
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        p-6
-                    "
-                >
-
-                    <div
-                        class="
-                            flex
-                            items-center
-                            justify-between
-                            mb-5
-                        "
-                    >
-
-                        <div>
-
-                            <h3
-                                class="
-                                    font-bold
-                                    text-slate-900
-                                "
-                            >
-                                Kehadiran
-                            </h3>
-
-
-                            <p
-                                class="
-                                    text-xs
-                                    text-slate-400
-                                    mt-1
-                                "
-                            >
-                                Rekap seluruh absensi
-                            </p>
-
-                        </div>
-
-
-                        <i
-                            data-lucide="calendar-check"
-                            class="
-                                w-5
-                                h-5
-                                text-green-600
-                            "
-                        ></i>
-
-                    </div>
-
-
-                    <div class="space-y-4">
-
-
-                        {{-- HADIR --}}
-
-                        <div>
-
-                            <div
-                                class="
-                                    flex
-                                    justify-between
-                                    text-xs
-                                    mb-1
-                                "
-                            >
-
-                                <span
-                                    class="
-                                        font-semibold
-                                        text-slate-600
-                                    "
-                                >
-                                    Hadir
-                                </span>
-
-
-                                <span
-                                    class="
-                                        font-bold
-                                        text-green-600
-                                    "
-                                >
-                                    {{ $attendanceSummary['hadir'] }}
-                                </span>
-
-                            </div>
-
-
-                            <div class="progress-bar">
-
-                                <div
-                                    class="progress-fill"
-                                    style="
-                                        width:
-                                        {{
-                                            $totalAttendance > 0
-                                                ? (
-                                                    $attendanceSummary['hadir']
-                                                    /
-                                                    $totalAttendance
-                                                    *
-                                                    100
-                                                )
-                                                : 0
-                                        }}%;
-                                        background:#16a34a;
-                                    "
-                                ></div>
-
-                            </div>
-
-                        </div>
-
-
-                        {{-- SAKIT --}}
-
-                        <div
-                            class="
-                                flex
-                                justify-between
-                                items-center
-                                text-xs
-                            "
-                        >
-
-                            <span
-                                class="
-                                    text-slate-500
-                                "
-                            >
-                                Sakit
-                            </span>
-
-
-                            <strong>
-                                {{ $attendanceSummary['sakit'] }}
-                            </strong>
-
-                        </div>
-
-
-                        {{-- IZIN --}}
-
-                        <div
-                            class="
-                                flex
-                                justify-between
-                                items-center
-                                text-xs
-                            "
-                        >
-
-                            <span
-                                class="
-                                    text-slate-500
-                                "
-                            >
-                                Izin
-                            </span>
-
-
-                            <strong>
-                                {{ $attendanceSummary['izin'] }}
-                            </strong>
-
-                        </div>
-
-
-                        {{-- ALFA --}}
-
-                        <div
-                            class="
-                                flex
-                                justify-between
-                                items-center
-                                text-xs
-                            "
-                        >
-
-                            <span
-                                class="
-                                    text-slate-500
-                                "
-                            >
-                                Alfa
-                            </span>
-
-
-                            <strong
-                                class="
-                                    text-red-600
-                                "
-                            >
-                                {{ $attendanceSummary['alfa'] }}
-                            </strong>
-
-                        </div>
-
-
-                        {{-- DISPENSASI --}}
-
-                        <div
-                            class="
-                                flex
-                                justify-between
-                                items-center
-                                text-xs
-                            "
-                        >
-
-                            <span
-                                class="
-                                    text-slate-500
-                                "
-                            >
-                                Dispensasi
-                            </span>
-
-
-                            <strong>
-                                {{ $attendanceSummary['dispensasi'] }}
-                            </strong>
-
-                        </div>
-
-
-                    </div>
-
-                </section>
-
-
-                {{-- =================================================
-                     KONTEN PEMBELAJARAN
-                ================================================== --}}
-
-                <section
-                    class="
-                        bg-white
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        p-6
-                    "
-                >
-
-                    <div
-                        class="
-                            flex
-                            items-center
-                            justify-between
-                            mb-5
-                        "
-                    >
-
-                        <div>
-
-                            <h3
-                                class="
-                                    font-bold
-                                    text-slate-900
-                                "
-                            >
-                                Konten Pembelajaran
-                            </h3>
-
-
-                            <p
-                                class="
-                                    text-xs
-                                    text-slate-400
-                                    mt-1
-                                "
-                            >
-                                Ringkasan konten yang tersedia
-                            </p>
-
-                        </div>
-
-
-                        <i
-                            data-lucide="layout-grid"
-                            class="
-                                w-5
-                                h-5
-                                text-purple-600
-                            "
-                        ></i>
-
-                    </div>
-
-
-                    <div class="space-y-4">
-
-
-                        {{-- MATERI --}}
-
-                        <div
-                            class="
-                                flex
-                                items-center
-                                justify-between
-                            "
-                        >
-
-                            <div
-                                class="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        w-9
-                                        h-9
-                                        rounded-lg
-                                        bg-purple-50
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
-                                    <i
-                                        data-lucide="book-open"
-                                        class="
-                                            w-4
-                                            h-4
-                                            text-purple-600
-                                        "
-                                    ></i>
-
-                                </div>
-
-
-                                <span
-                                    class="
-                                        text-sm
-                                        font-semibold
-                                        text-slate-700
-                                    "
-                                >
-                                    Materi
-                                </span>
-
-                            </div>
-
-
-                            <strong
-                                class="
-                                    text-slate-900
-                                "
-                            >
-                                {{ $materialCount }}
-                            </strong>
-
-                        </div>
-
-
-                        {{-- VIDEO --}}
-
-                        <div
-                            class="
-                                flex
-                                items-center
-                                justify-between
-                            "
-                        >
-
-                            <div
-                                class="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        w-9
-                                        h-9
-                                        rounded-lg
-                                        bg-red-50
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
-                                    <i
-                                        data-lucide="play-circle"
-                                        class="
-                                            w-4
-                                            h-4
-                                            text-red-600
-                                        "
-                                    ></i>
-
-                                </div>
-
-
-                                <span
-                                    class="
-                                        text-sm
-                                        font-semibold
-                                        text-slate-700
-                                    "
-                                >
-                                    Video
-                                </span>
-
-                            </div>
-
-
-                            <strong
-                                class="
-                                    text-slate-900
-                                "
-                            >
-                                {{ $videoCount }}
-                            </strong>
-
-                        </div>
-
-
-                        {{-- REFLEKSI --}}
-
-                        <div
-                            class="
-                                flex
-                                items-center
-                                justify-between
-                            "
-                        >
-
-                            <div
-                                class="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        w-9
-                                        h-9
-                                        rounded-lg
-                                        bg-pink-50
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
-                                    <i
-                                        data-lucide="message-square-heart"
-                                        class="
-                                            w-4
-                                            h-4
-                                            text-pink-600
-                                        "
-                                    ></i>
-
-                                </div>
-
-
-                                <span
-                                    class="
-                                        text-sm
-                                        font-semibold
-                                        text-slate-700
-                                    "
-                                >
-                                    Refleksi
-                                </span>
-
-                            </div>
-
-
-                            <strong
-                                class="
-                                    text-slate-900
-                                "
-                            >
-                                {{ $reflectionCount }}
-                            </strong>
-
-                        </div>
-
-
-                        {{-- LKPD --}}
-
-                        <div
-                            class="
-                                flex
-                                items-center
-                                justify-between
-                            "
-                        >
-
-                            <div
-                                class="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        w-9
-                                        h-9
-                                        rounded-lg
-                                        bg-indigo-50
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
-                                    <i
-                                        data-lucide="file-check-2"
-                                        class="
-                                            w-4
-                                            h-4
-                                            text-indigo-600
-                                        "
-                                    ></i>
-
-                                </div>
-
-
-                                <span
-                                    class="
-                                        text-sm
-                                        font-semibold
-                                        text-slate-700
-                                    "
-                                >
-                                    LKPD
-                                </span>
-
-                            </div>
-
-
-                            <strong
-                                class="
-                                    text-slate-900
-                                "
-                            >
-                                {{ $lkpdCount }}
-                            </strong>
-
-                        </div>
-
-
-                        {{-- PRAKTIK --}}
-
-                        <div
-                            class="
-                                flex
-                                items-center
-                                justify-between
-                            "
-                        >
-
-                            <div
-                                class="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        w-9
-                                        h-9
-                                        rounded-lg
-                                        bg-emerald-50
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
-                                    <i
-                                        data-lucide="music-2"
-                                        class="
-                                            w-4
-                                            h-4
-                                            text-emerald-600
-                                        "
-                                    ></i>
-
-                                </div>
-
-
-                                <span
-                                    class="
-                                        text-sm
-                                        font-semibold
-                                        text-slate-700
-                                    "
-                                >
-                                    Praktik
-                                </span>
-
-                            </div>
-
-
-                            <strong
-                                class="
-                                    text-slate-900
-                                "
-                            >
-                                {{ $practiceCount }}
-                            </strong>
-
-                        </div>
-
-
-                    </div>
-
-                </section>
-
-
-            </div>
-
-
-            {{-- =================================================
-                 AKTIVITAS QUIZ TERBARU
-            ================================================== --}}
-
-            <div
-                class="
-                    grid
-                    grid-cols-1
-                    gap-5
-                "
-            >
+            <div class="mb-7">
 
                 <section
                     class="
@@ -2246,9 +1580,8 @@
                                     text-slate-900
                                 "
                             >
-                                Aktivitas Quiz Terbaru
+                                Aktivitas Siswa
                             </h3>
-
 
                             <p
                                 class="
@@ -2257,11 +1590,10 @@
                                     mt-1
                                 "
                             >
-                                Pengerjaan terbaru siswa
+                                Aktivitas terbaru siswa di LARASKU
                             </p>
 
                         </div>
-
 
                         <i
                             data-lucide="activity"
@@ -2285,10 +1617,9 @@
                         "
                     >
 
-
                         @forelse(
-                            $recentQuizAttempts
-                            as $attempt
+                            $studentActivities
+                            as $activity
                         )
 
                             <div
@@ -2324,7 +1655,7 @@
                                     >
 
                                         <i
-                                            data-lucide="check-circle-2"
+                                            data-lucide="{{ $activity['icon'] }}"
                                             class="
                                                 w-4
                                                 h-4
@@ -2349,12 +1680,7 @@
                                                 truncate
                                             "
                                         >
-
-                                            {{
-                                                $attempt->student?->nama
-                                                ?? 'Siswa'
-                                            }}
-
+                                            {{ $activity['student'] }}
                                         </p>
 
 
@@ -2366,28 +1692,11 @@
                                                 truncate
                                             "
                                         >
+                                            {{ $activity['description'] }}
 
-                                            {{
-                                                $attempt->quiz?->judul
-                                                ?? 'Quiz'
-                                            }}
-
-
-                                            @if(
-                                                $attempt->dikerjakan_at
-                                            )
-
-                                                •
-                                                {{
-                                                    $attempt
-                                                        ->dikerjakan_at
-                                                        ->format(
-                                                            'd/m/Y H:i'
-                                                        )
-                                                }}
-
+                                            @if($activity['time'])
+                                                • {{ $activity['time'] }}
                                             @endif
-
                                         </p>
 
                                     </div>
@@ -2395,40 +1704,36 @@
                                 </div>
 
 
-                                <div
-                                    class="
-                                        flex-shrink-0
-                                        ml-3
-                                        text-right
-                                    "
-                                >
+                                @if($activity['value'] !== null)
 
-                                    <span
+                                    <div
                                         class="
-                                            inline-flex
-                                            px-2.5
-                                            py-1
-                                            rounded-lg
-                                            bg-green-50
-                                            text-green-700
-                                            text-[10px]
-                                            font-bold
+                                            flex-shrink-0
+                                            ml-3
+                                            text-right
                                         "
                                     >
 
-                                        {{
-                                            number_format(
-                                                $attempt->nilai,
-                                                0
-                                            )
-                                        }}
+                                        <span
+                                            class="
+                                                inline-flex
+                                                px-2.5
+                                                py-1
+                                                rounded-lg
+                                                bg-green-50
+                                                text-green-700
+                                                text-[10px]
+                                                font-bold
+                                            "
+                                        >
+                                            {{ $activity['value'] }}
+                                        </span>
 
-                                    </span>
+                                    </div>
 
-                                </div>
+                                @endif
 
                             </div>
-
 
                         @empty
 
@@ -2459,13 +1764,12 @@
                                         mt-3
                                     "
                                 >
-                                    Belum ada aktivitas Quiz.
+                                    Belum ada aktivitas siswa.
                                 </p>
 
                             </div>
 
                         @endforelse
-
 
                     </div>
 
