@@ -495,7 +495,7 @@
                                     font-bold
                                 "
                             >
-                                LKPD 25%
+                                LKPD 30%
                             </span>
 
 
@@ -510,7 +510,7 @@
                                     font-bold
                                 "
                             >
-                                Quiz 20%
+                                Quiz 25%
                             </span>
 
 
@@ -525,7 +525,7 @@
                                     font-bold
                                 "
                             >
-                                Refleksi 15%
+                                Refleksi 10%
                             </span>
 
 
@@ -540,7 +540,7 @@
                                     font-bold
                                 "
                             >
-                                Praktik 30%
+                                Praktik 25%
                             </span>
 
                         </div>

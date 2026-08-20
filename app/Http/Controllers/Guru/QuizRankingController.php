@@ -26,18 +26,18 @@ class QuizRankingController extends Controller
      * Bobot penilaian:
      *
      * Absensi  = 10%
-     * Quiz     = 20%
-     * LKPD     = 25%
-     * Refleksi = 15%
-     * Praktik  = 30%
+     * Quiz     = 25%
+     * LKPD     = 30%
+     * Refleksi = 10%
+     * Praktik  = 25%
      *
      * Total    = 100%
      *
      * Nilai akhir:
      *
-     * (Absensi x 10%) + (Quiz x 20%) +
-     * (LKPD x 25%) + (Refleksi x 15%) +
-     * (Praktik x 30%)
+     * (Absensi x 10%) + (Quiz x 25%) +
+     * (LKPD x 30%) + (Refleksi x 10%) +
+     * (Praktik x 25%)
      *
      * Siswa tetap ditampilkan walaupun belum lengkap.
      * Nilai akhir hanya dihitung apabila seluruh aspek lengkap.
@@ -162,7 +162,6 @@ class QuizRankingController extends Controller
                 $query
                     ->where('kelas', $kelas)
                     ->orWhere('kelas', $kelasNormalized);
-
             });
         }
 
@@ -205,7 +204,6 @@ class QuizRankingController extends Controller
                         'kelas',
                         str_replace('-', ' ', $kelas)
                     );
-
             });
         }
 
@@ -334,7 +332,6 @@ class QuizRankingController extends Controller
                 if ($quizCount === 0) {
 
                     $missing[] = 'Quiz belum dikerjakan';
-
                 }
 
 
@@ -353,9 +350,7 @@ class QuizRankingController extends Controller
                     )) {
 
                         $missing[] = $status['message'];
-
                     }
-
                 }
 
 
@@ -374,9 +369,7 @@ class QuizRankingController extends Controller
                     )) {
 
                         $missing[] = $status['message'];
-
                     }
-
                 }
 
 
@@ -395,9 +388,7 @@ class QuizRankingController extends Controller
                     )) {
 
                         $missing[] = $status['message'];
-
                     }
-
                 }
 
 
@@ -446,10 +437,10 @@ class QuizRankingController extends Controller
                 | Bobot:
                 |
                 | Absensi  = 10%
-                | Quiz     = 20%
-                | LKPD     = 25%
-                | Refleksi = 15%
-                | Praktik  = 30%
+                | LKPD     = 30%
+                | Quiz     = 25%
+                | Praktik  = 25%
+                | Refleksi = 10%
                 |
                 */
 
@@ -459,11 +450,10 @@ class QuizRankingController extends Controller
 
                     $finalScore =
                         ($attendancePercentage * 0.10)
-                        + ($quizAverage * 0.20)
-                        + ($lkpdResult['score'] * 0.25)
-                        + ($reflectionResult['score'] * 0.15)
-                        + ($practiceResult['score'] * 0.30);
-
+                        + ($lkpdResult['score'] * 0.30)
+                        + ($quizAverage * 0.25)
+                        + ($practiceResult['score'] * 0.25)
+                        + ($reflectionResult['score'] * 0.10);
                 }
 
 
@@ -485,7 +475,6 @@ class QuizRankingController extends Controller
                             ', ',
                             array_unique($missing)
                         );
-
                 }
 
 
@@ -655,7 +644,6 @@ class QuizRankingController extends Controller
                     return $a['is_complete']
                         ? -1
                         : 1;
-
                 }
 
 
@@ -676,7 +664,6 @@ class QuizRankingController extends Controller
                     ) {
 
                         return 1;
-
                     }
 
                     if (
@@ -684,13 +671,11 @@ class QuizRankingController extends Controller
                     ) {
 
                         return -1;
-
                     }
 
                     return $b['final_score']
                         <=>
                         $a['final_score'];
-
                 }
 
 
@@ -710,7 +695,6 @@ class QuizRankingController extends Controller
                 if ($aQuiz != $bQuiz) {
 
                     return $bQuiz <=> $aQuiz;
-
                 }
 
 
@@ -744,7 +728,6 @@ class QuizRankingController extends Controller
             ->map(function ($item) {
 
                 return $item;
-
             });
 
 
@@ -762,11 +745,9 @@ class QuizRankingController extends Controller
                 } else {
 
                     $item['rank'] = null;
-
                 }
 
                 return $item;
-
             });
 
 
@@ -891,7 +872,6 @@ class QuizRankingController extends Controller
                 ],
 
             ];
-
         }
 
 
@@ -935,7 +915,6 @@ class QuizRankingController extends Controller
                         ) {
 
                             return true;
-
                         }
 
 
@@ -964,12 +943,10 @@ class QuizRankingController extends Controller
 
                                     }
                                 );
-
                         }
 
 
                         return false;
-
                     }
                 );
 
@@ -993,7 +970,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1018,7 +994,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1043,7 +1018,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1066,7 +1040,6 @@ class QuizRankingController extends Controller
                     "Praktik Pertemuan {$assignment->pertemuan} selesai",
 
             ];
-
         }
 
 
@@ -1101,7 +1074,6 @@ class QuizRankingController extends Controller
                     $statusItems,
 
             ];
-
         }
 
 
@@ -1134,7 +1106,6 @@ class QuizRankingController extends Controller
                 $statusItems,
 
         ];
-
     }
 
 
@@ -1178,7 +1149,6 @@ class QuizRankingController extends Controller
                 ],
 
             ];
-
         }
 
 
@@ -1221,7 +1191,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1275,7 +1244,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1318,9 +1286,7 @@ class QuizRankingController extends Controller
                     $pendingEssay = true;
 
                     break;
-
                 }
-
             }
 
 
@@ -1337,7 +1303,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1365,7 +1330,6 @@ class QuizRankingController extends Controller
                 if (!$answer) {
 
                     continue;
-
                 }
 
 
@@ -1377,9 +1341,7 @@ class QuizRankingController extends Controller
 
                     $questionScores[] =
                         (float) $nilai;
-
                 }
-
             }
 
 
@@ -1402,7 +1364,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1431,7 +1392,6 @@ class QuizRankingController extends Controller
                     "LKPD Pertemuan {$lkpd->pertemuan} selesai",
 
             ];
-
         }
 
 
@@ -1466,7 +1426,6 @@ class QuizRankingController extends Controller
                     $statusItems,
 
             ];
-
         }
 
 
@@ -1499,7 +1458,6 @@ class QuizRankingController extends Controller
                 $statusItems,
 
         ];
-
     }
 
 
@@ -1545,7 +1503,6 @@ class QuizRankingController extends Controller
                 ],
 
             ];
-
         }
 
 
@@ -1592,7 +1549,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1640,7 +1596,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1671,7 +1626,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1708,7 +1662,6 @@ class QuizRankingController extends Controller
                 ];
 
                 continue;
-
             }
 
 
@@ -1735,7 +1688,6 @@ class QuizRankingController extends Controller
                     "Refleksi Pertemuan {$reflection->pertemuan} selesai",
 
             ];
-
         }
 
 
@@ -1770,7 +1722,6 @@ class QuizRankingController extends Controller
                     $statusItems,
 
             ];
-
         }
 
 
@@ -1803,6 +1754,5 @@ class QuizRankingController extends Controller
                 $statusItems,
 
         ];
-
     }
 }
