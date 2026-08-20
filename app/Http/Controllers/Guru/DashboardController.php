@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Assignment;
 use App\Models\Attendance;
 use App\Models\QuizAttempt;
 use App\Models\Student;
@@ -100,6 +101,22 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | PRAKTIK
+        |--------------------------------------------------------------------------
+        |
+        | Fitur Praktik menggunakan tabel assignments.
+        |
+        */
+
+        $practiceCount = 0;
+
+        if (Schema::hasTable('assignments')) {
+            $practiceCount = Assignment::count();
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
         | REFLEKSI
         |--------------------------------------------------------------------------
         */
@@ -135,25 +152,6 @@ class DashboardController extends Controller
         if (Schema::hasTable('materials')) {
             $materialCount = DB::table('materials')->count();
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SISWA DENGAN NILAI QUIZ TERTINGGI
-        |--------------------------------------------------------------------------
-        */
-
-        $topStudents = QuizAttempt::query()
-            ->select(
-                'student_id',
-                DB::raw('AVG(nilai) as rata_nilai'),
-                DB::raw('COUNT(*) as jumlah_quiz')
-            )
-            ->with('student')
-            ->groupBy('student_id')
-            ->orderByDesc('rata_nilai')
-            ->limit(5)
-            ->get();
 
 
         /*
@@ -226,10 +224,10 @@ class DashboardController extends Controller
                 'quizStudents',
                 'quizProgressPercentage',
                 'lkpdCount',
+                'practiceCount',
                 'reflectionCount',
                 'videoCount',
                 'materialCount',
-                'topStudents',
                 'recentQuizAttempts',
                 'attendanceSummary'
             )

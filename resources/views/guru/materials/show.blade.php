@@ -2,7 +2,9 @@
 <html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -10,37 +12,79 @@
 
     <title>{{ $material->judul }} — LARASKU</title>
 
+
+    {{-- =========================================================
+         TAILWIND
+    ========================================================== --}}
+
     <script src="https://cdn.tailwindcss.com"></script>
+
+
+    {{-- =========================================================
+         LUCIDE
+    ========================================================== --}}
+
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {{-- =========================================================
+         FONT
+    ========================================================== --}}
 
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=Lora:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet"
     >
 
+
     <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================== */
+
         * {
-            box-sizing: border-box;
+            box-sizing:
+                border-box;
         }
+
 
         html {
-            scroll-behavior: smooth;
+            scroll-behavior:
+                smooth;
         }
 
+
         body {
-            margin: 0;
+            margin:
+                0;
+
             background:
                 radial-gradient(
                     circle at 75% 0%,
-                    rgba(37, 99, 235, .055),
+                    rgba(
+                        37,
+                        99,
+                        235,
+                        .055
+                    ),
                     transparent 28%
                 ),
                 #f5f7fb;
 
-            color: #172033;
+            color:
+                #172033;
 
             font-family:
                 "DM Sans",
@@ -48,136 +92,164 @@
                 sans-serif;
         }
 
+
         .main-content {
-            min-height: 100vh;
+            min-height:
+                100vh;
         }
 
-        /* =========================================================
-           HEADER
-        ========================================================== */
-
-        .top-header {
-            height: 66px;
-            background: rgba(255, 255, 255, .94);
-            border-bottom: 1px solid #e7ebf2;
-            backdrop-filter: blur(16px);
-        }
-
-        .avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #2563eb,
-                    #1d4ed8
-                );
-
-            color: white;
-            font-size: 13px;
-            font-weight: 800;
-
-            box-shadow:
-                0 6px 18px rgba(37, 99, 235, .20);
-        }
 
         /* =========================================================
            PAGE
         ========================================================== */
 
         .page {
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 28px 24px 50px;
+            max-width:
+                1180px;
+
+            margin:
+                0 auto;
+
+            padding:
+                28px 24px 50px;
         }
+
 
         /* =========================================================
            BREADCRUMB
         ========================================================== */
 
         .breadcrumb {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
+            display:
+                flex;
 
-            margin-bottom: 18px;
+            align-items:
+                center;
 
-            font-size: 11px;
-            font-weight: 700;
+            flex-wrap:
+                wrap;
+
+            gap:
+                8px;
+
+            margin-bottom:
+                18px;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
         }
+
 
         .breadcrumb a {
-            color: #94a3b8;
-            text-decoration: none;
-            transition: .18s ease;
+            color:
+                #94a3b8;
+
+            text-decoration:
+                none;
+
+            transition:
+                .18s ease;
         }
+
 
         .breadcrumb a:hover {
-            color: #2563eb;
+            color:
+                #2563eb;
         }
+
 
         .breadcrumb-current {
-            color: #2563eb;
+            color:
+                #2563eb;
         }
 
+
         .breadcrumb-separator {
-            color: #cbd5e1;
+            color:
+                #cbd5e1;
         }
+
 
         /* =========================================================
            HERO
         ========================================================== */
 
         .hero-card {
-            position: relative;
-            overflow: hidden;
+            position:
+                relative;
 
-            background: #fff;
+            overflow:
+                hidden;
+
+            background:
+                #ffffff;
 
             border:
                 1px solid
                 #e4e9f1;
 
-            border-radius: 22px;
+            border-radius:
+                22px;
 
             box-shadow:
-                0 12px 40px rgba(15, 23, 42, .045);
+                0 12px 40px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .045
+                );
 
-            margin-bottom: 22px;
+            margin-bottom:
+                22px;
         }
 
+
         .hero-card::before {
-            content: "";
+            content:
+                "";
 
-            position: absolute;
+            position:
+                absolute;
 
-            width: 320px;
-            height: 320px;
+            width:
+                320px;
 
-            right: -140px;
-            top: -190px;
+            height:
+                320px;
 
-            border-radius: 999px;
+            right:
+                -140px;
+
+            top:
+                -190px;
+
+            border-radius:
+                999px;
 
             background:
                 radial-gradient(
                     circle,
-                    rgba(59, 130, 246, .13),
+                    rgba(
+                        59,
+                        130,
+                        246,
+                        .13
+                    ),
                     transparent 68%
                 );
 
-            pointer-events: none;
+            pointer-events:
+                none;
         }
 
+
         .hero-line {
-            height: 4px;
+            height:
+                4px;
 
             background:
                 linear-gradient(
@@ -188,157 +260,264 @@
                 );
         }
 
-        .hero-body {
-            position: relative;
-            z-index: 2;
 
-            padding: 27px 29px;
+        .hero-body {
+            position:
+                relative;
+
+            z-index:
+                2;
+
+            padding:
+                27px 29px;
         }
+
 
         .hero-layout {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            display:
+                flex;
 
-            gap: 28px;
+            align-items:
+                flex-start;
+
+            justify-content:
+                space-between;
+
+            gap:
+                28px;
         }
+
 
         .hero-main {
-            min-width: 0;
+            min-width:
+                0;
         }
+
 
         /* =========================================================
            BADGES
         ========================================================== */
 
         .badges {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
+            display:
+                flex;
 
-            gap: 7px;
+            align-items:
+                center;
 
-            margin-bottom: 13px;
+            flex-wrap:
+                wrap;
+
+            gap:
+                7px;
+
+            margin-bottom:
+                13px;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
 
-            min-height: 29px;
+        .badge {
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                6px;
+
+            min-height:
+                29px;
 
             padding:
                 0 10px;
 
-            border-radius: 9px;
+            border-radius:
+                9px;
 
-            font-size: 10px;
-            font-weight: 800;
+            font-size:
+                10px;
+
+            font-weight:
+                800;
         }
+
 
         .badge-meeting {
-            background: #eff6ff;
-            color: #2563eb;
-            border: 1px solid #dbeafe;
+            background:
+                #eff6ff;
+
+            color:
+                #2563eb;
+
+            border:
+                1px solid
+                #dbeafe;
         }
+
 
         .badge-category {
-            background: #f8fafc;
-            color: #64748b;
-            border: 1px solid #e9eef5;
+            background:
+                #f8fafc;
+
+            color:
+                #64748b;
+
+            border:
+                1px solid
+                #e9eef5;
         }
+
 
         .badge-active {
-            background: #ecfdf5;
-            color: #15803d;
-            border: 1px solid #d1fae5;
+            background:
+                #ecfdf5;
+
+            color:
+                #15803d;
+
+            border:
+                1px solid
+                #d1fae5;
         }
+
 
         .badge-inactive {
-            background: #f8fafc;
-            color: #64748b;
-            border: 1px solid #e2e8f0;
+            background:
+                #f8fafc;
+
+            color:
+                #64748b;
+
+            border:
+                1px solid
+                #e2e8f0;
         }
+
 
         .status-dot {
-            width: 6px;
-            height: 6px;
+            width:
+                6px;
 
-            border-radius: 999px;
+            height:
+                6px;
 
-            background: currentColor;
+            border-radius:
+                999px;
+
+            background:
+                currentColor;
         }
+
 
         /* =========================================================
            TITLE
         ========================================================== */
 
         .hero-title {
-            margin: 0;
+            margin:
+                0;
 
-            max-width: 790px;
+            max-width:
+                790px;
 
-            color: #0f172a;
+            color:
+                #0f172a;
 
-            font-size: clamp(
-                26px,
-                4vw,
-                40px
-            );
+            font-size:
+                clamp(
+                    26px,
+                    4vw,
+                    40px
+                );
 
-            line-height: 1.13;
+            line-height:
+                1.13;
 
-            letter-spacing: -.035em;
+            letter-spacing:
+                -.035em;
 
-            font-weight: 900;
+            font-weight:
+                900;
+
+            overflow-wrap:
+                anywhere;
         }
+
 
         .hero-meta {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
+            display:
+                flex;
 
-            gap: 8px;
+            align-items:
+                center;
 
-            margin-top: 12px;
+            flex-wrap:
+                wrap;
 
-            color: #94a3b8;
+            gap:
+                8px;
 
-            font-size: 11px;
-            font-weight: 600;
+            margin-top:
+                12px;
+
+            color:
+                #94a3b8;
+
+            font-size:
+                11px;
+
+            font-weight:
+                600;
         }
+
 
         .meta-dot {
-            width: 3px;
-            height: 3px;
+            width:
+                3px;
 
-            background: #cbd5e1;
+            height:
+                3px;
 
-            border-radius: 50%;
+            background:
+                #cbd5e1;
+
+            border-radius:
+                50%;
         }
+
 
         /* =========================================================
            EDIT BUTTON
         ========================================================== */
 
         .edit-button {
-            flex-shrink: 0;
+            flex-shrink:
+                0;
 
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display:
+                inline-flex;
 
-            gap: 8px;
+            align-items:
+                center;
 
-            min-height: 43px;
+            justify-content:
+                center;
+
+            gap:
+                8px;
+
+            min-height:
+                43px;
 
             padding:
                 0 16px;
 
-            border-radius: 11px;
+            border-radius:
+                11px;
 
-            color: #fff;
+            color:
+                #fff;
 
             background:
                 linear-gradient(
@@ -347,65 +526,106 @@
                     #1d4ed8
                 );
 
-            text-decoration: none;
+            text-decoration:
+                none;
 
-            font-size: 12px;
-            font-weight: 800;
+            font-size:
+                12px;
+
+            font-weight:
+                800;
 
             box-shadow:
-                0 7px 20px rgba(37, 99, 235, .18);
+                0 7px 20px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    .18
+                );
 
             transition:
                 transform .18s ease,
                 box-shadow .18s ease;
         }
 
+
         .edit-button:hover {
-            transform: translateY(-1px);
+            transform:
+                translateY(-1px);
 
             box-shadow:
-                0 10px 25px rgba(37, 99, 235, .24);
+                0 10px 25px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    .24
+                );
         }
+
 
         /* =========================================================
            CONTENT GRID
         ========================================================== */
 
         .content-grid {
-            display: grid;
+            display:
+                grid;
 
             grid-template-columns:
-                minmax(0, 1fr)
+                minmax(
+                    0,
+                    1fr
+                )
                 320px;
 
-            gap: 22px;
+            gap:
+                22px;
 
-            align-items: start;
+            align-items:
+                start;
         }
+
 
         /* =========================================================
            CARD
         ========================================================== */
 
         .card {
-            background: #fff;
+            background:
+                #fff;
 
             border:
                 1px solid
                 #e4e9f1;
 
-            border-radius: 20px;
+            border-radius:
+                20px;
 
             box-shadow:
-                0 10px 32px rgba(15, 23, 42, .04);
+                0 10px 32px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .04
+                );
 
-            overflow: hidden;
+            overflow:
+                hidden;
         }
 
+
         .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
 
             padding:
                 18px 22px;
@@ -415,162 +635,268 @@
                 #edf1f6;
         }
 
+
         .card-icon {
-            width: 38px;
-            height: 38px;
+            width:
+                38px;
 
-            flex-shrink: 0;
+            height:
+                38px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-shrink:
+                0;
 
-            border-radius: 11px;
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            border-radius:
+                11px;
         }
+
 
         .card-icon-blue {
-            color: #2563eb;
-            background: #eff6ff;
+            color:
+                #2563eb;
+
+            background:
+                #eff6ff;
         }
+
 
         .card-icon-purple {
-            color: #7c3aed;
-            background: #f5f3ff;
+            color:
+                #7c3aed;
+
+            background:
+                #f5f3ff;
         }
+
 
         .card-icon-slate {
-            color: #475569;
-            background: #f1f5f9;
+            color:
+                #475569;
+
+            background:
+                #f1f5f9;
         }
+
+
+        .card-icon-red {
+            color:
+                #dc2626;
+
+            background:
+                #fef2f2;
+        }
+
+
+        .card-icon-violet {
+            color:
+                #7c3aed;
+
+            background:
+                #f5f3ff;
+        }
+
 
         .card-title {
-            color: #0f172a;
+            color:
+                #0f172a;
 
-            font-size: 13px;
-            font-weight: 850;
+            font-size:
+                13px;
+
+            font-weight:
+                850;
         }
+
 
         .card-subtitle {
-            margin-top: 2px;
+            margin-top:
+                2px;
 
-            color: #94a3b8;
+            color:
+                #94a3b8;
 
-            font-size: 10px;
-            font-weight: 600;
+            font-size:
+                10px;
+
+            font-weight:
+                600;
         }
+
 
         .card-body {
-            padding: 24px;
+            padding:
+                24px;
         }
 
+
         /* =========================================================
-           RICH CONTENT
+           MATERIAL CONTENT
         ========================================================== */
 
         .material-content {
-            color: #334155;
+            color:
+                #334155;
 
             font-family:
                 "DM Sans",
                 "Inter",
                 sans-serif;
 
-            font-size: 15px;
+            font-size:
+                15px;
 
-            line-height: 1.85;
+            line-height:
+                1.85;
 
-            overflow-wrap: anywhere;
+            overflow-wrap:
+                anywhere;
         }
+
 
         .material-content > :first-child {
-            margin-top: 0 !important;
+            margin-top:
+                0 !important;
         }
 
+
         .material-content > :last-child {
-            margin-bottom: 0 !important;
+            margin-bottom:
+                0 !important;
         }
+
 
         .material-content h1 {
             margin:
                 26px 0 13px;
 
-            color: #0f172a;
+            color:
+                #0f172a;
 
-            font-size: 30px;
-            line-height: 1.25;
+            font-size:
+                30px;
 
-            font-weight: 900;
+            line-height:
+                1.25;
 
-            letter-spacing: -.025em;
+            font-weight:
+                900;
+
+            letter-spacing:
+                -.025em;
         }
+
 
         .material-content h2 {
             margin:
                 25px 0 12px;
 
-            color: #0f172a;
+            color:
+                #0f172a;
 
-            font-size: 24px;
-            line-height: 1.3;
+            font-size:
+                24px;
 
-            font-weight: 850;
+            line-height:
+                1.3;
+
+            font-weight:
+                850;
         }
+
 
         .material-content h3 {
             margin:
                 21px 0 10px;
 
-            color: #172033;
+            color:
+                #172033;
 
-            font-size: 19px;
-            line-height: 1.4;
+            font-size:
+                19px;
 
-            font-weight: 800;
+            line-height:
+                1.4;
+
+            font-weight:
+                800;
         }
+
 
         .material-content h4 {
             margin:
                 18px 0 9px;
 
-            color: #1e293b;
+            color:
+                #1e293b;
 
-            font-size: 16px;
+            font-size:
+                16px;
 
-            font-weight: 800;
+            font-weight:
+                800;
         }
+
 
         .material-content p {
             margin:
                 0 0 14px;
         }
 
+
         .material-content strong {
-            color: #172033;
-            font-weight: 800;
+            color:
+                #172033;
+
+            font-weight:
+                800;
         }
+
 
         .material-content em {
-            color: #475569;
+            color:
+                #475569;
         }
 
+
         .material-content a {
-            color: #2563eb;
-            text-decoration: underline;
-            text-decoration-color: #bfdbfe;
-            text-underline-offset: 3px;
+            color:
+                #2563eb;
+
+            text-decoration:
+                underline;
+
+            text-decoration-color:
+                #bfdbfe;
+
+            text-underline-offset:
+                3px;
         }
+
 
         .material-content ul,
         .material-content ol {
             margin:
                 12px 0 18px;
 
-            padding-left: 25px;
+            padding-left:
+                25px;
         }
 
+
         .material-content li {
-            margin-bottom: 6px;
+            margin-bottom:
+                6px;
         }
+
 
         .material-content blockquote {
             margin:
@@ -593,122 +919,198 @@
                     #fff
                 );
 
-            color: #475569;
+            color:
+                #475569;
 
-            font-style: italic;
+            font-style:
+                italic;
         }
+
 
         .material-content pre {
             margin:
                 18px 0;
 
-            padding: 16px;
+            padding:
+                16px;
 
-            border-radius: 12px;
+            border-radius:
+                12px;
 
-            background: #0f172a;
+            background:
+                #0f172a;
 
-            color: #e2e8f0;
+            color:
+                #e2e8f0;
 
-            overflow-x: auto;
+            overflow-x:
+                auto;
 
             font-family:
                 "SFMono-Regular",
                 Consolas,
                 monospace;
 
-            font-size: 13px;
+            font-size:
+                13px;
 
-            line-height: 1.7;
+            line-height:
+                1.7;
         }
+
 
         .material-content code {
             padding:
                 2px 5px;
 
-            border-radius: 5px;
+            border-radius:
+                5px;
 
-            background: #f1f5f9;
+            background:
+                #f1f5f9;
 
-            color: #334155;
+            color:
+                #334155;
 
             font-family:
                 "SFMono-Regular",
                 Consolas,
                 monospace;
 
-            font-size: .9em;
+            font-size:
+                .9em;
         }
+
 
         .material-content pre code {
-            padding: 0;
-            background: transparent;
-            color: inherit;
+            padding:
+                0;
+
+            background:
+                transparent;
+
+            color:
+                inherit;
         }
+
+
+        /* =========================================================
+           IMAGES
+        ========================================================== */
 
         .material-content img {
-            display: block;
+            display:
+                block;
 
-            max-width: 100%;
-            height: auto;
+            max-width:
+                100%;
+
+            height:
+                auto;
 
             margin:
-                18px auto;
+                20px auto;
 
-            border-radius: 13px;
+            border-radius:
+                13px;
 
             box-shadow:
-                0 8px 25px rgba(15, 23, 42, .08);
+                0 8px 25px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .08
+                );
 
-            object-fit: contain;
+            object-fit:
+                contain;
         }
+
 
         .material-content img[style*="float:left"],
         .material-content img[style*="float: left"] {
-            margin-right: 20px;
+            margin-right:
+                20px;
         }
+
 
         .material-content img[style*="float:right"],
         .material-content img[style*="float: right"] {
-            margin-left: 20px;
+            margin-left:
+                20px;
         }
+
+
+        /* =========================================================
+           VIDEO / IFRAME / AUDIO
+        ========================================================== */
 
         .material-content iframe {
-            width: 100%;
-            max-width: 100%;
+            display:
+                block;
 
-            min-height: 380px;
+            width:
+                100%;
+
+            max-width:
+                100%;
+
+            min-height:
+                380px;
 
             margin:
-                18px 0;
+                20px 0;
 
-            border: 0;
+            border:
+                0;
 
-            border-radius: 14px;
+            border-radius:
+                14px;
+
+            background:
+                #0f172a;
 
             box-shadow:
-                0 8px 25px rgba(15, 23, 42, .08);
+                0 8px 25px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .08
+                );
         }
+
 
         .material-content video {
-            display: block;
+            display:
+                block;
 
-            width: 100%;
+            width:
+                100%;
 
-            max-height: 550px;
+            max-height:
+                550px;
 
             margin:
-                18px auto;
+                20px auto;
 
-            border-radius: 14px;
+            border-radius:
+                14px;
+
+            background:
+                #0f172a;
         }
+
 
         .material-content audio {
-            width: 100%;
+            width:
+                100%;
 
             margin:
-                18px 0;
+                20px 0;
         }
+
 
         /* =========================================================
            EMPTY STATE
@@ -718,66 +1120,103 @@
             padding:
                 55px 20px;
 
-            text-align: center;
+            text-align:
+                center;
         }
 
-        .empty-icon {
-            width: 52px;
-            height: 52px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .empty-icon {
+            width:
+                52px;
+
+            height:
+                52px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
 
             margin:
                 0 auto 12px;
 
-            border-radius: 15px;
+            border-radius:
+                15px;
 
-            background: #f1f5f9;
+            background:
+                #f1f5f9;
 
-            color: #94a3b8;
+            color:
+                #94a3b8;
         }
+
 
         .empty-title {
-            color: #475569;
+            color:
+                #475569;
 
-            font-size: 13px;
-            font-weight: 800;
+            font-size:
+                13px;
+
+            font-weight:
+                800;
         }
+
 
         .empty-description {
-            margin-top: 4px;
+            margin-top:
+                4px;
 
-            color: #94a3b8;
+            color:
+                #94a3b8;
 
-            font-size: 11px;
+            font-size:
+                11px;
         }
 
+
         /* =========================================================
-           MEDIA
+           MEDIA LIST
         ========================================================== */
 
         .media-list {
-            display: flex;
-            flex-direction: column;
-            gap: 9px;
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                9px;
         }
 
-        .media-link {
-            display: flex;
-            align-items: center;
-            gap: 11px;
 
-            padding: 11px;
+        .media-link {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                11px;
+
+            padding:
+                11px;
 
             border:
                 1px solid
                 #edf1f6;
 
-            border-radius: 13px;
+            border-radius:
+                13px;
 
-            text-decoration: none;
+            text-decoration:
+                none;
 
             transition:
                 background .18s ease,
@@ -785,80 +1224,140 @@
                 transform .18s ease;
         }
 
+
         .media-link:hover {
-            transform: translateY(-1px);
+            transform:
+                translateY(-1px);
         }
+
 
         .media-image {
-            background: #f8fafc;
+            background:
+                #f8fafc;
         }
+
 
         .media-image:hover {
-            background: #f1f5f9;
-            border-color: #dbeafe;
+            background:
+                #f1f5f9;
+
+            border-color:
+                #dbeafe;
         }
+
 
         .media-video {
-            background: #fff7f7;
-            border-color: #fee2e2;
+            background:
+                #fff7f7;
+
+            border-color:
+                #fee2e2;
         }
+
 
         .media-video:hover {
-            background: #fef2f2;
+            background:
+                #fef2f2;
         }
+
 
         .media-audio {
-            background: #faf7ff;
-            border-color: #ede9fe;
+            background:
+                #faf7ff;
+
+            border-color:
+                #ede9fe;
         }
+
 
         .media-audio:hover {
-            background: #f5f3ff;
+            background:
+                #f5f3ff;
         }
+
 
         .media-icon {
-            width: 38px;
-            height: 38px;
+            width:
+                38px;
 
-            flex-shrink: 0;
+            height:
+                38px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-shrink:
+                0;
 
-            border-radius: 10px;
+            display:
+                flex;
 
-            background: #fff;
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            border-radius:
+                10px;
+
+            background:
+                #fff;
         }
+
 
         .media-title {
-            font-size: 11px;
-            font-weight: 800;
+            color:
+                #334155;
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
         }
+
 
         .media-description {
-            margin-top: 2px;
+            margin-top:
+                2px;
 
-            font-size: 9px;
-            font-weight: 600;
+            color:
+                #94a3b8;
+
+            font-size:
+                9px;
+
+            font-weight:
+                600;
         }
+
 
         /* =========================================================
            INFO
         ========================================================== */
 
         .info-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                0;
         }
 
-        .info-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
 
-            gap: 15px;
+        .info-row {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                15px;
 
             padding:
                 12px 0;
@@ -868,71 +1367,205 @@
                 #f1f5f9;
         }
 
+
         .info-row:first-child {
-            padding-top: 0;
+            padding-top:
+                0;
         }
+
 
         .info-row:last-child {
-            padding-bottom: 0;
-            border-bottom: 0;
+            padding-bottom:
+                0;
+
+            border-bottom:
+                0;
         }
+
 
         .info-label {
-            color: #94a3b8;
+            color:
+                #94a3b8;
 
-            font-size: 10px;
-            font-weight: 650;
+            font-size:
+                10px;
+
+            font-weight:
+                650;
         }
+
 
         .info-value {
-            color: #334155;
+            color:
+                #334155;
 
-            font-size: 11px;
-            font-weight: 800;
+            font-size:
+                11px;
 
-            text-align: right;
+            font-weight:
+                800;
+
+            text-align:
+                right;
+
+            overflow-wrap:
+                anywhere;
         }
+
 
         .info-active {
-            color: #16a34a;
+            color:
+                #16a34a;
         }
 
+
         .info-inactive {
-            color: #94a3b8;
+            color:
+                #94a3b8;
         }
+
+
+        /* =========================================================
+           STATUS CARD
+        ========================================================== */
+
+        .status-card {
+            margin-top:
+                18px;
+
+            padding:
+                13px;
+
+            border-radius:
+                13px;
+
+            border:
+                1px solid
+                #dbeafe;
+
+            background:
+                #eff6ff;
+        }
+
+
+        .status-card-inner {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+        }
+
+
+        .status-card-icon {
+            width:
+                34px;
+
+            height:
+                34px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            border-radius:
+                9px;
+
+            background:
+                #ffffff;
+
+            color:
+                #2563eb;
+        }
+
+
+        .status-card-title {
+            color:
+                #1e40af;
+
+            font-size:
+                10px;
+
+            font-weight:
+                850;
+        }
+
+
+        .status-card-description {
+            margin-top:
+                2px;
+
+            color:
+                #60a5fa;
+
+            font-size:
+                9px;
+
+            line-height:
+                1.45;
+        }
+
 
         /* =========================================================
            ACTIONS
         ========================================================== */
 
         .bottom-actions {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display:
+                flex;
 
-            gap: 12px;
+            align-items:
+                center;
 
-            margin-top: 22px;
+            justify-content:
+                space-between;
+
+            gap:
+                12px;
+
+            margin-top:
+                22px;
         }
 
+
         .action-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display:
+                inline-flex;
 
-            gap: 8px;
+            align-items:
+                center;
 
-            min-height: 43px;
+            justify-content:
+                center;
+
+            gap:
+                8px;
+
+            min-height:
+                43px;
 
             padding:
                 0 16px;
 
-            border-radius: 11px;
+            border-radius:
+                11px;
 
-            font-size: 11px;
-            font-weight: 800;
+            font-size:
+                11px;
 
-            text-decoration: none;
+            font-weight:
+                800;
+
+            text-decoration:
+                none;
 
             transition:
                 transform .18s ease,
@@ -940,53 +1573,81 @@
                 box-shadow .18s ease;
         }
 
-        .back-button {
-            color: #475569;
 
-            background: #fff;
+        .back-button {
+            color:
+                #475569;
+
+            background:
+                #fff;
 
             border:
                 1px solid
                 #e2e8f0;
 
             box-shadow:
-                0 5px 16px rgba(15, 23, 42, .025);
+                0 5px 16px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .025
+                );
         }
+
 
         .back-button:hover {
-            background: #f8fafc;
-            transform: translateY(-1px);
+            background:
+                #f8fafc;
+
+            transform:
+                translateY(-1px);
         }
 
-        .delete-button {
-            color: #dc2626;
 
-            background: #fff1f2;
+        .delete-button {
+            color:
+                #dc2626;
+
+            background:
+                #fff1f2;
 
             border:
                 1px solid
                 #ffe4e6;
         }
 
+
         .delete-button:hover {
-            background: #ffe4e6;
-            transform: translateY(-1px);
+            background:
+                #ffe4e6;
+
+            transform:
+                translateY(-1px);
         }
+
 
         /* =========================================================
            FOOTER
         ========================================================== */
 
         .footer {
-            margin-top: 28px;
+            margin-top:
+                28px;
 
-            text-align: center;
+            text-align:
+                center;
 
-            color: #a1adbd;
+            color:
+                #a1adbd;
 
-            font-size: 9px;
-            font-weight: 600;
+            font-size:
+                9px;
+
+            font-weight:
+                600;
         }
+
 
         /* =========================================================
            RESPONSIVE
@@ -995,18 +1656,22 @@
         @media (max-width: 1023px) {
 
             .main-content {
-                margin-left: 0 !important;
+                margin-left:
+                    0 !important;
             }
 
         }
+
 
         @media (max-width: 900px) {
 
             .content-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
             }
 
         }
+
 
         @media (max-width: 700px) {
 
@@ -1015,335 +1680,314 @@
                     20px 15px 40px;
             }
 
+
             .hero-body {
                 padding:
                     22px 20px;
             }
 
+
             .hero-layout {
-                flex-direction: column;
+                flex-direction:
+                    column;
             }
+
 
             .edit-button {
-                width: 100%;
+                width:
+                    100%;
             }
 
+
             .card-body {
-                padding: 19px;
+                padding:
+                    19px;
             }
+
 
             .card-header {
                 padding:
                     16px 19px;
             }
 
+
             .bottom-actions {
-                flex-direction: column;
-                align-items: stretch;
+                flex-direction:
+                    column;
+
+                align-items:
+                    stretch;
             }
+
 
             .action-button {
-                width: 100%;
+                width:
+                    100%;
             }
+
 
             .material-content {
-                font-size: 14px;
-                line-height: 1.8;
+                font-size:
+                    14px;
+
+                line-height:
+                    1.8;
             }
+
 
             .material-content h1 {
-                font-size: 25px;
+                font-size:
+                    25px;
             }
+
 
             .material-content h2 {
-                font-size: 21px;
+                font-size:
+                    21px;
             }
+
 
             .material-content h3 {
-                font-size: 17px;
+                font-size:
+                    17px;
             }
 
+
             .material-content iframe {
-                min-height: 240px;
+                min-height:
+                    240px;
             }
 
         }
+
     </style>
+
 </head>
 
 
 <body class="min-h-screen">
 
-   {{-- =========================================================
-     SIDEBAR GLOBAL
-========================================================== --}}
 
-@include('guru.partials.sidebar')
+    {{-- =========================================================
+         SIDEBAR GLOBAL
+    ========================================================== --}}
 
+    @include('guru.partials.sidebar')
 
-{{-- =========================================================
-     MAIN
-========================================================== --}}
 
-<main
-    class="main-content lg:ml-64 transition-all duration-300"
->
+    {{-- =========================================================
+         MAIN
+    ========================================================== --}}
 
+    <main
+        class="main-content lg:ml-64 transition-all duration-300"
+    >
 
-    {{-- =====================================================
-         HEADBAR GURU
-    ====================================================== --}}
 
-    @include('guru.partials.header')
+        {{-- =====================================================
+             HEADER GURU
+        ====================================================== --}}
 
+        @include('guru.partials.header')
 
-    {{-- =====================================================
-         CONTENT
-    ====================================================== --}}
 
-    <div class="p-5 lg:p-8 max-w-[1500px] mx-auto">
+        {{-- =====================================================
+             CONTENT
+        ====================================================== --}}
 
+        <div
+            class="
+                p-5
+                lg:p-8
+                max-w-[1500px]
+                mx-auto
+            "
+        >
 
-        {{-- =================================================
-             PAGE HEADER
-        ================================================== --}}
 
-        <div class="page">
-
-
-            {{-- =================================================
-                 BREADCRUMB
-            ================================================== --}}
-
-            <nav class="breadcrumb">
-
-                <a
-                    href="{{ route('guru.materials.index') }}"
-                >
-                    Materi
-                </a>
-
-                <span class="breadcrumb-separator">
-                    /
-                </span>
-
-                <span class="breadcrumb-current">
-                    Pertemuan {{ $material->pertemuan }}
-                </span>
-
-                <span class="breadcrumb-separator">
-                    /
-                </span>
-
-                <span class="breadcrumb-current">
-                    Detail
-                </span>
-
-            </nav>
-
-
-            {{-- =================================================
-                 HERO
-            ================================================== --}}
-
-            <section class="hero-card">
-
-                <div class="hero-line"></div>
-
-                <div class="hero-body">
-
-                    <div class="hero-layout">
-
-
-                        <div class="hero-main">
-
-                            {{-- BADGES --}}
-
-                            <div class="badges">
-
-                                <span class="badge badge-meeting">
-
-                                    <i
-                                        data-lucide="layers"
-                                        class="w-3.5 h-3.5"
-                                    ></i>
-
-                                    Pertemuan
-                                    {{ $material->pertemuan }}
-
-                                </span>
-
-
-                                @if($material->kategori)
-
-                                    <span class="badge badge-category">
-
-                                        {{ $material->kategori }}
-
-                                    </span>
-
-                                @endif
-
-
-                                @if($material->aktif)
-
-                                    <span class="badge badge-active">
-
-                                        <span class="status-dot"></span>
-
-                                        Aktif
-
-                                    </span>
-
-                                @else
-
-                                    <span class="badge badge-inactive">
-
-                                        <span class="status-dot"></span>
-
-                                        Nonaktif
-
-                                    </span>
-
-                                @endif
-
-                            </div>
-
-
-                            {{-- TITLE --}}
-
-                            <h1 class="hero-title">
-
-                                {{ $material->judul }}
-
-                            </h1>
-
-
-                            {{-- META --}}
-
-                            <div class="hero-meta">
-
-                                <span>
-                                    Dibuat
-                                    {{ $material->created_at?->locale('id')->translatedFormat('d F Y') }}
-                                </span>
-
-                                @if($material->updated_at && $material->updated_at != $material->created_at)
-
-                                    <span class="meta-dot"></span>
-
-                                    <span>
-                                        Diperbarui
-                                        {{ $material->updated_at?->locale('id')->translatedFormat('d F Y') }}
-                                    </span>
-
-                                @endif
-
-                            </div>
-
-                        </div>
-
-
-                        {{-- EDIT --}}
-
-                        <a
-                            href="{{ route('guru.materials.edit', $material) }}"
-                            class="edit-button"
-                        >
-
-                            <i
-                                data-lucide="pencil"
-                                class="w-4 h-4"
-                            ></i>
-
-                            Edit Materi
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            {{-- =================================================
-                 CONTENT GRID
-            ================================================== --}}
-
-            <div class="content-grid">
+            <div class="page">
 
 
                 {{-- =================================================
-                     ISI MATERI
+                     BREADCRUMB
                 ================================================== --}}
 
-                <section class="card">
+                <nav class="breadcrumb">
 
-                    <div class="card-header">
+                    <a
+                        href="{{ route('guru.materials.index') }}"
+                    >
+                        Materi
+                    </a>
 
-                        <div class="card-icon card-icon-purple">
 
-                            <i
-                                data-lucide="file-text"
-                                class="w-5 h-5"
-                            ></i>
+                    <span class="breadcrumb-separator">
+                        /
+                    </span>
+
+
+                    <span class="breadcrumb-current">
+                        Pertemuan {{ $material->pertemuan }}
+                    </span>
+
+
+                    <span class="breadcrumb-separator">
+                        /
+                    </span>
+
+
+                    <span class="breadcrumb-current">
+                        Detail
+                    </span>
+
+                </nav>
+
+
+                {{-- =================================================
+                     HERO
+                ================================================== --}}
+
+                <section class="hero-card">
+
+                    <div class="hero-line"></div>
+
+
+                    <div class="hero-body">
+
+                        <div class="hero-layout">
+
+
+                            <div class="hero-main">
+
+
+                                {{-- BADGES --}}
+
+                                <div class="badges">
+
+
+                                    <span class="badge badge-meeting">
+
+                                        <i
+                                            data-lucide="layers"
+                                            class="w-3.5 h-3.5"
+                                        ></i>
+
+                                        Pertemuan
+                                        {{ $material->pertemuan }}
+
+                                    </span>
+
+
+                                    @if($material->kategori)
+
+                                        <span class="badge badge-category">
+
+                                            <i
+                                                data-lucide="tag"
+                                                class="w-3 h-3"
+                                            ></i>
+
+                                            {{ $material->kategori }}
+
+                                        </span>
+
+                                    @endif
+
+
+                                    @if($material->aktif)
+
+                                        <span class="badge badge-active">
+
+                                            <span class="status-dot"></span>
+
+                                            Aktif
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge badge-inactive">
+
+                                            <span class="status-dot"></span>
+
+                                            Nonaktif
+
+                                        </span>
+
+                                    @endif
+
+
+                                </div>
+
+
+                                {{-- TITLE --}}
+
+                                <h1 class="hero-title">
+
+                                    {{ $material->judul }}
+
+                                </h1>
+
+
+                                {{-- META --}}
+
+                                <div class="hero-meta">
+
+
+                                    @if($material->created_at)
+
+                                        <span>
+
+                                            Dibuat
+                                            {{ $material->created_at->locale('id')->translatedFormat('d F Y') }}
+
+                                        </span>
+
+                                    @endif
+
+
+                                    @if(
+                                        $material->updated_at &&
+                                        $material->created_at &&
+                                        $material->updated_at != $material->created_at
+                                    )
+
+                                        <span class="meta-dot"></span>
+
+                                        <span>
+
+                                            Diperbarui
+                                            {{ $material->updated_at->locale('id')->translatedFormat('d F Y') }}
+
+                                        </span>
+
+                                    @endif
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            {{-- EDIT --}}
+
+                            <a
+                                href="{{ route('guru.materials.edit', $material) }}"
+                                class="edit-button"
+                            >
+
+                                <i
+                                    data-lucide="pencil"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Edit Materi
+
+                            </a>
+
 
                         </div>
-
-                        <div>
-
-                            <div class="card-title">
-                                Isi Materi
-                            </div>
-
-                            <div class="card-subtitle">
-                                Konten pembelajaran
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="card-body">
-
-                        @if(
-                            $material->isi &&
-                            trim(strip_tags($material->isi)) !== ''
-                        )
-
-                            <article class="material-content">
-
-                                {!! $material->isi !!}
-
-                            </article>
-
-                        @else
-
-                            <div class="empty-state">
-
-                                <div class="empty-icon">
-
-                                    <i
-                                        data-lucide="file-text"
-                                        class="w-5 h-5"
-                                    ></i>
-
-                                </div>
-
-                                <div class="empty-title">
-                                    Belum ada isi materi
-                                </div>
-
-                                <div class="empty-description">
-                                    Tambahkan isi materi melalui
-                                    menu Edit Materi.
-                                </div>
-
-                            </div>
-
-                        @endif
 
                     </div>
 
@@ -1351,38 +1995,44 @@
 
 
                 {{-- =================================================
-                     SIDEBAR DETAIL
+                     CONTENT GRID
                 ================================================== --}}
 
-                <aside class="space-y-5">
-
+                <div class="content-grid">
 
 
                     {{-- =================================================
-                         INFORMASI
+                         ISI MATERI
                     ================================================== --}}
 
                     <section class="card">
 
+
                         <div class="card-header">
 
-                            <div class="card-icon card-icon-slate">
+                            <div class="card-icon card-icon-purple">
 
                                 <i
-                                    data-lucide="info"
+                                    data-lucide="file-text"
                                     class="w-5 h-5"
                                 ></i>
 
                             </div>
 
+
                             <div>
 
                                 <div class="card-title">
-                                    Informasi Materi
+
+                                    Isi Materi
+
                                 </div>
 
+
                                 <div class="card-subtitle">
-                                    Detail pembelajaran
+
+                                    Konten pembelajaran
+
                                 </div>
 
                             </div>
@@ -1392,207 +2042,664 @@
 
                         <div class="card-body">
 
-                            <div class="info-list">
+
+                            @if(
+                                $material->isi &&
+                                trim(strip_tags($material->isi)) !== ''
+                            )
+
+                                <article class="material-content">
+
+                                    {!! $material->isi !!}
+
+                                </article>
+
+                            @else
+
+                                <div class="empty-state">
+
+                                    <div class="empty-icon">
+
+                                        <i
+                                            data-lucide="file-text"
+                                            class="w-5 h-5"
+                                        ></i>
+
+                                    </div>
 
 
-                                {{-- PERTEMUAN --}}
+                                    <div class="empty-title">
 
-                                <div class="info-row">
+                                        Belum ada isi materi
 
-                                    <span class="info-label">
-                                        Pertemuan
-                                    </span>
-
-                                    <span class="info-value">
-                                        {{ $material->pertemuan }}
-                                    </span>
-
-                                </div>
+                                    </div>
 
 
-                                {{-- KATEGORI --}}
+                                    <div class="empty-description">
 
-                                <div class="info-row">
+                                        Tambahkan isi materi melalui
+                                        menu Edit Materi.
 
-                                    <span class="info-label">
-                                        Kategori
-                                    </span>
-
-                                    <span class="info-value">
-
-                                        {{ $material->kategori ?: '-' }}
-
-                                    </span>
-
-                                </div>
-
-
-                                {{-- STATUS --}}
-
-                                <div class="info-row">
-
-                                    <span class="info-label">
-                                        Status
-                                    </span>
-
-                                    @if($material->aktif)
-
-                                        <span
-                                            class="
-                                                info-value
-                                                info-active
-                                            "
-                                        >
-                                            Aktif
-                                        </span>
-
-                                    @else
-
-                                        <span
-                                            class="
-                                                info-value
-                                                info-inactive
-                                            "
-                                        >
-                                            Nonaktif
-                                        </span>
-
-                                    @endif
+                                    </div>
 
                                 </div>
 
+                            @endif
 
-                                {{-- DIBUAT --}}
-
-                                <div class="info-row">
-
-                                    <span class="info-label">
-                                        Dibuat
-                                    </span>
-
-                                    <span class="info-value">
-
-                                        {{ $material->created_at?->locale('id')->translatedFormat('d M Y') }}
-
-                                    </span>
-
-                                </div>
-
-
-                                {{-- DIPERBARUI --}}
-
-                                <div class="info-row">
-
-                                    <span class="info-label">
-                                        Diperbarui
-                                    </span>
-
-                                    <span class="info-value">
-
-                                        {{ $material->updated_at?->locale('id')->translatedFormat('d M Y') }}
-
-                                    </span>
-
-                                </div>
-
-                            </div>
 
                         </div>
 
                     </section>
 
-                </aside>
 
-            </div>
+                    {{-- =================================================
+                         SIDEBAR DETAIL
+                    ================================================== --}}
 
-
-            {{-- =================================================
-                 ACTION
-            ================================================== --}}
-
-            <div class="bottom-actions">
+                    <aside class="space-y-5">
 
 
-                <a
-                    href="{{ route(
-                        'guru.materials.index',
-                        [
-                            'pertemuan' =>
-                                $material->pertemuan
-                        ]
-                    ) }}"
-                    class="
-                        action-button
-                        back-button
-                    "
-                >
+                        {{-- =================================================
+                             INFORMASI
+                        ================================================== --}}
 
-                    <i
-                        data-lucide="arrow-left"
-                        class="w-4 h-4"
-                    ></i>
-
-                    Kembali ke Materi
-
-                </a>
+                        <section class="card">
 
 
-                <form
-                    method="POST"
-                    action="{{ route(
-                        'guru.materials.destroy',
-                        $material
-                    ) }}"
-                    onsubmit="
-                        return confirm(
-                            'Yakin ingin menghapus materi ini?'
+                            <div class="card-header">
+
+                                <div class="card-icon card-icon-slate">
+
+                                    <i
+                                        data-lucide="info"
+                                        class="w-5 h-5"
+                                    ></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <div class="card-title">
+
+                                        Informasi Materi
+
+                                    </div>
+
+
+                                    <div class="card-subtitle">
+
+                                        Detail pembelajaran
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <div class="info-list">
+
+
+                                    {{-- PERTEMUAN --}}
+
+                                    <div class="info-row">
+
+                                        <span class="info-label">
+
+                                            Pertemuan
+
+                                        </span>
+
+
+                                        <span class="info-value">
+
+                                            {{ $material->pertemuan }}
+
+                                        </span>
+
+                                    </div>
+
+
+                                    {{-- KATEGORI --}}
+
+                                    <div class="info-row">
+
+                                        <span class="info-label">
+
+                                            Kategori
+
+                                        </span>
+
+
+                                        <span class="info-value">
+
+                                            {{ $material->kategori ?: '-' }}
+
+                                        </span>
+
+                                    </div>
+
+
+                                    {{-- STATUS --}}
+
+                                    <div class="info-row">
+
+                                        <span class="info-label">
+
+                                            Status
+
+                                        </span>
+
+
+                                        @if($material->aktif)
+
+                                            <span
+                                                class="
+                                                    info-value
+                                                    info-active
+                                                "
+                                            >
+
+                                                Aktif
+
+                                            </span>
+
+                                        @else
+
+                                            <span
+                                                class="
+                                                    info-value
+                                                    info-inactive
+                                                "
+                                            >
+
+                                                Nonaktif
+
+                                            </span>
+
+                                        @endif
+
+                                    </div>
+
+
+                                    {{-- DIBUAT --}}
+
+                                    <div class="info-row">
+
+                                        <span class="info-label">
+
+                                            Dibuat
+
+                                        </span>
+
+
+                                        <span class="info-value">
+
+                                            {{ $material->created_at?->locale('id')->translatedFormat('d M Y') ?? '-' }}
+
+                                        </span>
+
+                                    </div>
+
+
+                                    {{-- DIPERBARUI --}}
+
+                                    <div class="info-row">
+
+                                        <span class="info-label">
+
+                                            Diperbarui
+
+                                        </span>
+
+
+                                        <span class="info-value">
+
+                                            {{ $material->updated_at?->locale('id')->translatedFormat('d M Y') ?? '-' }}
+
+                                        </span>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                {{-- STATUS CARD --}}
+
+                                @if($material->aktif)
+
+                                    <div class="status-card">
+
+                                        <div class="status-card-inner">
+
+                                            <div class="status-card-icon">
+
+                                                <i
+                                                    data-lucide="eye"
+                                                    class="w-4 h-4"
+                                                ></i>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <div class="status-card-title">
+
+                                                    Materi dapat diakses siswa
+
+                                                </div>
+
+
+                                                <div class="status-card-description">
+
+                                                    Materi sedang berstatus aktif
+                                                    dan dapat ditampilkan pada
+                                                    halaman pembelajaran siswa.
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                @else
+
+                                    <div
+                                        class="
+                                            status-card
+                                            !border-slate-200
+                                            !bg-slate-50
+                                        "
+                                    >
+
+                                        <div class="status-card-inner">
+
+                                            <div
+                                                class="
+                                                    status-card-icon
+                                                    !text-slate-500
+                                                "
+                                            >
+
+                                                <i
+                                                    data-lucide="eye-off"
+                                                    class="w-4 h-4"
+                                                ></i>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <div
+                                                    class="
+                                                        status-card-title
+                                                        !text-slate-600
+                                                    "
+                                                >
+
+                                                    Materi sedang nonaktif
+
+                                                </div>
+
+
+                                                <div
+                                                    class="
+                                                        status-card-description
+                                                        !text-slate-400
+                                                    "
+                                                >
+
+                                                    Siswa tidak dapat mengakses
+                                                    materi ketika statusnya
+                                                    nonaktif.
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                @endif
+
+
+                            </div>
+
+                        </section>
+
+
+                        {{-- =================================================
+                             MEDIA TAMBAHAN
+                        ================================================== --}}
+
+                        @if(
+                            !empty($material->gambar) ||
+                            !empty($material->video_url) ||
+                            !empty($material->audio_url)
                         )
-                    "
-                >
 
-                    @csrf
+                            <section class="card">
 
-                    @method('DELETE')
 
-                    <button
-                        type="submit"
+                                <div class="card-header">
+
+                                    <div class="card-icon card-icon-blue">
+
+                                        <i
+                                            data-lucide="paperclip"
+                                            class="w-5 h-5"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <div class="card-title">
+
+                                            Media Materi
+
+                                        </div>
+
+
+                                        <div class="card-subtitle">
+
+                                            File pendukung pembelajaran
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="card-body">
+
+
+                                    <div class="media-list">
+
+
+                                        {{-- GAMBAR --}}
+
+                                        @if(!empty($material->gambar))
+
+                                            <a
+                                                href="{{ asset('storage/' . $material->gambar) }}"
+                                                target="_blank"
+                                                class="media-link media-image"
+                                            >
+
+                                                <div class="media-icon">
+
+                                                    <i
+                                                        data-lucide="image"
+                                                        class="w-4 h-4 text-blue-500"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div class="min-w-0">
+
+                                                    <div class="media-title">
+
+                                                        Gambar Materi
+
+                                                    </div>
+
+
+                                                    <div class="media-description">
+
+                                                        Buka gambar
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <i
+                                                    data-lucide="external-link"
+                                                    class="
+                                                        w-3.5
+                                                        h-3.5
+                                                        ml-auto
+                                                        text-slate-400
+                                                    "
+                                                ></i>
+
+                                            </a>
+
+                                        @endif
+
+
+                                        {{-- VIDEO --}}
+
+                                        @if(!empty($material->video_url))
+
+                                            <a
+                                                href="{{ $material->video_url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="media-link media-video"
+                                            >
+
+                                                <div class="media-icon">
+
+                                                    <i
+                                                        data-lucide="play-circle"
+                                                        class="w-4 h-4 text-red-500"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div class="min-w-0">
+
+                                                    <div class="media-title">
+
+                                                        Video Pembelajaran
+
+                                                    </div>
+
+
+                                                    <div class="media-description">
+
+                                                        Buka video
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <i
+                                                    data-lucide="external-link"
+                                                    class="
+                                                        w-3.5
+                                                        h-3.5
+                                                        ml-auto
+                                                        text-slate-400
+                                                    "
+                                                ></i>
+
+                                            </a>
+
+                                        @endif
+
+
+                                        {{-- AUDIO --}}
+
+                                        @if(!empty($material->audio_url))
+
+                                            <a
+                                                href="{{ $material->audio_url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="media-link media-audio"
+                                            >
+
+                                                <div class="media-icon">
+
+                                                    <i
+                                                        data-lucide="headphones"
+                                                        class="w-4 h-4 text-violet-500"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div class="min-w-0">
+
+                                                    <div class="media-title">
+
+                                                        Audio Pembelajaran
+
+                                                    </div>
+
+
+                                                    <div class="media-description">
+
+                                                        Buka audio
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <i
+                                                    data-lucide="external-link"
+                                                    class="
+                                                        w-3.5
+                                                        h-3.5
+                                                        ml-auto
+                                                        text-slate-400
+                                                    "
+                                                ></i>
+
+                                            </a>
+
+                                        @endif
+
+
+                                    </div>
+
+
+                                </div>
+
+                            </section>
+
+                        @endif
+
+
+                    </aside>
+
+
+                </div>
+
+
+                {{-- =================================================
+                     ACTION
+                ================================================== --}}
+
+                <div class="bottom-actions">
+
+
+                    <a
+                        href="{{ route(
+                            'guru.materials.index',
+                            [
+                                'pertemuan' =>
+                                    $material->pertemuan
+                            ]
+                        ) }}"
                         class="
                             action-button
-                            delete-button
+                            back-button
                         "
                     >
 
                         <i
-                            data-lucide="trash-2"
+                            data-lucide="arrow-left"
                             class="w-4 h-4"
                         ></i>
 
-                        Hapus Materi
+                        Kembali ke Materi
 
-                    </button>
+                    </a>
 
-                </form>
+
+                    <form
+                        method="POST"
+                        action="{{ route(
+                            'guru.materials.destroy',
+                            $material
+                        ) }}"
+                        onsubmit="
+                            return confirm(
+                                'Yakin ingin menghapus materi ini? Data materi yang dihapus tidak dapat dikembalikan.'
+                            )
+                        "
+                    >
+
+                        @csrf
+
+                        @method('DELETE')
+
+
+                        <button
+                            type="submit"
+                            class="
+                                action-button
+                                delete-button
+                            "
+                        >
+
+                            <i
+                                data-lucide="trash-2"
+                                class="w-4 h-4"
+                            ></i>
+
+                            Hapus Materi
+
+                        </button>
+
+                    </form>
+
+
+                </div>
+
+
+                {{-- =================================================
+                     FOOTER
+                ================================================== --}}
+
+                <div class="footer">
+
+                    LARASKU · Panel Guru
+
+                </div>
+
 
             </div>
 
-
-            {{-- =================================================
-                 FOOTER
-            ================================================== --}}
-
-            <div class="footer">
-
-                LARASKU · Panel Guru
-
-            </div>
 
         </div>
+
 
     </main>
 
 
     {{-- =========================================================
-         SCRIPT
+         LUCIDE
     ========================================================== --}}
 
     <script>
@@ -1613,6 +2720,7 @@
         );
 
     </script>
+
 
 </body>
 

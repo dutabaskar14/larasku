@@ -1487,6 +1487,205 @@
 
         }
 
+
+        /* =========================================================
+           MODAL TAMBAH PERTEMUAN MATERIAL
+        ========================================================== */
+
+        .meeting-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, .48);
+            backdrop-filter: blur(4px);
+        }
+
+
+        #addMeetingButton {
+            position: relative;
+            z-index: 2;
+            pointer-events: auto !important;
+        }
+
+        .meeting-modal.active {
+            display: flex;
+        }
+
+        .meeting-modal-card {
+            width: 100%;
+            max-width: 430px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(15, 23, 42, .20);
+            overflow: hidden;
+            animation: meetingModalIn .18s ease-out;
+        }
+
+        @keyframes meetingModalIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .meeting-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 22px 22px 18px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .meeting-modal-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .meeting-modal-title {
+            font-size: 15px;
+            font-weight: 850;
+            color: #0f172a;
+        }
+
+        .meeting-modal-description {
+            margin-top: 3px;
+            font-size: 11px;
+            line-height: 1.5;
+            color: #94a3b8;
+        }
+
+        .meeting-modal-body {
+            padding: 22px;
+        }
+
+        .meeting-number-input {
+            width: 100%;
+            height: 50px;
+            padding: 0 14px;
+            border: 1px solid #dbe3ed;
+            border-radius: 12px;
+            background: #fff;
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 700;
+            outline: none;
+            transition: .18s ease;
+        }
+
+        .meeting-number-input:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, .08);
+        }
+
+        .meeting-number-input::placeholder {
+            color: #c0c8d4;
+            font-weight: 500;
+        }
+
+        .meeting-modal-help {
+            margin-top: 8px;
+            font-size: 11px;
+            line-height: 1.5;
+            color: #94a3b8;
+        }
+
+        .meeting-modal-error {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .meeting-modal-error.active {
+            display: block;
+        }
+
+        .meeting-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 17px 22px;
+            border-top: 1px solid #eef2f7;
+            background: #fbfcfe;
+        }
+
+        .meeting-modal-button {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 0 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .18s ease;
+        }
+
+        .meeting-modal-cancel {
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #64748b;
+        }
+
+        .meeting-modal-cancel:hover {
+            background: #f8fafc;
+            color: #334155;
+        }
+
+        .meeting-modal-create {
+            border: 1px solid #2563eb;
+            background: #2563eb;
+            color: #fff;
+            box-shadow: 0 5px 14px rgba(37, 99, 235, .18);
+        }
+
+        .meeting-modal-create:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 500px) {
+            .meeting-modal {
+                padding: 14px;
+            }
+
+            .meeting-modal-card {
+                border-radius: 17px;
+            }
+
+            .meeting-modal-actions {
+                flex-direction: column-reverse;
+            }
+
+            .meeting-modal-button {
+                width: 100%;
+            }
+        }
+
     </style>
 
 </head>
@@ -1757,7 +1956,7 @@
 
                                 Pilih pertemuan yang sudah dibuat,
                                 atau klik <strong>Tambah Pertemuan</strong>
-                                untuk membuat nomor pertemuan berikutnya.
+                                untuk membuat nomor pertemuan baru.
 
                             </div>
 
@@ -2961,123 +3160,297 @@
 
 
         /* =========================================================
-           TAMBAH PERTEMUAN
+           TAMBAH PERTEMUAN MATERIAL
         ========================================================== */
 
-        const meetingSelect =
-            document.getElementById(
-                'pertemuan'
-            );
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
 
-        const addMeetingButton =
-            document.getElementById(
-                'addMeetingButton'
-            );
+                const meetingModal =
+                    document.getElementById(
+                        'meetingModal'
+                    );
 
-        const newMeetingInfo =
-            document.getElementById(
-                'newMeetingInfo'
-            );
+                const addMeetingButton =
+                    document.getElementById(
+                        'addMeetingButton'
+                    );
 
-        const newMeetingNumber =
-            document.getElementById(
-                'newMeetingNumber'
-            );
+                const cancelMeetingButton =
+                    document.getElementById(
+                        'cancelMeetingButton'
+                    );
 
+                const meetingNumberInput =
+                    document.getElementById(
+                        'meetingNumberInput'
+                    );
 
-        if (
-            meetingSelect &&
-            addMeetingButton
-        ) {
+                const meetingModalError =
+                    document.getElementById(
+                        'meetingModalError'
+                    );
 
-            addMeetingButton.addEventListener(
-                'click',
-                function () {
-
-                    const values =
-                        Array
-                            .from(
-                                meetingSelect.options
-                            )
-                            .map(
-                                option =>
-                                    parseInt(
-                                        option.value,
-                                        10
-                                    )
-                            )
-                            .filter(
-                                value =>
-                                    Number.isInteger(
-                                        value
-                                    ) &&
-                                    value > 0
-                            );
+                const meetingModalForm =
+                    document.getElementById(
+                        'meetingModalForm'
+                    );
 
 
-                    const nextMeeting =
-                        values.length
-                            ? Math.max(...values) + 1
-                            : 1;
+                /*
+                |--------------------------------------------------------------------------
+                | BUKA MODAL
+                |--------------------------------------------------------------------------
+                */
 
+                function openMeetingModal() {
 
-                    let option =
-                        Array
-                            .from(
-                                meetingSelect.options
-                            )
-                            .find(
-                                item =>
-                                    parseInt(
-                                        item.value,
-                                        10
-                                    ) === nextMeeting
-                            );
+                    if (!meetingModal) {
+                        return;
+                    }
 
+                    meetingModal.classList.add(
+                        'active'
+                    );
 
-                    if (!option) {
+                    meetingModal.setAttribute(
+                        'aria-hidden',
+                        'false'
+                    );
 
-                        option =
-                            document.createElement(
-                                'option'
-                            );
+                    if (meetingModalError) {
 
-                        option.value =
-                            nextMeeting;
-
-                        option.textContent =
-                            'Pertemuan ' +
-                            nextMeeting;
-
-                        meetingSelect.appendChild(
-                            option
+                        meetingModalError.classList.remove(
+                            'active'
                         );
+
+                        meetingModalError.textContent =
+                            '';
 
                     }
 
+                    if (meetingNumberInput) {
 
-                    meetingSelect.value =
-                        String(nextMeeting);
+                        meetingNumberInput.value =
+                            '';
 
+                        setTimeout(
+                            function () {
 
-                    if (
-                        newMeetingInfo &&
-                        newMeetingNumber
-                    ) {
+                                meetingNumberInput.focus();
 
-                        newMeetingNumber.textContent =
-                            nextMeeting;
-
-                        newMeetingInfo.classList.remove(
-                            'hidden'
+                            },
+                            100
                         );
 
                     }
 
                 }
-            );
 
-        }
+
+                /*
+                |--------------------------------------------------------------------------
+                | TUTUP MODAL
+                |--------------------------------------------------------------------------
+                */
+
+                function closeMeetingModal() {
+
+                    if (!meetingModal) {
+                        return;
+                    }
+
+                    meetingModal.classList.remove(
+                        'active'
+                    );
+
+                    meetingModal.setAttribute(
+                        'aria-hidden',
+                        'true'
+                    );
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | TOMBOL TAMBAH PERTEMUAN
+                |--------------------------------------------------------------------------
+                */
+
+                if (addMeetingButton) {
+
+                    addMeetingButton.addEventListener(
+                        'click',
+                        function (event) {
+
+                            event.preventDefault();
+
+                            openMeetingModal();
+
+                        }
+                    );
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | TOMBOL BATAL
+                |--------------------------------------------------------------------------
+                */
+
+                if (cancelMeetingButton) {
+
+                    cancelMeetingButton.addEventListener(
+                        'click',
+                        function (event) {
+
+                            event.preventDefault();
+
+                            closeMeetingModal();
+
+                        }
+                    );
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | KLIK BACKDROP
+                |--------------------------------------------------------------------------
+                */
+
+                if (meetingModal) {
+
+                    meetingModal.addEventListener(
+                        'click',
+                        function (event) {
+
+                            if (
+                                event.target ===
+                                meetingModal
+                            ) {
+
+                                closeMeetingModal();
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | ESC
+                |--------------------------------------------------------------------------
+                */
+
+                document.addEventListener(
+                    'keydown',
+                    function (event) {
+
+                        if (
+                            event.key === 'Escape' &&
+                            meetingModal &&
+                            meetingModal.classList.contains(
+                                'active'
+                            )
+                        ) {
+
+                            closeMeetingModal();
+
+                        }
+
+                    }
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | VALIDASI FORM MODAL
+                |--------------------------------------------------------------------------
+                */
+
+                if (meetingModalForm) {
+
+                    meetingModalForm.addEventListener(
+                        'submit',
+                        function (event) {
+
+                            if (!meetingNumberInput) {
+                                return;
+                            }
+
+                            const rawValue =
+                                meetingNumberInput.value.trim();
+
+                            const meetingNumber =
+                                Number(
+                                    rawValue
+                                );
+
+
+                            if (
+                                rawValue === '' ||
+                                !Number.isInteger(
+                                    meetingNumber
+                                ) ||
+                                meetingNumber < 1
+                            ) {
+
+                                event.preventDefault();
+
+                                if (meetingModalError) {
+
+                                    meetingModalError.textContent =
+                                        'Masukkan nomor pertemuan yang valid, minimal 1.';
+
+                                    meetingModalError.classList.add(
+                                        'active'
+                                    );
+
+                                }
+
+                                meetingNumberInput.focus();
+
+                                return;
+
+                            }
+
+
+                            if (
+                                meetingNumber > 255
+                            ) {
+
+                                event.preventDefault();
+
+                                if (meetingModalError) {
+
+                                    meetingModalError.textContent =
+                                        'Nomor pertemuan maksimal 255.';
+
+                                    meetingModalError.classList.add(
+                                        'active'
+                                    );
+
+                                }
+
+                                meetingNumberInput.focus();
+
+                            }
+
+                        }
+                    );
+
+                }
+
+            }
+        );
 
 
         /* =========================================================
@@ -3165,6 +3538,119 @@
 
     </script>
 
+
+
+    {{-- =========================================================
+         MODAL TAMBAH PERTEMUAN MATERIAL
+    ========================================================== --}}
+
+    <div
+        id="meetingModal"
+        class="meeting-modal"
+        aria-hidden="true"
+    >
+        <div
+            class="meeting-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="meetingModalTitle"
+        >
+
+            <div class="meeting-modal-header">
+
+                <div class="meeting-modal-icon">
+                    <i data-lucide="calendar-plus" class="w-5 h-5"></i>
+                </div>
+
+                <div>
+                    <div
+                        id="meetingModalTitle"
+                        class="meeting-modal-title"
+                    >
+                        Tambah Pertemuan
+                    </div>
+
+                    <div class="meeting-modal-description">
+                        Masukkan nomor pertemuan yang ingin dibuat.
+                    </div>
+                </div>
+
+            </div>
+
+            <form
+                id="meetingModalForm"
+                method="POST"
+                action="{{ route('guru.materials.meetings.store') }}"
+            >
+                @csrf
+
+                <div class="meeting-modal-body">
+
+                    <label
+                        for="meetingNumberInput"
+                        class="field-label"
+                    >
+                        Nomor Pertemuan
+                        <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="number"
+                        id="meetingNumberInput"
+                        name="pertemuan"
+                        class="meeting-number-input"
+                        min="1"
+                        max="255"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="Contoh: 1"
+                        autocomplete="off"
+                        required
+                    >
+
+                    <div class="meeting-modal-help">
+                        Masukkan nomor pertemuan, misalnya
+                        <strong>1</strong> untuk Pertemuan 1.
+                    </div>
+
+                    <div
+                        id="meetingModalError"
+                        class="meeting-modal-error"
+                    ></div>
+
+                    @error('pertemuan')
+                        <div class="meeting-modal-error active">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+                </div>
+
+                <div class="meeting-modal-actions">
+
+                    <button
+                        type="button"
+                        id="cancelMeetingButton"
+                        class="meeting-modal-button meeting-modal-cancel"
+                    >
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                        Batal
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="meeting-modal-button meeting-modal-create"
+                    >
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Buat Pertemuan
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 
 </body>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use App\Models\Material;
+use App\Models\MaterialMeeting;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
@@ -15,13 +16,25 @@ class MaterialController extends Controller
     {
         $pertemuan = $request->get('pertemuan');
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR MATERI
+        |--------------------------------------------------------------------------
+        */
+
         $materials = Material::query()
-            ->when($pertemuan, function ($query) use ($pertemuan) {
-                $query->where(
-                    'pertemuan',
-                    $pertemuan
-                );
-            })
+            ->when(
+                $pertemuan,
+                function ($query) use ($pertemuan) {
+
+                    $query->where(
+                        'pertemuan',
+                        $pertemuan
+                    );
+
+                }
+            )
             ->orderBy('pertemuan')
             ->orderBy('id')
             ->get();
@@ -29,14 +42,15 @@ class MaterialController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | DAFTAR PERTEMUAN MATERI
+        | DAFTAR PERTEMUAN
         |--------------------------------------------------------------------------
+        |
+        | Sumber pertemuan berasal dari material_meetings.
+        |
         */
 
-        $pertemuans = Material::query()
-            ->whereNotNull('pertemuan')
-            ->select('pertemuan')
-            ->distinct()
+        $pertemuans = MaterialMeeting::query()
+            ->where('aktif', true)
             ->orderBy('pertemuan')
             ->pluck('pertemuan');
 
@@ -57,17 +71,23 @@ class MaterialController extends Controller
      */
     public function create()
     {
-        $pertemuans = Material::query()
-            ->whereNotNull('pertemuan')
-            ->select('pertemuan')
-            ->distinct()
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR PERTEMUAN
+        |--------------------------------------------------------------------------
+        */
+
+        $pertemuans = MaterialMeeting::query()
+            ->where('aktif', true)
             ->orderBy('pertemuan')
             ->pluck('pertemuan');
 
 
         return view(
             'guru.materials.create',
-            compact('pertemuans')
+            compact(
+                'pertemuans'
+            )
         );
     }
 
@@ -75,14 +95,17 @@ class MaterialController extends Controller
     /**
      * Menyimpan materi baru.
      */
-    public function store(Request $request)
-    {
+    public function store(
+        Request $request
+    ) {
+
         $validated = $request->validate([
 
             'pertemuan' => [
                 'required',
                 'integer',
                 'min:1',
+                'max:255',
             ],
 
             'judul' => [
@@ -131,11 +154,44 @@ class MaterialController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | PASTIKAN PERTEMUAN SUDAH ADA
+        |--------------------------------------------------------------------------
+        */
+
+        $meetingExists =
+            MaterialMeeting::query()
+                ->where(
+                    'pertemuan',
+                    $validated['pertemuan']
+                )
+                ->where(
+                    'aktif',
+                    true
+                )
+                ->exists();
+
+
+        if (!$meetingExists) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'pertemuan' =>
+                        "Pertemuan {$validated['pertemuan']} belum tersedia.",
+                ]);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
         | UPLOAD GAMBAR
         |--------------------------------------------------------------------------
         */
 
-        if ($request->hasFile('gambar')) {
+        if (
+            $request->hasFile('gambar')
+        ) {
 
             $validated['gambar'] =
                 $request
@@ -144,6 +200,7 @@ class MaterialController extends Controller
                         'materials',
                         'public'
                     );
+
         }
 
 
@@ -154,12 +211,14 @@ class MaterialController extends Controller
         */
 
         $validated['aktif'] =
-            $request->boolean('aktif');
+            $request->boolean(
+                'aktif'
+            );
 
 
         /*
         |--------------------------------------------------------------------------
-        | SIMPAN
+        | SIMPAN MATERI
         |--------------------------------------------------------------------------
         */
 
@@ -186,8 +245,10 @@ class MaterialController extends Controller
     /**
      * Upload gambar untuk Rich Text Editor.
      */
-    public function uploadImage(Request $request)
-    {
+    public function uploadImage(
+        Request $request
+    ) {
+
         $request->validate([
 
             'image' => [
@@ -200,12 +261,13 @@ class MaterialController extends Controller
         ]);
 
 
-        $path = $request
-            ->file('image')
-            ->store(
-                'materials/content',
-                'public'
-            );
+        $path =
+            $request
+                ->file('image')
+                ->store(
+                    'materials/content',
+                    'public'
+                );
 
 
         return response()->json([
@@ -226,9 +288,12 @@ class MaterialController extends Controller
     public function show(
         Material $material
     ) {
+
         return view(
             'guru.materials.show',
-            compact('material')
+            compact(
+                'material'
+            )
         );
     }
 
@@ -239,12 +304,12 @@ class MaterialController extends Controller
     public function edit(
         Material $material
     ) {
-        $pertemuans = Material::query()
-            ->whereNotNull('pertemuan')
-            ->select('pertemuan')
-            ->distinct()
-            ->orderBy('pertemuan')
-            ->pluck('pertemuan');
+
+        $pertemuans =
+            MaterialMeeting::query()
+                ->where('aktif', true)
+                ->orderBy('pertemuan')
+                ->pluck('pertemuan');
 
 
         return view(
@@ -264,12 +329,14 @@ class MaterialController extends Controller
         Request $request,
         Material $material
     ) {
+
         $validated = $request->validate([
 
             'pertemuan' => [
                 'required',
                 'integer',
                 'min:1',
+                'max:255',
             ],
 
             'judul' => [
@@ -318,11 +385,44 @@ class MaterialController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | PASTIKAN PERTEMUAN SUDAH ADA
+        |--------------------------------------------------------------------------
+        */
+
+        $meetingExists =
+            MaterialMeeting::query()
+                ->where(
+                    'pertemuan',
+                    $validated['pertemuan']
+                )
+                ->where(
+                    'aktif',
+                    true
+                )
+                ->exists();
+
+
+        if (!$meetingExists) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'pertemuan' =>
+                        "Pertemuan {$validated['pertemuan']} belum tersedia.",
+                ]);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
         | UPLOAD GAMBAR BARU
         |--------------------------------------------------------------------------
         */
 
-        if ($request->hasFile('gambar')) {
+        if (
+            $request->hasFile('gambar')
+        ) {
 
             $validated['gambar'] =
                 $request
@@ -337,6 +437,7 @@ class MaterialController extends Controller
             unset(
                 $validated['gambar']
             );
+
         }
 
 
@@ -347,7 +448,9 @@ class MaterialController extends Controller
         */
 
         $validated['aktif'] =
-            $request->boolean('aktif');
+            $request->boolean(
+                'aktif'
+            );
 
 
         /*
@@ -379,31 +482,67 @@ class MaterialController extends Controller
     /**
      * Menghapus materi.
      *
-     * Materi berdiri sendiri.
+     * Jika masih ada materi lain pada pertemuan yang sama,
+     * pertemuan tetap dipertahankan.
      *
-     * Menghapus materi TIDAK akan menghapus:
-     * - Quiz
-     * - Reflection
-     * - Soal Quiz
-     * - Jawaban Quiz
-     * - Soal Reflection
-     * - Jawaban Reflection
+     * Jika materi yang dihapus adalah materi terakhir,
+     * pertemuan tersebut ikut dihapus dari material_meetings.
      */
     public function destroy(
         Material $material
     ) {
+
         $pertemuan =
             $material->pertemuan;
 
 
         /*
         |--------------------------------------------------------------------------
-        | HAPUS MATERI SAJA
+        | HAPUS MATERI
         |--------------------------------------------------------------------------
         */
 
         $material->delete();
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK APAKAH MASIH ADA MATERI
+        |--------------------------------------------------------------------------
+        */
+
+        $remainingMaterials =
+            Material::query()
+                ->where(
+                    'pertemuan',
+                    $pertemuan
+                )
+                ->exists();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | JIKA SUDAH TIDAK ADA MATERI
+        |--------------------------------------------------------------------------
+        */
+
+        if (!$remainingMaterials) {
+
+            MaterialMeeting::query()
+                ->where(
+                    'pertemuan',
+                    $pertemuan
+                )
+                ->delete();
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KEMBALI KE INDEX
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route(

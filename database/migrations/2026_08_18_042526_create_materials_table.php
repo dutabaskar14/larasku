@@ -12,34 +12,100 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('materials', function (Blueprint $table) {
+
             $table->id();
 
-            // Pertemuan 1 - 8
+            /*
+            |--------------------------------------------------------------------------
+            | Pertemuan
+            |--------------------------------------------------------------------------
+            |
+            | Nomor pertemuan materi.
+            | Daftar pertemuan dikelola melalui tabel
+            | material_meetings yang akan ditambahkan terpisah.
+            |
+            */
+
             $table->unsignedTinyInteger('pertemuan');
 
-            // Judul materi
+
+            /*
+            |--------------------------------------------------------------------------
+            | Judul Materi
+            |--------------------------------------------------------------------------
+            */
+
             $table->string('judul');
 
-            // Kategori materi
-            $table->string('kategori')->nullable();
 
-            // Isi materi utama
-            $table->longText('isi')->nullable();
+            /*
+            |--------------------------------------------------------------------------
+            | Kategori Materi
+            |--------------------------------------------------------------------------
+            */
 
-            // Media pembelajaran
-            $table->string('gambar')->nullable();
-            $table->string('video_url')->nullable();
-            $table->string('audio_url')->nullable();
+            $table->string('kategori')
+                ->nullable();
 
-            // Status materi
-            $table->boolean('aktif')->default(true);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Isi Materi
+            |--------------------------------------------------------------------------
+            */
+
+            $table->longText('isi')
+                ->nullable();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Media Pembelajaran
+            |--------------------------------------------------------------------------
+            */
+
+            $table->string('gambar')
+                ->nullable();
+
+            $table->string('video_url')
+                ->nullable();
+
+            $table->string('audio_url')
+                ->nullable();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Status Materi
+            |--------------------------------------------------------------------------
+            */
+
+            $table->boolean('aktif')
+                ->default(true);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Timestamp
+            |--------------------------------------------------------------------------
+            */
 
             $table->timestamps();
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Index
+            |--------------------------------------------------------------------------
+            */
+
             $table->index('pertemuan');
+
             $table->index('aktif');
+
         });
     }
+
 
     /**
      * Reverse the migrations.

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Assignment;
 use App\Models\Material;
 use App\Models\Student;
 use App\Models\LKPD;
@@ -13,25 +14,30 @@ class QuizRankingController extends Controller
 {
     /**
      * ============================================================
-     * RANKING 4 ASPEK
+     * RANKING 5 ASPEK
      * ============================================================
      *
      * 1. Absensi
      * 2. Quiz
      * 3. LKPD
      * 4. Refleksi
+     * 5. Praktik
      *
      * Bobot penilaian:
      *
-     * Absensi  = 20%
-     * Quiz     = 35%
+     * Absensi  = 10%
+     * Quiz     = 20%
      * LKPD     = 25%
-     * Refleksi = 20%
+     * Refleksi = 15%
+     * Praktik  = 30%
+     *
+     * Total    = 100%
      *
      * Nilai akhir:
      *
-     * (Absensi x 20%) + (Quiz x 35%) +
-     * (LKPD x 25%) + (Refleksi x 20%)
+     * (Absensi x 10%) + (Quiz x 20%) +
+     * (LKPD x 25%) + (Refleksi x 15%) +
+     * (Praktik x 30%)
      *
      * Siswa tetap ditampilkan walaupun belum lengkap.
      * Nilai akhir hanya dihitung apabila seluruh aspek lengkap.
@@ -87,9 +93,6 @@ class QuizRankingController extends Controller
         |--------------------------------------------------------------------------
         | AMBIL DATA LKPD
         |--------------------------------------------------------------------------
-        |
-        | LKPD berdiri sendiri berdasarkan pertemuan.
-        |
         */
 
         $lkpds = LKPD::with([
@@ -103,9 +106,6 @@ class QuizRankingController extends Controller
         |--------------------------------------------------------------------------
         | AMBIL DATA REFLEKSI
         |--------------------------------------------------------------------------
-        |
-        | Refleksi juga berdiri sendiri.
-        |
         */
 
         $reflections = Reflection::with([
@@ -113,6 +113,61 @@ class QuizRankingController extends Controller
             'answers',
         ])
             ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL DATA PRAKTIK
+        |--------------------------------------------------------------------------
+        |
+        | Praktik menggunakan Assignment.
+        |
+        | Nilai diambil dari:
+        | assignment_submissions.nilai
+        |
+        | Submission individu:
+        | student_id
+        |
+        | Submission kelompok:
+        | assignment_group_id
+        | lalu dicocokkan dengan anggota kelompok.
+        |
+        */
+
+        $assignmentsQuery = Assignment::query()
+            ->where('aktif', true)
+            ->with([
+                'submissions.student',
+                'submissions.group.members.student',
+            ])
+            ->orderBy('pertemuan')
+            ->orderBy('id');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER PRAKTIK BERDASARKAN KELAS
+        |--------------------------------------------------------------------------
+        */
+
+        if ($kelas !== '') {
+
+            $kelasNormalized = str_replace('-', ' ', $kelas);
+
+            $assignmentsQuery->where(function ($query) use (
+                $kelas,
+                $kelasNormalized
+            ) {
+
+                $query
+                    ->where('kelas', $kelas)
+                    ->orWhere('kelas', $kelasNormalized);
+
+            });
+        }
+
+
+        $assignments = $assignmentsQuery->get();
 
 
         /*
@@ -152,7 +207,6 @@ class QuizRankingController extends Controller
                     );
 
             });
-
         }
 
 
@@ -175,7 +229,8 @@ class QuizRankingController extends Controller
             ->map(function ($student) use (
                 $totalPertemuan,
                 $lkpds,
-                $reflections
+                $reflections,
+                $assignments
             ) {
 
                 /*
@@ -229,21 +284,6 @@ class QuizRankingController extends Controller
                 |--------------------------------------------------------------------------
                 | 3. LKPD
                 |--------------------------------------------------------------------------
-                |
-                | Logika:
-                |
-                | - Tidak ada LKPD aktif/tersedia:
-                |     tidak dianggap sebagai tugas yang belum selesai.
-                |
-                | - Ada LKPD tetapi siswa belum menjawab:
-                |     belum dikerjakan.
-                |
-                | - Ada essay yang belum dinilai:
-                |     menunggu penilaian guru.
-                |
-                | - Semua selesai dan sudah dinilai:
-                |     nilai LKPD dihitung.
-                |
                 */
 
                 $lkpdResult = $this->calculateLkpdScore(
@@ -261,6 +301,18 @@ class QuizRankingController extends Controller
                 $reflectionResult = $this->calculateReflectionScore(
                     $student,
                     $reflections
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | 5. PRAKTIK
+                |--------------------------------------------------------------------------
+                */
+
+                $practiceResult = $this->calculatePracticeScore(
+                    $student,
+                    $assignments
                 );
 
 
@@ -296,7 +348,8 @@ class QuizRankingController extends Controller
 
                     if (!in_array(
                         $status['status'],
-                        ['complete', 'not_required']
+                        ['complete', 'not_required'],
+                        true
                     )) {
 
                         $missing[] = $status['message'];
@@ -316,7 +369,29 @@ class QuizRankingController extends Controller
 
                     if (!in_array(
                         $status['status'],
-                        ['complete', 'not_required']
+                        ['complete', 'not_required'],
+                        true
+                    )) {
+
+                        $missing[] = $status['message'];
+
+                    }
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | PRAKTIK
+                |--------------------------------------------------------------------------
+                */
+
+                foreach ($practiceResult['status_items'] as $status) {
+
+                    if (!in_array(
+                        $status['status'],
+                        ['complete', 'not_required'],
+                        true
                     )) {
 
                         $missing[] = $status['message'];
@@ -345,12 +420,22 @@ class QuizRankingController extends Controller
                 $reflectionComplete =
                     $reflectionResult['complete'];
 
+                $practiceComplete =
+                    $practiceResult['complete'];
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | 5 ASPEK HARUS LENGKAP
+                |--------------------------------------------------------------------------
+                */
 
                 $isComplete =
                     $attendanceComplete
                     && $quizComplete
                     && $lkpdComplete
-                    && $reflectionComplete;
+                    && $reflectionComplete
+                    && $practiceComplete;
 
 
                 /*
@@ -358,14 +443,13 @@ class QuizRankingController extends Controller
                 | NILAI AKHIR
                 |--------------------------------------------------------------------------
                 |
-                | Nilai akhir hanya dihitung kalau seluruh aspek
-                | sudah lengkap.
-                |
                 | Bobot:
-                | Absensi  = 20%
-                | Quiz     = 35%
+                |
+                | Absensi  = 10%
+                | Quiz     = 20%
                 | LKPD     = 25%
-                | Refleksi = 20%
+                | Refleksi = 15%
+                | Praktik  = 30%
                 |
                 */
 
@@ -374,10 +458,11 @@ class QuizRankingController extends Controller
                 if ($isComplete) {
 
                     $finalScore =
-                        ($attendancePercentage * 0.20)
-                        + ($quizAverage * 0.35)
+                        ($attendancePercentage * 0.10)
+                        + ($quizAverage * 0.20)
                         + ($lkpdResult['score'] * 0.25)
-                        + ($reflectionResult['score'] * 0.20);
+                        + ($reflectionResult['score'] * 0.15)
+                        + ($practiceResult['score'] * 0.30);
 
                 }
 
@@ -396,7 +481,10 @@ class QuizRankingController extends Controller
                 } else {
 
                     $statusText =
-                        implode(', ', array_unique($missing));
+                        implode(
+                            ', ',
+                            array_unique($missing)
+                        );
 
                 }
 
@@ -410,6 +498,7 @@ class QuizRankingController extends Controller
                 return [
 
                     'student' => $student,
+
 
                     /*
                     |--------------------------------------------------------------------------
@@ -453,7 +542,10 @@ class QuizRankingController extends Controller
                     */
 
                     'lkpd_score' => $lkpdResult['score'] !== null
-                        ? round($lkpdResult['score'], 2)
+                        ? round(
+                            $lkpdResult['score'],
+                            2
+                        )
                         : null,
 
                     'lkpd_complete' =>
@@ -486,6 +578,27 @@ class QuizRankingController extends Controller
 
                     /*
                     |--------------------------------------------------------------------------
+                    | PRAKTIK
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'practice_score' =>
+                        $practiceResult['score'] !== null
+                            ? round(
+                                $practiceResult['score'],
+                                2
+                            )
+                            : null,
+
+                    'practice_complete' =>
+                        $practiceResult['complete'],
+
+                    'practice_status' =>
+                        $practiceResult['status'],
+
+
+                    /*
+                    |--------------------------------------------------------------------------
                     | FINAL
                     |--------------------------------------------------------------------------
                     */
@@ -503,7 +616,10 @@ class QuizRankingController extends Controller
 
                     'final_score' =>
                         $finalScore !== null
-                            ? round($finalScore, 2)
+                            ? round(
+                                $finalScore,
+                                2
+                            )
                             : null,
 
                 ];
@@ -691,7 +807,8 @@ class QuizRankingController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $totalStudents = $ranking->count();
+        $totalStudents =
+            $ranking->count();
 
 
         /*
@@ -714,6 +831,310 @@ class QuizRankingController extends Controller
                 'totalPertemuan'
             )
         );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HITUNG NILAI PRAKTIK
+    |--------------------------------------------------------------------------
+    |
+    | Praktik berasal dari Assignment.
+    |
+    | Individu:
+    | submission.student_id = student.id
+    |
+    | Kelompok:
+    | submission.assignment_group_id
+    | -> group.members
+    | -> student.id
+    |
+    | Nilai hanya dianggap lengkap apabila:
+    |
+    | - submission ada
+    | - status = selesai
+    | - nilai tidak null
+    |
+    */
+
+    private function calculatePracticeScore(
+        Student $student,
+        $assignments
+    ): array {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Jika belum ada Praktik
+        |--------------------------------------------------------------------------
+        */
+
+        if ($assignments->isEmpty()) {
+
+            return [
+
+                'score' => null,
+
+                'complete' => true,
+
+                'status' =>
+                    'Belum ada Praktik',
+
+                'status_items' => [
+
+                    [
+                        'status' => 'not_required',
+
+                        'message' =>
+                            'Tidak ada Praktik',
+                    ],
+
+                ],
+
+            ];
+
+        }
+
+
+        $scores = [];
+
+        $statusItems = [];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK SETIAP TUGAS PRAKTIK
+        |--------------------------------------------------------------------------
+        */
+
+        foreach ($assignments as $assignment) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cari submission siswa
+            |--------------------------------------------------------------------------
+            */
+
+            $submission = $assignment
+                ->submissions
+                ->first(
+                    function ($submission) use (
+                        $student
+                    ) {
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | INDIVIDU
+                        |--------------------------------------------------------------------------
+                        */
+
+                        if (
+                            $submission->student_id !== null
+                            &&
+                            (int) $submission->student_id ===
+                            (int) $student->id
+                        ) {
+
+                            return true;
+
+                        }
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | KELOMPOK
+                        |--------------------------------------------------------------------------
+                        */
+
+                        if (
+                            $submission->assignment_group_id !== null
+                            &&
+                            $submission->group
+                        ) {
+
+                            return $submission
+                                ->group
+                                ->members
+                                ->contains(
+                                    function ($member) use (
+                                        $student
+                                    ) {
+
+                                        return (int) $member->student_id ===
+                                            (int) $student->id;
+
+                                    }
+                                );
+
+                        }
+
+
+                        return false;
+
+                    }
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BELUM MENGUMPULKAN
+            |--------------------------------------------------------------------------
+            */
+
+            if (!$submission) {
+
+                $statusItems[] = [
+
+                    'status' =>
+                        'not_done',
+
+                    'message' =>
+                        "Praktik Pertemuan {$assignment->pertemuan} belum dikumpulkan",
+
+                ];
+
+                continue;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BELUM DINILAI
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $submission->nilai === null
+            ) {
+
+                $statusItems[] = [
+
+                    'status' =>
+                        'pending',
+
+                    'message' =>
+                        "Praktik Pertemuan {$assignment->pertemuan} belum memiliki nilai",
+
+                ];
+
+                continue;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | PENILAIAN BELUM DISELESAIKAN
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $submission->status !== 'selesai'
+            ) {
+
+                $statusItems[] = [
+
+                    'status' =>
+                        'pending',
+
+                    'message' =>
+                        "Praktik Pertemuan {$assignment->pertemuan} menunggu penilaian guru",
+
+                ];
+
+                continue;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NILAI PRAKTIK
+            |--------------------------------------------------------------------------
+            */
+
+            $scores[] =
+                (float) $submission->nilai;
+
+
+            $statusItems[] = [
+
+                'status' =>
+                    'complete',
+
+                'message' =>
+                    "Praktik Pertemuan {$assignment->pertemuan} selesai",
+
+            ];
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK ADA YANG BELUM LENGKAP
+        |--------------------------------------------------------------------------
+        */
+
+        $hasIncomplete =
+            collect($statusItems)
+                ->contains(
+                    fn ($item) =>
+                        $item['status'] !== 'complete'
+                        &&
+                        $item['status'] !== 'not_required'
+                );
+
+
+        if ($hasIncomplete) {
+
+            return [
+
+                'score' => null,
+
+                'complete' => false,
+
+                'status' =>
+                    'Belum lengkap',
+
+                'status_items' =>
+                    $statusItems,
+
+            ];
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RATA-RATA PRAKTIK
+        |--------------------------------------------------------------------------
+        */
+
+        $score =
+            count($scores) > 0
+                ? array_sum($scores)
+                    /
+                    count($scores)
+                : null;
+
+
+        return [
+
+            'score' =>
+                $score,
+
+            'complete' =>
+                true,
+
+            'status' =>
+                'Semua Praktik selesai',
+
+            'status_items' =>
+                $statusItems,
+
+        ];
+
     }
 
 
@@ -749,7 +1170,9 @@ class QuizRankingController extends Controller
 
                     [
                         'status' => 'not_required',
-                        'message' => 'Tidak ada LKPD',
+
+                        'message' =>
+                            'Tidak ada LKPD',
                     ],
 
                 ],
@@ -922,15 +1345,6 @@ class QuizRankingController extends Controller
             |--------------------------------------------------------------------------
             | HITUNG NILAI LKPD
             |--------------------------------------------------------------------------
-            |
-            | Kita memakai nilai per jawaban.
-            |
-            | PG:
-            | otomatis sudah memiliki nilai.
-            |
-            | Essay:
-            | memakai nilai manual guru.
-            |
             */
 
             $questionScores = [];
@@ -955,13 +1369,8 @@ class QuizRankingController extends Controller
                 }
 
 
-                /*
-                |--------------------------------------------------------------------------
-                | NILAI
-                |--------------------------------------------------------------------------
-                */
-
-                $nilai = $answer->nilai;
+                $nilai =
+                    $answer->nilai;
 
 
                 if ($nilai !== null) {
@@ -1077,9 +1486,11 @@ class QuizRankingController extends Controller
 
         return [
 
-            'score' => $score,
+            'score' =>
+                $score,
 
-            'complete' => true,
+            'complete' =>
+                true,
 
             'status' =>
                 'Semua LKPD selesai',
@@ -1379,9 +1790,11 @@ class QuizRankingController extends Controller
 
         return [
 
-            'score' => $score,
+            'score' =>
+                $score,
 
-            'complete' => true,
+            'complete' =>
+                true,
 
             'status' =>
                 'Semua refleksi selesai',

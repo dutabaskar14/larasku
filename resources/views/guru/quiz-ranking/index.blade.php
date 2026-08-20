@@ -76,15 +76,8 @@
         class="main-content"
     >
 
-
-        {{-- =====================================================
-             HEADBAR GURU
-        ====================================================== --}}
-
         @include('guru.partials.header')
 
-
-        {{-- CONTENT --}}
 
         <div
             class="
@@ -97,9 +90,9 @@
         >
 
 
-            {{-- =================================================
+            {{-- =====================================================
                  TITLE
-            ================================================== --}}
+            ====================================================== --}}
 
             <section class="mb-6">
 
@@ -150,9 +143,11 @@
                         max-w-3xl
                     "
                 >
-                    Peringkat berdasarkan empat aspek penilaian:
-                    <strong>Absensi, Quiz, LKPD, dan Refleksi.</strong>
-                    Nilai akhir hanya ditampilkan setelah seluruh aspek
+                    Peringkat berdasarkan lima aspek penilaian:
+                    <strong>
+                        Absensi, Quiz, LKPD, Refleksi, dan Praktik.
+                    </strong>
+                    Nilai akhir hanya dihitung setelah seluruh aspek
                     penilaian siswa lengkap.
                 </p>
 
@@ -172,7 +167,6 @@
                     mb-6
                 "
             >
-
 
                 {{-- SISWA --}}
 
@@ -399,7 +393,7 @@
 
 
             {{-- =================================================
-                 INFO 4 ASPEK
+                 SISTEM PENILAIAN 5 ASPEK
             ================================================== --}}
 
             <section
@@ -462,8 +456,7 @@
                                 mt-1
                             "
                         >
-                            Nilai akhir dihitung dari empat aspek dengan bobot:
-
+                            Nilai akhir dihitung dari lima aspek dengan bobot:
                         </p>
 
 
@@ -487,22 +480,9 @@
                                     font-bold
                                 "
                             >
-                                Absensi 20%
+                                Absensi 10%
                             </span>
 
-                            <span
-                                class="
-                                    px-3
-                                    py-1.5
-                                    rounded-lg
-                                    bg-violet-50
-                                    text-violet-700
-                                    text-xs
-                                    font-bold
-                                "
-                            >
-                                Quiz 35%
-                            </span>
 
                             <span
                                 class="
@@ -518,6 +498,22 @@
                                 LKPD 25%
                             </span>
 
+
+                            <span
+                                class="
+                                    px-3
+                                    py-1.5
+                                    rounded-lg
+                                    bg-violet-50
+                                    text-violet-700
+                                    text-xs
+                                    font-bold
+                                "
+                            >
+                                Quiz 20%
+                            </span>
+
+
                             <span
                                 class="
                                     px-3
@@ -529,7 +525,22 @@
                                     font-bold
                                 "
                             >
-                                Refleksi 20%
+                                Refleksi 15%
+                            </span>
+
+
+                            <span
+                                class="
+                                    px-3
+                                    py-1.5
+                                    rounded-lg
+                                    bg-rose-50
+                                    text-rose-700
+                                    text-xs
+                                    font-bold
+                                "
+                            >
+                                Praktik 30%
                             </span>
 
                         </div>
@@ -609,6 +620,7 @@
                             <option value="">
                                 Semua Kelas
                             </option>
+
 
                             @foreach($classes as $class)
 
@@ -777,7 +789,9 @@
 
                 @if($ranking->count() > 0)
 
-                    {{-- DESKTOP --}}
+                    {{-- =================================================
+                         DESKTOP
+                    ================================================== --}}
 
                     <div class="hidden xl:block overflow-x-auto">
 
@@ -815,6 +829,10 @@
 
                                     <th class="px-4 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
                                         Refleksi
+                                    </th>
+
+                                    <th class="px-4 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                        Praktik
                                     </th>
 
                                     <th class="px-4 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -895,7 +913,10 @@
                                                 {{ $item['student']->kelas ?: 'Tanpa kelas' }}
 
                                                 @if($item['student']->nomor_absen)
-                                                    · No. {{ $item['student']->nomor_absen }}
+
+                                                    · No.
+                                                    {{ $item['student']->nomor_absen }}
+
                                                 @endif
 
                                             </div>
@@ -1041,6 +1062,41 @@
                                         </td>
 
 
+                                        {{-- PRAKTIK --}}
+
+                                        <td class="px-4 py-4 text-center">
+
+                                            @if($item['practice_score'] !== null)
+
+                                                <span
+                                                    class="
+                                                        inline-flex
+                                                        items-center
+                                                        justify-center
+                                                        min-w-[60px]
+                                                        px-2
+                                                        py-1.5
+                                                        rounded-lg
+                                                        bg-rose-50
+                                                        text-rose-700
+                                                        text-xs
+                                                        font-bold
+                                                    "
+                                                >
+                                                    {{ number_format($item['practice_score'], 1) }}
+                                                </span>
+
+                                            @else
+
+                                                <span class="text-xs font-semibold text-slate-300">
+                                                    —
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+
                                         {{-- NILAI AKHIR --}}
 
                                         <td class="px-4 py-4 text-center">
@@ -1092,7 +1148,7 @@
 
                                         {{-- STATUS --}}
 
-                                        <td class="px-4 py-4 min-w-[260px]">
+                                        <td class="px-4 py-4 min-w-[280px]">
 
                                             @if($item['is_complete'])
 
@@ -1117,7 +1173,7 @@
                                                         </div>
 
                                                         <div class="text-[10px] text-slate-400 mt-1">
-                                                            Absensi, Quiz, LKPD, dan Refleksi selesai.
+                                                            Absen, Quiz, LKPD, Refleksi, dan Praktik selesai.
                                                         </div>
 
                                                     </div>
@@ -1152,12 +1208,7 @@
 
                                                                 @foreach($item['missing'] as $missing)
 
-                                                                    <li
-                                                                        class="
-                                                                            text-[10px]
-                                                                            text-slate-500
-                                                                        "
-                                                                    >
+                                                                    <li class="text-[10px] text-slate-500">
                                                                         • {{ $missing }}
                                                                     </li>
 
@@ -1186,7 +1237,9 @@
                     </div>
 
 
-                    {{-- TABLET / MOBILE --}}
+                    {{-- =================================================
+                         TABLET / MOBILE
+                    ================================================== --}}
 
                     <div
                         class="
@@ -1250,11 +1303,16 @@
                                                     mt-1
                                                 "
                                             >
+
                                                 {{ $item['student']->kelas ?: 'Tanpa kelas' }}
 
                                                 @if($item['student']->nomor_absen)
-                                                    · No. {{ $item['student']->nomor_absen }}
+
+                                                    · No.
+                                                    {{ $item['student']->nomor_absen }}
+
                                                 @endif
+
                                             </p>
 
                                         </div>
@@ -1308,13 +1366,13 @@
                                 </div>
 
 
-                                {{-- 4 ASPEK --}}
+                                {{-- 5 ASPEK --}}
 
                                 <div
                                     class="
                                         grid
                                         grid-cols-2
-                                        sm:grid-cols-4
+                                        sm:grid-cols-5
                                         gap-2
                                         mt-4
                                     "
@@ -1332,39 +1390,11 @@
                                     >
 
                                         <p class="text-[10px] uppercase font-bold text-blue-500">
-                                            Absensi
+                                            Absen
                                         </p>
 
                                         <p class="text-sm font-black text-blue-700 mt-1">
                                             {{ number_format($item['attendance_percentage'], 0) }}%
-                                        </p>
-
-                                    </div>
-
-
-                                    {{-- QUIZ --}}
-
-                                    <div
-                                        class="
-                                            rounded-xl
-                                            bg-violet-50
-                                            p-3
-                                            text-center
-                                        "
-                                    >
-
-                                        <p class="text-[10px] uppercase font-bold text-violet-500">
-                                            Quiz
-                                        </p>
-
-                                        <p class="text-sm font-black text-violet-700 mt-1">
-
-                                            @if($item['quiz_average'] !== null)
-                                                {{ number_format($item['quiz_average'], 1) }}
-                                            @else
-                                                —
-                                            @endif
-
                                         </p>
 
                                     </div>
@@ -1398,6 +1428,34 @@
                                     </div>
 
 
+                                    {{-- QUIZ --}}
+
+                                    <div
+                                        class="
+                                            rounded-xl
+                                            bg-violet-50
+                                            p-3
+                                            text-center
+                                        "
+                                    >
+
+                                        <p class="text-[10px] uppercase font-bold text-violet-500">
+                                            Quiz
+                                        </p>
+
+                                        <p class="text-sm font-black text-violet-700 mt-1">
+
+                                            @if($item['quiz_average'] !== null)
+                                                {{ number_format($item['quiz_average'], 1) }}
+                                            @else
+                                                —
+                                            @endif
+
+                                        </p>
+
+                                    </div>
+
+
                                     {{-- REFLEKSI --}}
 
                                     <div
@@ -1417,6 +1475,34 @@
 
                                             @if($item['reflection_score'] !== null)
                                                 {{ number_format($item['reflection_score'], 1) }}
+                                            @else
+                                                —
+                                            @endif
+
+                                        </p>
+
+                                    </div>
+
+
+                                    {{-- PRAKTIK --}}
+
+                                    <div
+                                        class="
+                                            rounded-xl
+                                            bg-rose-50
+                                            p-3
+                                            text-center
+                                        "
+                                    >
+
+                                        <p class="text-[10px] uppercase font-bold text-rose-500">
+                                            Praktik
+                                        </p>
+
+                                        <p class="text-sm font-black text-rose-700 mt-1">
+
+                                            @if($item['practice_score'] !== null)
+                                                {{ number_format($item['practice_score'], 1) }}
                                             @else
                                                 —
                                             @endif
@@ -1459,7 +1545,7 @@
                                                 </p>
 
                                                 <p class="text-[10px] text-emerald-600 mt-1">
-                                                    Absensi, Quiz, LKPD, dan Refleksi telah selesai.
+                                                    Absen, Quiz, LKPD, Refleksi, dan Praktik telah selesai.
                                                 </p>
 
                                             </div>

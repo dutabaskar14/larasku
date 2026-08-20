@@ -110,6 +110,91 @@
             scrollbar-width: thin;
         }
 
+
+        /* =====================================================
+           QUICK MENU COMPACT
+        ====================================================== */
+
+        .quick-menu-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(1, minmax(0, 1fr));
+
+            gap: 1rem;
+        }
+
+
+        @media (min-width: 768px) {
+
+            .quick-menu-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (min-width: 1024px) {
+
+            .quick-menu-grid {
+                grid-template-columns:
+                    repeat(5, minmax(0, 1fr));
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Card lebih compact
+        |--------------------------------------------------------------------------
+        */
+
+        .menu-card {
+            padding: 1.25rem !important;
+        }
+
+
+        .menu-card > div:first-child {
+            width: 2.5rem !important;
+
+            height: 2.5rem !important;
+
+            margin-bottom: .75rem !important;
+        }
+
+
+        .menu-card > div:first-child i {
+            width: 1.125rem !important;
+
+            height: 1.125rem !important;
+        }
+
+
+        .menu-card h3 {
+            font-size: .95rem !important;
+
+            line-height: 1.35rem !important;
+        }
+
+
+        .menu-card p {
+            font-size: .75rem !important;
+
+            line-height: 1.1rem !important;
+
+            margin-top: .25rem !important;
+        }
+
+
+        .menu-card > div:last-child {
+            margin-top: .75rem !important;
+
+            font-size: .75rem !important;
+        }
+
+
     </style>
 
 </head>
@@ -122,34 +207,35 @@
 
 
     {{-- =====================================================
-     SIDEBAR GLOBAL
-====================================================== --}}
+         SIDEBAR GLOBAL
+    ====================================================== --}}
 
-@include('guru.partials.sidebar')
-
-
-{{-- =====================================================
-     MAIN
-====================================================== --}}
-
-<main
-    class="
-        flex-1
-        lg:ml-64
-    "
->
+    @include('guru.partials.sidebar')
 
 
     {{-- =====================================================
-         HEADBAR GURU
+         MAIN
     ====================================================== --}}
 
-    @include('guru.partials.header')
+    <main
+        class="
+            flex-1
+            lg:ml-64
+        "
+    >
 
 
-    {{-- =====================================================
-         CONTENT
-    ====================================================== --}}
+        {{-- =====================================================
+             HEADBAR GURU
+        ====================================================== --}}
+
+        @include('guru.partials.header')
+
+
+        {{-- =====================================================
+             CONTENT
+        ====================================================== --}}
+
         <div
             class="
                 p-5
@@ -211,14 +297,16 @@
                 class="
                     grid
                     grid-cols-2
-                    md:grid-cols-4
+                    md:grid-cols-5
                     gap-4
                     mb-7
                 "
             >
 
 
-                {{-- SISWA --}}
+                {{-- =================================================
+                     TOTAL SISWA
+                ================================================== --}}
 
                 <div
                     class="
@@ -254,10 +342,15 @@
 
                             <i
                                 data-lucide="users"
-                                class="w-5 h-5 text-blue-600"
+                                class="
+                                    w-5
+                                    h-5
+                                    text-blue-600
+                                "
                             ></i>
 
                         </div>
+
 
                         <span
                             class="
@@ -308,7 +401,9 @@
                 </div>
 
 
-                {{-- KEHADIRAN --}}
+                {{-- =================================================
+                     KEHADIRAN
+                ================================================== --}}
 
                 <div
                     class="
@@ -336,7 +431,11 @@
 
                         <i
                             data-lucide="clipboard-check"
-                            class="w-5 h-5 text-green-600"
+                            class="
+                                w-5
+                                h-5
+                                text-green-600
+                            "
                         ></i>
 
                     </div>
@@ -378,7 +477,9 @@
                 </div>
 
 
-                {{-- QUIZ --}}
+                {{-- =================================================
+                     QUIZ
+                ================================================== --}}
 
                 <div
                     class="
@@ -406,7 +507,11 @@
 
                         <i
                             data-lucide="help-circle"
-                            class="w-5 h-5 text-amber-600"
+                            class="
+                                w-5
+                                h-5
+                                text-amber-600
+                            "
                         ></i>
 
                     </div>
@@ -448,7 +553,9 @@
                 </div>
 
 
-                {{-- LKPD --}}
+                {{-- =================================================
+                     LKPD
+                ================================================== --}}
 
                 <div
                     class="
@@ -476,7 +583,11 @@
 
                         <i
                             data-lucide="file-check-2"
-                            class="w-5 h-5 text-purple-600"
+                            class="
+                                w-5
+                                h-5
+                                text-purple-600
+                            "
                         ></i>
 
                     </div>
@@ -517,16 +628,98 @@
                 </div>
 
 
+                {{-- =================================================
+                     PRAKTIK
+                ================================================== --}}
+
+                <div
+                    class="
+                        stat-card
+                        bg-white
+                        border
+                        border-slate-200
+                        rounded-2xl
+                        p-5
+                    "
+                >
+
+                    <div
+                        class="
+                            w-10
+                            h-10
+                            rounded-xl
+                            bg-emerald-50
+                            flex
+                            items-center
+                            justify-center
+                            mb-4
+                        "
+                    >
+
+                        <i
+                            data-lucide="music-2"
+                            class="
+                                w-5
+                                h-5
+                                text-emerald-600
+                            "
+                        ></i>
+
+                    </div>
+
+
+                    <p
+                        class="
+                            text-xs
+                            text-slate-400
+                        "
+                    >
+                        Praktik
+                    </p>
+
+
+                    <p
+                        class="
+                            text-2xl
+                            font-bold
+                            text-slate-900
+                            mt-1
+                        "
+                    >
+                        {{ $practiceCount }}
+                    </p>
+
+
+                    <p
+                        class="
+                            text-[10px]
+                            text-slate-400
+                            mt-1
+                        "
+                    >
+                        tugas praktik
+                    </p>
+
+                </div>
+
+
             </div>
 
 
             {{-- =================================================
-                 QUICK MENU
+                 KELOLA PEMBELAJARAN
             ================================================== --}}
 
             <div class="mb-7">
 
-                <div class="flex items-center justify-between mb-4">
+                <div
+                    class="
+                        flex
+                        items-center
+                        justify-between
+                        mb-4
+                    "
+                >
 
                     <div>
 
@@ -539,6 +732,7 @@
                         >
                             Kelola Pembelajaran
                         </h2>
+
 
                         <p
                             class="
@@ -555,18 +749,19 @@
                 </div>
 
 
+                {{-- =================================================
+                     GRID COMPACT
+                     5 CARD PER BARIS
+                ================================================== --}}
+
                 <div
                     class="
-                        grid
-                        grid-cols-1
-                        md:grid-cols-2
-                        lg:grid-cols-3
-                        gap-5
+                        quick-menu-grid
                     "
                 >
 
 
-                    {{-- SISWA --}}
+                    {{-- DATA SISWA --}}
 
                     <a
                         href="{{ route('guru.students.index') }}"
@@ -576,7 +771,6 @@
                             border
                             border-slate-200
                             rounded-2xl
-                            p-6
                         "
                     >
 
@@ -595,7 +789,11 @@
 
                             <i
                                 data-lucide="users"
-                                class="w-6 h-6 text-blue-600"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-blue-600
+                                "
                             ></i>
 
                         </div>
@@ -635,7 +833,6 @@
                                 gap-1
                             "
                         >
-
                             Kelola Siswa
 
                             <i
@@ -646,88 +843,91 @@
                         </div>
 
                     </a>
-{{-- =================================================
-     KELOLA KELAS
-================================================= --}}
-
-<a
-    href="{{ route('guru.classes.index') }}"
-    class="
-        menu-card
-        bg-white
-        border
-        border-slate-200
-        rounded-2xl
-        p-6
-    "
->
-
-    <div
-        class="
-            w-12
-            h-12
-            rounded-xl
-            bg-indigo-50
-            flex
-            items-center
-            justify-center
-            mb-5
-        "
-    >
-
-        <i
-            data-lucide="school"
-            class="w-6 h-6 text-indigo-600"
-        ></i>
-
-    </div>
 
 
-    <h3
-        class="
-            font-bold
-            text-lg
-            text-slate-900
-        "
-    >
-        Kelola Kelas
-    </h3>
+                    {{-- KELOLA KELAS --}}
+
+                    <a
+                        href="{{ route('guru.classes.index') }}"
+                        class="
+                            menu-card
+                            bg-white
+                            border
+                            border-slate-200
+                            rounded-2xl
+                        "
+                    >
+
+                        <div
+                            class="
+                                w-12
+                                h-12
+                                rounded-xl
+                                bg-indigo-50
+                                flex
+                                items-center
+                                justify-center
+                                mb-5
+                            "
+                        >
+
+                            <i
+                                data-lucide="school"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-indigo-600
+                                "
+                            ></i>
+
+                        </div>
 
 
-    <p
-        class="
-            text-sm
-            text-slate-500
-            mt-1
-        "
-    >
-        Tambah, ubah, dan kelola
-        daftar kelas siswa.
-    </p>
+                        <h3
+                            class="
+                                font-bold
+                                text-lg
+                                text-slate-900
+                            "
+                        >
+                            Kelola Kelas
+                        </h3>
 
 
-    <div
-        class="
-            mt-5
-            text-sm
-            font-semibold
-            text-indigo-600
-            flex
-            items-center
-            gap-1
-        "
-    >
+                        <p
+                            class="
+                                text-sm
+                                text-slate-500
+                                mt-1
+                            "
+                        >
+                            Tambah, ubah, dan kelola
+                            daftar kelas siswa.
+                        </p>
 
-        Kelola Kelas
 
-        <i
-            data-lucide="arrow-right"
-            class="w-4 h-4"
-        ></i>
+                        <div
+                            class="
+                                mt-5
+                                text-sm
+                                font-semibold
+                                text-indigo-600
+                                flex
+                                items-center
+                                gap-1
+                            "
+                        >
+                            Kelola Kelas
 
-    </div>
+                            <i
+                                data-lucide="arrow-right"
+                                class="w-4 h-4"
+                            ></i>
 
-</a>
+                        </div>
+
+                    </a>
+
 
                     {{-- ABSENSI --}}
 
@@ -739,7 +939,6 @@
                             border
                             border-slate-200
                             rounded-2xl
-                            p-6
                         "
                     >
 
@@ -758,7 +957,11 @@
 
                             <i
                                 data-lucide="clipboard-check"
-                                class="w-6 h-6 text-green-600"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-green-600
+                                "
                             ></i>
 
                         </div>
@@ -798,7 +1001,6 @@
                                 gap-1
                             "
                         >
-
                             Kelola Absensi
 
                             <i
@@ -821,7 +1023,6 @@
                             border
                             border-slate-200
                             rounded-2xl
-                            p-6
                         "
                     >
 
@@ -840,7 +1041,11 @@
 
                             <i
                                 data-lucide="book-open"
-                                class="w-6 h-6 text-purple-600"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-purple-600
+                                "
                             ></i>
 
                         </div>
@@ -893,7 +1098,6 @@
                             border
                             border-slate-200
                             rounded-2xl
-                            p-6
                         "
                     >
 
@@ -912,7 +1116,11 @@
 
                             <i
                                 data-lucide="play-circle"
-                                class="w-6 h-6 text-red-600"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-red-600
+                                "
                             ></i>
 
                         </div>
@@ -965,7 +1173,6 @@
                             border
                             border-slate-200
                             rounded-2xl
-                            p-6
                         "
                     >
 
@@ -984,7 +1191,11 @@
 
                             <i
                                 data-lucide="help-circle"
-                                class="w-6 h-6 text-amber-600"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-amber-600
+                                "
                             ></i>
 
                         </div>
@@ -1037,7 +1248,6 @@
                             border
                             border-slate-200
                             rounded-2xl
-                            p-6
                         "
                     >
 
@@ -1056,7 +1266,11 @@
 
                             <i
                                 data-lucide="trophy"
-                                class="w-6 h-6 text-yellow-600"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-yellow-600
+                                "
                             ></i>
 
                         </div>
@@ -1080,8 +1294,9 @@
                                 mt-1
                             "
                         >
-                            Peringkat otomatis berdasarkan
-                            Quiz dan kehadiran.
+                            Peringkat berdasarkan
+                            Absen, LKPD, Quiz, Refleksi,
+                            dan Praktik.
                         </p>
 
 
@@ -1109,7 +1324,6 @@
                             border
                             border-slate-200
                             rounded-2xl
-                            p-6
                         "
                     >
 
@@ -1128,7 +1342,11 @@
 
                             <i
                                 data-lucide="message-square-heart"
-                                class="w-6 h-6 text-pink-600"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-pink-600
+                                "
                             ></i>
 
                         </div>
@@ -1181,7 +1399,6 @@
                             border
                             border-slate-200
                             rounded-2xl
-                            p-6
                         "
                     >
 
@@ -1200,7 +1417,11 @@
 
                             <i
                                 data-lucide="file-check-2"
-                                class="w-6 h-6 text-indigo-600"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-indigo-600
+                                "
                             ></i>
 
                         </div>
@@ -1243,6 +1464,81 @@
                     </a>
 
 
+                    {{-- PRAKTIK --}}
+
+                    <a
+                        href="{{ route('guru.assignments.index') }}"
+                        class="
+                            menu-card
+                            bg-white
+                            border
+                            border-slate-200
+                            rounded-2xl
+                        "
+                    >
+
+                        <div
+                            class="
+                                w-12
+                                h-12
+                                rounded-xl
+                                bg-emerald-50
+                                flex
+                                items-center
+                                justify-center
+                                mb-5
+                            "
+                        >
+
+                            <i
+                                data-lucide="music-2"
+                                class="
+                                    w-6
+                                    h-6
+                                    text-emerald-600
+                                "
+                            ></i>
+
+                        </div>
+
+
+                        <h3
+                            class="
+                                font-bold
+                                text-lg
+                                text-slate-900
+                            "
+                        >
+                            Praktik
+                        </h3>
+
+
+                        <p
+                            class="
+                                text-sm
+                                text-slate-500
+                                mt-1
+                            "
+                        >
+                            Kelola tugas praktik dan
+                            penilaian siswa.
+                        </p>
+
+
+                        <div
+                            class="
+                                mt-5
+                                text-sm
+                                font-semibold
+                                text-emerald-600
+                            "
+                        >
+                            Kelola Praktik →
+                        </div>
+
+                    </a>
+
+
                 </div>
 
             </div>
@@ -1250,20 +1546,25 @@
 
             {{-- =================================================
                  MONITORING
+                 KEHADIRAN + KONTEN PEMBELAJARAN
             ================================================== --}}
 
             <div
                 class="
                     grid
                     grid-cols-1
-                    lg:grid-cols-3
+                    lg:grid-cols-2
                     gap-5
                     mb-7
+                    max-w-5xl
+                    mx-auto
                 "
             >
 
 
-                {{-- KEHADIRAN --}}
+                {{-- =================================================
+                     KEHADIRAN
+                ================================================== --}}
 
                 <section
                     class="
@@ -1295,6 +1596,7 @@
                                 Kehadiran
                             </h3>
 
+
                             <p
                                 class="
                                     text-xs
@@ -1310,7 +1612,11 @@
 
                         <i
                             data-lucide="calendar-check"
-                            class="w-5 h-5 text-green-600"
+                            class="
+                                w-5
+                                h-5
+                                text-green-600
+                            "
                         ></i>
 
                     </div>
@@ -1341,6 +1647,7 @@
                                     Hadir
                                 </span>
 
+
                                 <span
                                     class="
                                         font-bold
@@ -1359,9 +1666,16 @@
                                     class="progress-fill"
                                     style="
                                         width:
-                                        {{ $totalAttendance > 0
-                                            ? ($attendanceSummary['hadir'] / $totalAttendance * 100)
-                                            : 0
+                                        {{
+                                            $totalAttendance > 0
+                                                ? (
+                                                    $attendanceSummary['hadir']
+                                                    /
+                                                    $totalAttendance
+                                                    *
+                                                    100
+                                                )
+                                                : 0
                                         }}%;
                                         background:#16a34a;
                                     "
@@ -1391,6 +1705,7 @@
                                 Sakit
                             </span>
 
+
                             <strong>
                                 {{ $attendanceSummary['sakit'] }}
                             </strong>
@@ -1416,6 +1731,7 @@
                             >
                                 Izin
                             </span>
+
 
                             <strong>
                                 {{ $attendanceSummary['izin'] }}
@@ -1443,8 +1759,11 @@
                                 Alfa
                             </span>
 
+
                             <strong
-                                class="text-red-600"
+                                class="
+                                    text-red-600
+                                "
                             >
                                 {{ $attendanceSummary['alfa'] }}
                             </strong>
@@ -1466,10 +1785,11 @@
                             <span
                                 class="
                                     text-slate-500
-                            "
+                                "
                             >
                                 Dispensasi
                             </span>
+
 
                             <strong>
                                 {{ $attendanceSummary['dispensasi'] }}
@@ -1483,7 +1803,9 @@
                 </section>
 
 
-                {{-- MATERI / VIDEO / REFLEKSI --}}
+                {{-- =================================================
+                     KONTEN PEMBELAJARAN
+                ================================================== --}}
 
                 <section
                     class="
@@ -1495,32 +1817,56 @@
                     "
                 >
 
-                    <div class="mb-5">
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            mb-5
+                        "
+                    >
 
-                        <h3
-                            class="
-                                font-bold
-                                text-slate-900
-                            "
-                        >
-                            Konten Pembelajaran
-                        </h3>
+                        <div>
 
-                        <p
+                            <h3
+                                class="
+                                    font-bold
+                                    text-slate-900
+                                "
+                            >
+                                Konten Pembelajaran
+                            </h3>
+
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-slate-400
+                                    mt-1
+                                "
+                            >
+                                Ringkasan konten yang tersedia
+                            </p>
+
+                        </div>
+
+
+                        <i
+                            data-lucide="layout-grid"
                             class="
-                                text-xs
-                                text-slate-400
-                                mt-1
+                                w-5
+                                h-5
+                                text-purple-600
                             "
-                        >
-                            Ringkasan konten yang tersedia
-                        </p>
+                        ></i>
 
                     </div>
 
 
                     <div class="space-y-4">
 
+
+                        {{-- MATERI --}}
 
                         <div
                             class="
@@ -1552,10 +1898,15 @@
 
                                     <i
                                         data-lucide="book-open"
-                                        class="w-4 h-4 text-purple-600"
+                                        class="
+                                            w-4
+                                            h-4
+                                            text-purple-600
+                                        "
                                     ></i>
 
                                 </div>
+
 
                                 <span
                                     class="
@@ -1580,6 +1931,8 @@
 
                         </div>
 
+
+                        {{-- VIDEO --}}
 
                         <div
                             class="
@@ -1611,10 +1964,15 @@
 
                                     <i
                                         data-lucide="play-circle"
-                                        class="w-4 h-4 text-red-600"
+                                        class="
+                                            w-4
+                                            h-4
+                                            text-red-600
+                                        "
                                     ></i>
 
                                 </div>
+
 
                                 <span
                                     class="
@@ -1639,6 +1997,8 @@
 
                         </div>
 
+
+                        {{-- REFLEKSI --}}
 
                         <div
                             class="
@@ -1670,10 +2030,15 @@
 
                                     <i
                                         data-lucide="message-square-heart"
-                                        class="w-4 h-4 text-pink-600"
+                                        class="
+                                            w-4
+                                            h-4
+                                            text-pink-600
+                                        "
                                     ></i>
 
                                 </div>
+
 
                                 <span
                                     class="
@@ -1698,6 +2063,8 @@
 
                         </div>
 
+
+                        {{-- LKPD --}}
 
                         <div
                             class="
@@ -1729,10 +2096,15 @@
 
                                     <i
                                         data-lucide="file-check-2"
-                                        class="w-4 h-4 text-indigo-600"
+                                        class="
+                                            w-4
+                                            h-4
+                                            text-indigo-600
+                                        "
                                     ></i>
 
                                 </div>
+
 
                                 <span
                                     class="
@@ -1758,150 +2130,73 @@
                         </div>
 
 
-                    </div>
-
-                </section>
-
-
-                {{-- QUIZ --}}
-
-                <section
-                    class="
-                        bg-white
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        p-6
-                    "
-                >
-
-                    <div
-                        class="
-                            flex
-                            items-center
-                            justify-between
-                            mb-5
-                        "
-                    >
-
-                        <div>
-
-                            <h3
-                                class="
-                                    font-bold
-                                    text-slate-900
-                                "
-                            >
-                                Progress Quiz
-                            </h3>
-
-                            <p
-                                class="
-                                    text-xs
-                                    text-slate-400
-                                    mt-1
-                                "
-                            >
-                                Siswa yang sudah mengerjakan
-                            </p>
-
-                        </div>
-
-
-                        <i
-                            data-lucide="chart-no-axes-column"
-                            class="w-5 h-5 text-amber-600"
-                        ></i>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            flex
-                            items-end
-                            justify-between
-                            mb-3
-                        "
-                    >
-
-                        <div>
-
-                            <span
-                                class="
-                                    text-3xl
-                                    font-bold
-                                    text-slate-900
-                                "
-                            >
-                                {{ $quizProgressPercentage }}%
-                            </span>
-
-                            <p
-                                class="
-                                    text-[10px]
-                                    text-slate-400
-                                    mt-1
-                                "
-                            >
-                                {{ $quizStudents }}
-                                dari
-                                {{ $activeStudents }}
-                                siswa
-                            </p>
-
-                        </div>
-
-
-                        <span
-                            class="
-                                text-xs
-                                font-semibold
-                                text-amber-600
-                            "
-                        >
-                            {{ $quizCompleted }}
-                            pengerjaan
-                        </span>
-
-                    </div>
-
-
-                    <div class="progress-bar">
+                        {{-- PRAKTIK --}}
 
                         <div
-                            class="progress-fill"
-                            style="
-                                width:
-                                {{ min($quizProgressPercentage, 100) }}%;
-                                background:#d97706;
+                            class="
+                                flex
+                                items-center
+                                justify-between
                             "
-                        ></div>
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    items-center
+                                    gap-3
+                                "
+                            >
+
+                                <div
+                                    class="
+                                        w-9
+                                        h-9
+                                        rounded-lg
+                                        bg-emerald-50
+                                        flex
+                                        items-center
+                                        justify-center
+                                    "
+                                >
+
+                                    <i
+                                        data-lucide="music-2"
+                                        class="
+                                            w-4
+                                            h-4
+                                            text-emerald-600
+                                        "
+                                    ></i>
+
+                                </div>
+
+
+                                <span
+                                    class="
+                                        text-sm
+                                        font-semibold
+                                        text-slate-700
+                                    "
+                                >
+                                    Praktik
+                                </span>
+
+                            </div>
+
+
+                            <strong
+                                class="
+                                    text-slate-900
+                                "
+                            >
+                                {{ $practiceCount }}
+                            </strong>
+
+                        </div>
+
 
                     </div>
-
-
-                    <a
-                        href="{{ route('guru.quizzes.index') }}"
-                        class="
-                            inline-flex
-                            items-center
-                            gap-1
-                            mt-5
-                            text-xs
-                            font-bold
-                            text-amber-600
-                        "
-                    >
-
-                        Kelola Quiz
-
-                        <i
-                            data-lucide="arrow-right"
-                            class="w-3.5 h-3.5"
-                        ></i>
-
-                    </a>
 
                 </section>
 
@@ -1910,266 +2205,16 @@
 
 
             {{-- =================================================
-                 RANKING + AKTIVITAS
+                 AKTIVITAS QUIZ TERBARU
             ================================================== --}}
 
             <div
                 class="
                     grid
                     grid-cols-1
-                    lg:grid-cols-2
                     gap-5
                 "
             >
-
-
-                {{-- TOP STUDENTS --}}
-
-                <section
-                    class="
-                        ranking-card
-                        bg-white
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        overflow-hidden
-                    "
-                >
-
-                    <div
-                        class="
-                            p-6
-                            border-b
-                            border-slate-100
-                            flex
-                            items-center
-                            justify-between
-                        "
-                    >
-
-                        <div>
-
-                            <h3
-                                class="
-                                    font-bold
-                                    text-slate-900
-                                "
-                            >
-                                🏆 Siswa Teratas
-                            </h3>
-
-                            <p
-                                class="
-                                    text-xs
-                                    text-slate-400
-                                    mt-1
-                                "
-                            >
-                                Berdasarkan rata-rata Quiz
-                            </p>
-
-                        </div>
-
-
-                        <a
-                            href="{{ route('guru.quiz-ranking.index') }}"
-                            class="
-                                text-xs
-                                font-bold
-                                text-blue-600
-                            "
-                        >
-                            Lihat semua →
-                        </a>
-
-                    </div>
-
-
-                    <div class="divide-y divide-slate-100">
-
-
-                        @forelse($topStudents as $index => $item)
-
-                            @php
-
-                                $student =
-                                    $item->student;
-
-                                $rank =
-                                    $index + 1;
-
-                            @endphp
-
-
-                            <div
-                                class="
-                                    px-6
-                                    py-4
-                                    flex
-                                    items-center
-                                    justify-between
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        flex
-                                        items-center
-                                        gap-3
-                                    "
-                                >
-
-                                    <div
-                                        class="
-                                            w-9
-                                            h-9
-                                            rounded-full
-                                            flex
-                                            items-center
-                                            justify-center
-                                            text-sm
-                                            font-bold
-                                            {{
-                                                $rank === 1
-                                                    ? 'bg-yellow-100 text-yellow-700'
-                                                    : (
-                                                        $rank === 2
-                                                            ? 'bg-slate-100 text-slate-600'
-                                                            : (
-                                                                $rank === 3
-                                                                    ? 'bg-orange-100 text-orange-700'
-                                                                    : 'bg-blue-50 text-blue-600'
-                                                            )
-                                                    )
-                                            }}
-                                        "
-                                    >
-
-                                        @if($rank === 1)
-
-                                            🥇
-
-                                        @elseif($rank === 2)
-
-                                            🥈
-
-                                        @elseif($rank === 3)
-
-                                            🥉
-
-                                        @else
-
-                                            {{ $rank }}
-
-                                        @endif
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <p
-                                            class="
-                                                text-sm
-                                                font-bold
-                                                text-slate-800
-                                            "
-                                        >
-                                            {{ $student?->nama ?? 'Siswa' }}
-                                        </p>
-
-                                        <p
-                                            class="
-                                                text-[10px]
-                                                text-slate-400
-                                                mt-0.5
-                                            "
-                                        >
-                                            {{ $student?->kelas ?? '-' }}
-
-                                            • Absen
-
-                                            {{ $student?->nomor_absen ?? '-' }}
-
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="text-right">
-
-                                    <p
-                                        class="
-                                            text-sm
-                                            font-bold
-                                            text-blue-600
-                                        "
-                                    >
-                                        {{ number_format(
-                                            $item->rata_nilai,
-                                            1
-                                        ) }}
-                                    </p>
-
-                                    <p
-                                        class="
-                                            text-[9px]
-                                            text-slate-400
-                                        "
-                                    >
-                                        {{ $item->jumlah_quiz }}
-                                        Quiz
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                        @empty
-
-                            <div
-                                class="
-                                    px-6
-                                    py-10
-                                    text-center
-                                "
-                            >
-
-                                <i
-                                    data-lucide="trophy"
-                                    class="
-                                        w-8
-                                        h-8
-                                        mx-auto
-                                        text-slate-300
-                                    "
-                                ></i>
-
-                                <p
-                                    class="
-                                        text-sm
-                                        font-semibold
-                                        text-slate-500
-                                        mt-3
-                                    "
-                                >
-                                    Belum ada data Quiz.
-                                </p>
-
-                            </div>
-
-                        @endforelse
-
-
-                    </div>
-
-                </section>
-
-
-                {{-- AKTIVITAS TERBARU --}}
 
                 <section
                     class="
@@ -2204,6 +2249,7 @@
                                 Aktivitas Quiz Terbaru
                             </h3>
 
+
                             <p
                                 class="
                                     text-xs
@@ -2219,7 +2265,11 @@
 
                         <i
                             data-lucide="activity"
-                            class="w-5 h-5 text-blue-600"
+                            class="
+                                w-5
+                                h-5
+                                text-blue-600
+                            "
                         ></i>
 
                     </div>
@@ -2300,7 +2350,10 @@
                                             "
                                         >
 
-                                            {{ $attempt->student?->nama ?? 'Siswa' }}
+                                            {{
+                                                $attempt->student?->nama
+                                                ?? 'Siswa'
+                                            }}
 
                                         </p>
 
@@ -2314,12 +2367,24 @@
                                             "
                                         >
 
-                                            {{ $attempt->quiz?->judul ?? 'Quiz' }}
+                                            {{
+                                                $attempt->quiz?->judul
+                                                ?? 'Quiz'
+                                            }}
 
-                                            @if($attempt->dikerjakan_at)
+
+                                            @if(
+                                                $attempt->dikerjakan_at
+                                            )
 
                                                 •
-                                                {{ $attempt->dikerjakan_at->format('d/m/Y H:i') }}
+                                                {{
+                                                    $attempt
+                                                        ->dikerjakan_at
+                                                        ->format(
+                                                            'd/m/Y H:i'
+                                                        )
+                                                }}
 
                                             @endif
 
@@ -2351,10 +2416,12 @@
                                         "
                                     >
 
-                                        {{ number_format(
-                                            $attempt->nilai,
-                                            0
-                                        ) }}
+                                        {{
+                                            number_format(
+                                                $attempt->nilai,
+                                                0
+                                            )
+                                        }}
 
                                     </span>
 
@@ -2383,6 +2450,7 @@
                                     "
                                 ></i>
 
+
                                 <p
                                     class="
                                         text-sm
@@ -2402,7 +2470,6 @@
                     </div>
 
                 </section>
-
 
             </div>
 
@@ -2437,6 +2504,7 @@
                     >
                         LARASKU
                     </p>
+
 
                     <p
                         class="
