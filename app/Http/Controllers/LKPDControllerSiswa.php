@@ -3,32 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\LKPD;
+use App\Models\LKPDAnswer;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class LKPDControllerSiswa extends Controller
 {
     /**
-     * Menampilkan halaman LKPD siswa.
+     * ============================================================
+     * HALAMAN LKPD SISWA
+     * ============================================================
+     *
+     * LKPD berdiri sendiri.
+     *
+     * Tidak bergantung pada:
+     * - Material
+     * - MaterialMeeting
+     *
+     * Struktur:
+     *
+     * lkpds
+     *     ↓
+     * lkpd_questions
+     *     ↓
+     * lkpd_answers
+     *     ↓
+     * students
      */
     public function index(Request $request)
     {
-        $kelas = $request->get('kelas', '');
-
-        $pertemuan = (int) $request->get('pertemuan', 1);
-
-        if ($pertemuan < 1 || $pertemuan > 8) {
-            $pertemuan = 1;
-        }
-
         /*
         |--------------------------------------------------------------------------
-        | Daftar kelas
+        | DAFTAR KELAS
         |--------------------------------------------------------------------------
         */
 
-        $classes = Student::where('aktif', true)
+        $classes = Student::query()
+            ->where('aktif', true)
             ->whereNotNull('kelas')
             ->where('kelas', '!=', '')
             ->select('kelas')
@@ -39,16 +51,31 @@ class LKPDControllerSiswa extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Daftar siswa berdasarkan kelas
+        | KELAS TERPILIH
+        |--------------------------------------------------------------------------
+        */
+
+        $kelas = trim(
+            (string) $request->get('kelas', '')
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR SISWA
         |--------------------------------------------------------------------------
         */
 
         $students = collect();
 
         if ($kelas !== '') {
-            $students = Student::where('aktif', true)
+
+            $students = Student::query()
+                ->where('aktif', true)
                 ->where('kelas', $kelas)
-                ->orderBy('nomor_absen')
+                ->orderByRaw(
+                    'CAST(nomor_absen AS INTEGER) ASC'
+                )
                 ->orderBy('nama')
                 ->get();
         }
@@ -56,7 +83,7 @@ class LKPDControllerSiswa extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Siswa yang dipilih
+        | SISWA TERPILIH
         |--------------------------------------------------------------------------
         */
 
@@ -65,56 +92,288 @@ class LKPDControllerSiswa extends Controller
         $selectedStudent = null;
 
         if ($studentId) {
-            $selectedStudent = $students
-                ->firstWhere('id', (int) $studentId);
+
+            $selectedStudent = $students->firstWhere(
+                'id',
+                (int) $studentId
+            );
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | LKPD yang sudah dikumpulkan
+        | DAFTAR LKPD AKTIF
+        |--------------------------------------------------------------------------
+        |
+        | LKPD sepenuhnya dikelola guru.
+        |
+        | Tidak menggunakan Material.
+        | Tidak menggunakan MaterialMeeting.
+        | Tidak menggunakan hardcode 1-8.
+        |
+        */
+
+        $lkpds = LKPD::query()
+            ->where('aktif', true)
+            ->with([
+                'questions' => function ($query) {
+                    $query->orderBy('urutan');
+                },
+            ])
+            ->orderBy('pertemuan')
+            ->orderBy('id')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN TERPILIH
         |--------------------------------------------------------------------------
         */
 
-        $existingLkpd = null;
+        $pertemuan = $request->get('pertemuan');
 
-        if ($selectedStudent) {
-            $existingLkpd = LKPD::where(
-                'student_id',
-                $selectedStudent->id
-            )
-                ->where('pertemuan', $pertemuan)
+        if (
+            $pertemuan !== null &&
+            $pertemuan !== ''
+        ) {
+
+            $pertemuan = (int) $pertemuan;
+
+        } else {
+
+            $pertemuan = $lkpds
+                ->pluck('pertemuan')
+                ->map(
+                    fn ($item) => (int) $item
+                )
                 ->first();
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Soal / tugas setiap pertemuan
+        | LKPD TERPILIH
         |--------------------------------------------------------------------------
         */
 
-        $task = $this->tasks($pertemuan);
+        $lkpd = null;
+
+        if ($pertemuan !== null) {
+
+            $lkpd = $lkpds->firstWhere(
+                'pertemuan',
+                (int) $pertemuan
+            );
+        }
 
 
-        return view('lkpd.index', compact(
-            'classes',
-            'kelas',
-            'students',
-            'studentId',
-            'selectedStudent',
-            'pertemuan',
-            'task',
-            'existingLkpd'
-        ));
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS SISWA
+        |--------------------------------------------------------------------------
+        |
+        | Status:
+        |
+        | 1. Belum mengerjakan
+        | 2. Sudah mengerjakan, menunggu nilai
+        | 3. Sudah dinilai
+        |
+        | Jawaban siswa TIDAK dikirim untuk ditampilkan
+        | sebagai isi jawaban di halaman siswa.
+        |--------------------------------------------------------------------------
+        */
+
+        $lkpdSubmitted = false;
+
+        $lkpdScore = null;
+
+        $lkpdGraded = false;
+
+        $totalQuestions = $lkpd
+            ? $lkpd->questions->count()
+            : 0;
+
+        $answeredQuestions = 0;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK SUBMISSION
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $selectedStudent &&
+            $lkpd
+        ) {
+
+            $existingAnswers = LKPDAnswer::query()
+                ->where(
+                    'lkpd_id',
+                    $lkpd->id
+                )
+                ->where(
+                    'student_id',
+                    $selectedStudent->id
+                )
+                ->get();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SUDAH SUBMIT
+            |--------------------------------------------------------------------------
+            |
+            | Satu record saja sudah cukup untuk menganggap
+            | siswa pernah mengirim LKPD.
+            |
+            */
+
+            $lkpdSubmitted =
+                $existingAnswers->isNotEmpty();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | JUMLAH JAWABAN
+            |--------------------------------------------------------------------------
+            */
+
+            $answeredQuestions =
+                $existingAnswers
+                    ->filter(
+                        function ($answer) {
+
+                            return $answer->jawaban !== null
+                                && trim(
+                                    (string) $answer->jawaban
+                                ) !== '';
+                        }
+                    )
+                    ->count();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CEK PENILAIAN
+            |--------------------------------------------------------------------------
+            |
+            | Semua soal harus memiliki nilai.
+            |
+            | PG:
+            | langsung mempunyai nilai 0 atau 100.
+            |
+            | Essay:
+            | NULL sampai guru memberikan nilai.
+            |
+            */
+
+            if (
+                $lkpdSubmitted &&
+                $totalQuestions > 0 &&
+                $existingAnswers->count() >= $totalQuestions
+            ) {
+
+                $allGraded =
+                    $existingAnswers
+                        ->filter(
+                            fn ($answer) =>
+                                $answer->nilai !== null
+                        )
+                        ->count() >= $totalQuestions;
+
+
+                if ($allGraded) {
+
+                    $totalScore =
+                        $existingAnswers->sum(
+                            fn ($answer) =>
+                                (float) $answer->nilai
+                        );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | NILAI AKHIR
+                    |--------------------------------------------------------------------------
+                    |
+                    | Rata-rata nilai seluruh soal.
+                    |
+                    */
+
+                    $lkpdScore = round(
+                        $totalScore / $totalQuestions
+                    );
+
+
+                    $lkpdGraded = true;
+                }
+            }
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS SELESAI
+        |--------------------------------------------------------------------------
+        */
+
+        $lkpdCompleted =
+            $totalQuestions > 0 &&
+            $answeredQuestions >= $totalQuestions;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VIEW
+        |--------------------------------------------------------------------------
+        |
+        | existingAnswers sengaja TIDAK dikirim.
+        |
+        | Ini penting agar Blade siswa tidak mempunyai
+        | data jawaban lama yang dapat ditampilkan.
+        |
+        */
+
+        return view(
+            'lkpd.index',
+            compact(
+                'classes',
+                'kelas',
+                'students',
+                'studentId',
+                'selectedStudent',
+                'lkpds',
+                'pertemuan',
+                'lkpd',
+                'totalQuestions',
+                'answeredQuestions',
+                'lkpdCompleted',
+                'lkpdSubmitted',
+                'lkpdScore',
+                'lkpdGraded'
+            )
+        );
     }
 
 
     /**
-     * Mengirim tugas LKPD.
+     * ============================================================
+     * SIMPAN JAWABAN LKPD
+     * ============================================================
+     *
+     * Satu siswa hanya boleh mengirim SATU KALI
+     * untuk SATU LKPD.
      */
     public function store(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI INPUT
+        |--------------------------------------------------------------------------
+        */
+
         $validated = $request->validate([
             'student_id' => [
                 'required',
@@ -126,142 +385,454 @@ class LKPDControllerSiswa extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'max:8',
+                'max:255',
             ],
 
-            'foto' => [
+            'jawaban' => [
                 'required',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:5120',
+                'array',
+                'min:1',
+            ],
+
+            'jawaban.*' => [
+                'nullable',
+                'string',
+                'max:5000',
             ],
         ]);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Pastikan siswa aktif
+        | CEK SISWA
         |--------------------------------------------------------------------------
         */
 
-        $student = Student::where('id', $validated['student_id'])
-            ->where('aktif', true)
+        $student = Student::query()
+            ->where(
+                'id',
+                $validated['student_id']
+            )
+            ->where(
+                'aktif',
+                true
+            )
             ->first();
 
-        if (!$student) {
+
+        if (! $student) {
+
             return back()
+                ->withInput()
                 ->withErrors([
                     'student_id' =>
                         'Siswa tidak ditemukan atau sudah tidak aktif.',
-                ])
-                ->withInput();
+                ]);
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Cek pengumpulan sebelumnya
+        | CEK LKPD AKTIF
         |--------------------------------------------------------------------------
         */
 
-        $existingLkpd = LKPD::where('student_id', $student->id)
-            ->where('pertemuan', $validated['pertemuan'])
+        $lkpd = LKPD::query()
+            ->where(
+                'pertemuan',
+                $validated['pertemuan']
+            )
+            ->where(
+                'aktif',
+                true
+            )
+            ->with([
+                'questions' => function ($query) {
+                    $query->orderBy('urutan');
+                },
+            ])
             ->first();
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Upload foto
-        |--------------------------------------------------------------------------
-        */
+        if (! $lkpd) {
 
-        $foto = $request->file('foto');
-
-        $path = $foto->store(
-            'lkpd',
-            'public'
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Jika sudah pernah mengirim, hapus foto lama
-        |--------------------------------------------------------------------------
-        */
-
-        if ($existingLkpd && $existingLkpd->foto) {
-
-            if (Storage::disk('public')->exists($existingLkpd->foto)) {
-                Storage::disk('public')->delete(
-                    $existingLkpd->foto
-                );
-            }
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'pertemuan' =>
+                        'LKPD untuk pertemuan tersebut belum tersedia atau belum diaktifkan oleh guru.',
+                ]);
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Simpan / update LKPD
+        | CEK SUBMISSION LAMA
+        |--------------------------------------------------------------------------
+        |
+        | INI ADALAH PENGUNCI UTAMA.
+        |
+        | Begitu siswa mempunyai SATU jawaban saja
+        | pada LKPD tersebut, siswa dianggap sudah
+        | pernah mengirim.
+        |
+        | Tidak boleh:
+        |
+        | - submit ulang
+        | - mengganti jawaban
+        | - mengulang pengerjaan
+        |
+        */
+
+        $alreadySubmitted = LKPDAnswer::query()
+            ->where(
+                'lkpd_id',
+                $lkpd->id
+            )
+            ->where(
+                'student_id',
+                $student->id
+            )
+            ->exists();
+
+
+        if ($alreadySubmitted) {
+
+            return redirect()
+                ->route(
+                    'lkpd.index',
+                    [
+                        'kelas' =>
+                            $student->kelas,
+
+                        'student_id' =>
+                            $student->id,
+
+                        'pertemuan' =>
+                            $lkpd->pertemuan,
+                    ]
+                )
+                ->with(
+                    'success',
+                    'LKPD ini sudah pernah dikirim. Jawaban tidak dapat diubah atau dikirim ulang.'
+                );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK SOAL
         |--------------------------------------------------------------------------
         */
 
-        LKPD::updateOrCreate(
-            [
-                'student_id' => $student->id,
-                'pertemuan' => $validated['pertemuan'],
-            ],
-            [
-                'foto' => $path,
-            ]
+        $questions = $lkpd->questions;
+
+
+        if ($questions->isEmpty()) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'jawaban' =>
+                        'LKPD ini belum memiliki soal.',
+                ]);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ID SOAL YANG VALID
+        |--------------------------------------------------------------------------
+        */
+
+        $questionIds = $questions
+            ->pluck('id')
+            ->map(
+                fn ($id) => (string) $id
+            )
+            ->values();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ID SOAL YANG DIKIRIM
+        |--------------------------------------------------------------------------
+        */
+
+        $submittedQuestionIds = collect(
+            array_keys(
+                $validated['jawaban']
+            )
+        )
+            ->map(
+                fn ($id) => (string) $id
+            )
+            ->values();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK SOAL ILEGAL
+        |--------------------------------------------------------------------------
+        */
+
+        $invalidQuestionIds =
+            $submittedQuestionIds->diff(
+                $questionIds
+            );
+
+
+        if (
+            $invalidQuestionIds->isNotEmpty()
+        ) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'jawaban' =>
+                        'Terdapat soal yang tidak sesuai dengan LKPD ini.',
+                ]);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SEMUA SOAL WAJIB DIJAWAB
+        |--------------------------------------------------------------------------
+        */
+
+        $missingQuestionIds =
+            $questionIds->diff(
+                $submittedQuestionIds
+            );
+
+
+        if (
+            $missingQuestionIds->isNotEmpty()
+        ) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'jawaban' =>
+                        'Semua soal LKPD wajib dijawab.',
+                ]);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN SEMUA JAWABAN
+        |--------------------------------------------------------------------------
+        |
+        | Transaction memastikan seluruh jawaban masuk
+        | sebagai satu proses.
+        |
+        */
+
+        DB::transaction(
+            function () use (
+                $validated,
+                $lkpd,
+                $student,
+                $questions
+            ) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | CEK ULANG DI DALAM TRANSACTION
+                |--------------------------------------------------------------------------
+                |
+                | Untuk mencegah submit ganda ketika ada
+                | request yang masuk hampir bersamaan.
+                |
+                */
+
+                $alreadySubmitted =
+                    LKPDAnswer::query()
+                        ->where(
+                            'lkpd_id',
+                            $lkpd->id
+                        )
+                        ->where(
+                            'student_id',
+                            $student->id
+                        )
+                        ->lockForUpdate()
+                        ->exists();
+
+
+                if ($alreadySubmitted) {
+
+                    throw new \RuntimeException(
+                        'LKPD ini sudah pernah dikirim.'
+                    );
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | CREATE JAWABAN
+                |--------------------------------------------------------------------------
+                |
+                | TIDAK menggunakan updateOrCreate().
+                |
+                | Jawaban hanya boleh dibuat sekali.
+                |
+                */
+
+                foreach ($questions as $question) {
+
+                    $questionId =
+                        (string) $question->id;
+
+
+                    $jawaban =
+                        $validated['jawaban'][
+                            $questionId
+                        ] ?? null;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | NORMALISASI
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (
+                        is_string($jawaban)
+                    ) {
+
+                        $jawaban =
+                            trim($jawaban);
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | JAWABAN WAJIB
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (
+                        $jawaban === null ||
+                        $jawaban === ''
+                    ) {
+
+                        throw new \RuntimeException(
+                            'Semua soal LKPD wajib dijawab.'
+                        );
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | NILAI AWAL
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $nilai = null;
+
+                    $dinilaiAt = null;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | PILIHAN GANDA
+                    |--------------------------------------------------------------------------
+                    |
+                    | Benar = 100
+                    | Salah = 0
+                    |
+                    */
+
+                    if (
+                        $question->jenis ===
+                        'pilihan_ganda'
+                    ) {
+
+                        $nilai =
+                            strtoupper(
+                                $jawaban
+                            ) ===
+                            strtoupper(
+                                (string)
+                                $question->jawaban_benar
+                            )
+                                ? 100
+                                : 0;
+
+
+                        $dinilaiAt = now();
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ESSAY
+                    |--------------------------------------------------------------------------
+                    |
+                    | Nilai tetap NULL.
+                    |
+                    | Guru akan memberikan nilai
+                    | melalui halaman admin/guru.
+                    |
+                    */
+
+                    $lkpd->answers()->create([
+                        'student_id' =>
+                            $student->id,
+
+                        'lkpd_question_id' =>
+                            $question->id,
+
+                        'jawaban' =>
+                            $jawaban,
+
+                        'nilai' =>
+                            $nilai,
+
+                        'dinilai_at' =>
+                            $dinilaiAt,
+                    ]);
+                }
+            }
         );
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | SELESAI
+        |--------------------------------------------------------------------------
+        |
+        | Redirect penuh ke server.
+        |
+        | Halaman berikutnya akan membaca database
+        | dan otomatis menampilkan status:
+        |
+        | - Menunggu penilaian
+        | atau
+        | - Nilai akhir
+        |
+        */
+
         return redirect()
-            ->route('lkpd.index', [
-                'kelas' => $student->kelas,
-                'student_id' => $student->id,
-                'pertemuan' => $validated['pertemuan'],
-            ])
+            ->route(
+                'lkpd.index',
+                [
+                    'kelas' =>
+                        $student->kelas,
+
+                    'student_id' =>
+                        $student->id,
+
+                    'pertemuan' =>
+                        $lkpd->pertemuan,
+                ]
+            )
             ->with(
                 'success',
-                'Tugas LKPD berhasil dikirim.'
+                'LKPD berhasil dikirim. Jawaban tidak dapat diubah atau dikirim ulang.'
             );
-    }
-
-
-    /**
-     * Tugas LKPD setiap pertemuan.
-     */
-    private function tasks(int $pertemuan): string
-    {
-        return match ($pertemuan) {
-
-            1 =>
-                'Pilih satu lagu daerah yang kamu ketahui. Tuliskan identitas lagu tersebut pada buku tugas, meliputi nama lagu dan daerah asalnya. Setelah selesai, foto hasil pekerjaanmu dan unggah di sini.',
-
-            2 =>
-                'Pilih satu lagu daerah. Identifikasi dan tuliskan ciri-ciri lagu tersebut berdasarkan materi yang telah dipelajari. Foto hasil pekerjaanmu dan unggah di sini.',
-
-            3 =>
-                'Lakukan latihan teknik dasar bernyanyi dengan memperhatikan sikap tubuh dan teknik pernapasan. Tuliskan hasil pengalaman latihanmu pada buku tugas, kemudian foto hasil pekerjaanmu dan unggah di sini.',
-
-            4 =>
-                'Latih satu bagian lagu daerah dengan memperhatikan intonasi, artikulasi, tempo, dan frasering. Tuliskan hasil latihan atau catatan kesulitanmu pada buku tugas, kemudian foto hasil pekerjaanmu dan unggah di sini.',
-
-            5 =>
-                'Pilih tiga alat musik tradisional Indonesia. Tuliskan nama alat musik dan daerah asalnya. Foto hasil pekerjaanmu dan unggah di sini.',
-
-            6 =>
-                'Pilih empat alat musik tradisional yang dimainkan dengan cara berbeda. Tuliskan nama alat musik dan cara memainkannya. Foto hasil pekerjaanmu dan unggah di sini.',
-
-            7 =>
-                'Pilih empat alat musik tradisional dan kelompokkan berdasarkan sumber bunyinya: kordofon, aerofon, membranofon, atau idiofon. Foto hasil pekerjaanmu dan unggah di sini.',
-
-            8 =>
-                'Buatlah tulisan singkat tentang cara yang dapat dilakukan generasi muda untuk melestarikan alat musik tradisional Indonesia. Kerjakan pada buku tugas, kemudian foto hasil pekerjaanmu dan unggah di sini.',
-
-            default =>
-                'Kerjakan tugas sesuai materi pembelajaran pada pertemuan ini, kemudian foto hasil pekerjaanmu dan unggah di sini.',
-        };
     }
 }

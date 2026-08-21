@@ -109,7 +109,7 @@
 
 <body>
 
-    @include('guru.partials.sidebar')
+    @include('partials.sidebar')
 
 
     <main
@@ -117,7 +117,7 @@
         class="main-content"
     >
 
-        @include('guru.partials.header')
+    
 
 
         <div
@@ -159,7 +159,7 @@
                         class="w-3.5 h-3.5"
                     ></i>
 
-                    Evaluasi Pembelajaran
+                    Peringkat Pembelajaran
 
                 </div>
 
@@ -555,7 +555,7 @@
 
                 <form
                     method="GET"
-                    action="{{ route('guru.quiz-ranking.index') }}"
+                    action="{{ route('student.ranking.index') }}"
                     class="
                         flex
                         flex-col
@@ -655,7 +655,7 @@
                     @if($kelas !== '')
 
                         <a
-                            href="{{ route('guru.quiz-ranking.index') }}"
+                            href="{{ route('student.ranking.index') }}"
                             class="
                                 inline-flex
                                 items-center

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\ClassRoom;
+use App\Models\MaterialMeeting;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,9 @@ class AttendanceController extends Controller
      * Kelas diambil dari tabel classes.
      * Siswa diambil dari tabel students
      * berdasarkan kelas yang dipilih.
+     *
+     * Pertemuan diambil dari material_meetings
+     * yang sedang aktif.
      */
     public function index(Request $request)
     {
@@ -32,6 +36,22 @@ class AttendanceController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | AMBIL PERTEMUAN AKTIF
+        |--------------------------------------------------------------------------
+        |
+        | Pertemuan absensi mengikuti pertemuan
+        | yang dibuka oleh guru melalui material_meetings.
+        |
+        */
+
+        $meetings = MaterialMeeting::query()
+            ->where('aktif', true)
+            ->orderBy('pertemuan')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
         | KELAS YANG DIPILIH
         |--------------------------------------------------------------------------
         */
@@ -43,13 +63,6 @@ class AttendanceController extends Controller
         |--------------------------------------------------------------------------
         | AMBIL DATA KELAS TERPILIH
         |--------------------------------------------------------------------------
-        |
-        | Data ini digunakan untuk membaca:
-        |
-        | - nama kelas
-        | - status aktif
-        | - pertemuan_aktif
-        |
         */
 
         $selectedClass = ClassRoom::query()
@@ -72,7 +85,6 @@ class AttendanceController extends Controller
             ->when(
                 $kelas !== '',
                 function ($query) use ($kelas) {
-
                     $query->where(
                         'kelas',
                         $kelas
@@ -96,6 +108,7 @@ class AttendanceController extends Controller
             'attendance.index',
             compact(
                 'classes',
+                'meetings',
                 'kelas',
                 'students',
                 'selectedClass'
@@ -111,7 +124,8 @@ class AttendanceController extends Controller
      * satu absensi untuk setiap pertemuan.
      *
      * Siswa hanya dapat melakukan absensi
-     * pada pertemuan yang sudah dibuka guru.
+     * pada pertemuan yang sedang aktif
+     * di material_meetings.
      */
     public function store(Request $request)
     {
@@ -138,7 +152,6 @@ class AttendanceController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'max:8',
             ],
 
         ]);
@@ -146,10 +159,10 @@ class AttendanceController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL KELAS DARI TABEL classes
+        | AMBIL KELAS
         |--------------------------------------------------------------------------
         |
-        | Sekaligus mengambil nilai pertemuan_aktif.
+        | Kelas tetap berasal dari tabel classes.
         |
         */
 
@@ -184,31 +197,44 @@ class AttendanceController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | CEK PERTEMUAN SUDAH DIBUKA GURU
+        | CEK PERTEMUAN AKTIF
         |--------------------------------------------------------------------------
         |
-        | Contoh:
+        | Pertemuan sekarang tidak lagi bergantung
+        | pada classes.pertemuan_aktif.
         |
-        | pertemuan_aktif = 3
+        | Sumber kebenaran:
         |
-        | Pertemuan 1 = boleh
-        | Pertemuan 2 = boleh
-        | Pertemuan 3 = boleh
-        | Pertemuan 4 = ditolak
-        | Pertemuan 5 = ditolak
+        | material_meetings
+        |     aktif = true
         |
         */
 
-        if (
-            $validated['pertemuan']
-            > (int) $class->pertemuan_aktif
-        ) {
+        $meeting = MaterialMeeting::query()
+            ->where(
+                'pertemuan',
+                $validated['pertemuan']
+            )
+            ->where(
+                'aktif',
+                true
+            )
+            ->first();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN BELUM DIBUKA
+        |--------------------------------------------------------------------------
+        */
+
+        if (! $meeting) {
 
             return back()
                 ->withInput()
                 ->withErrors([
                     'pertemuan' =>
-                        "Pertemuan {$validated['pertemuan']} belum dibuka oleh guru untuk kelas {$class->nama}.",
+                        "Pertemuan {$validated['pertemuan']} belum dibuka oleh guru.",
                 ]);
         }
 

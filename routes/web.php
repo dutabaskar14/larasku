@@ -31,6 +31,8 @@ use App\Http\Controllers\ReflectionControllerSiswa;
 use App\Http\Controllers\LKPDControllerSiswa;
 use App\Http\Controllers\VideoControllerSiswa;
 use App\Http\Controllers\QuizControllerSiswa;
+use App\Http\Controllers\AssignmentControllerSiswa;
+use App\Http\Controllers\QuizRankingControllerSiswa;
 
 use App\Models\Game;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +65,17 @@ Route::post('/absensi', [
     AttendanceController::class,
     'store',
 ])->name('attendance.store');
+
+/*
+|--------------------------------------------------------------------------
+| RANKING SISWA
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/ranking', [
+    QuizRankingControllerSiswa::class,
+    'index',
+])->name('student.ranking.index');
 
 
 /*
@@ -177,6 +190,24 @@ Route::get('/quiz/{quiz}/hasil', [
     QuizControllerSiswa::class,
     'result',
 ])->name('quiz.result');
+
+
+/*
+|--------------------------------------------------------------------------
+| TUGAS PRAKTIK SISWA
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/assignments', [
+    AssignmentControllerSiswa::class,
+    'index',
+])->name('assignments.index');
+
+
+Route::post('/assignments/{assignment}/submit', [
+    AssignmentControllerSiswa::class,
+    'submit',
+])->name('assignments.submit');
 
 
 /*

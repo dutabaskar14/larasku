@@ -13,7 +13,6 @@
     <title>Absensi — LARASKU</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -81,6 +80,7 @@
 
 
 <body class="min-h-screen text-slate-800">
+
 
 <div class="max-w-5xl mx-auto px-5 py-8">
 
@@ -320,7 +320,6 @@
                             bg-white
                         "
                         data-class="{{ $class->nama }}"
-                        data-pertemuan-aktif="{{ (int) ($class->pertemuan_aktif ?? 0) }}"
                     >
 
                         <span
@@ -622,7 +621,7 @@
 
 
         {{-- =====================================================
-             DAFTAR PERTEMUAN
+             DAFTAR PERTEMUAN DARI DATABASE
         ====================================================== --}}
 
         <div
@@ -635,19 +634,19 @@
             "
         >
 
-            @for($i = 1; $i <= 8; $i++)
+            @forelse($meetings as $meeting)
 
                 <button
                     type="button"
                     class="
                         meeting-btn
-                        hidden
+                        open
                         rounded-2xl
                         border
                         p-4
                         text-center
                     "
-                    data-meeting="{{ $i }}"
+                    data-meeting="{{ $meeting->pertemuan }}"
                 >
 
                     <div
@@ -666,7 +665,7 @@
 
 
                         <span class="text-lg font-bold">
-                            {{ $i }}
+                            {{ $meeting->pertemuan }}
                         </span>
 
                     </div>
@@ -686,93 +685,37 @@
 
                 </button>
 
+            @empty
 
                 <div
                     class="
-                        meeting-lock
-                        hidden
-                        border
-                        border-slate-200
-                        bg-slate-50
-                        text-slate-400
+                        col-span-full
                         rounded-2xl
-                        p-4
-                        text-center
+                        border
+                        border-amber-200
+                        bg-amber-50
+                        px-5
+                        py-4
+                        text-sm
+                        text-amber-700
+                        flex
+                        items-center
+                        gap-3
                     "
-                    data-lock-meeting="{{ $i }}"
                 >
 
-                    <div
-                        class="
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-                        "
-                    >
+                    <i
+                        data-lucide="lock-keyhole"
+                        class="w-5 h-5 shrink-0"
+                    ></i>
 
-                        <i
-                            data-lucide="lock"
-                            class="w-4 h-4"
-                        ></i>
-
-
-                        <span class="text-lg font-bold">
-                            {{ $i }}
-                        </span>
-
-                    </div>
-
-
-                    <span
-                        class="
-                            block
-                            text-xs
-                            font-medium
-                            mt-1
-                        "
-                    >
-                        Terkunci
+                    <span>
+                        Belum ada pertemuan yang dibuka oleh guru.
                     </span>
 
                 </div>
 
-            @endfor
-
-        </div>
-
-
-        {{-- =====================================================
-             BELUM ADA PERTEMUAN
-        ====================================================== --}}
-
-        <div
-            id="noMeeting"
-            class="
-                hidden
-                mt-5
-                rounded-2xl
-                border
-                border-amber-200
-                bg-amber-50
-                px-5
-                py-4
-                text-sm
-                text-amber-700
-                items-center
-                gap-3
-            "
-        >
-
-            <i
-                data-lucide="lock-keyhole"
-                class="w-5 h-5 shrink-0"
-            ></i>
-
-
-            <span>
-                Belum ada pertemuan yang dibuka oleh guru.
-            </span>
+            @endforelse
 
         </div>
 
@@ -986,6 +929,7 @@
 
     </section>
 
+
 </div>
 
 
@@ -1045,14 +989,8 @@
     const selectedMeeting =
         document.getElementById('selectedMeeting');
 
-    const noMeeting =
-        document.getElementById('noMeeting');
-
     const meetingButtons =
         document.querySelectorAll('.meeting-btn');
-
-    const meetingLocks =
-        document.querySelectorAll('.meeting-lock');
 
 
     let selectedStudent = null;
@@ -1081,6 +1019,10 @@
     |--------------------------------------------------------------------------
     | RESET PERTEMUAN
     |--------------------------------------------------------------------------
+    |
+    | Pertemuan berasal langsung dari database.
+    | Tidak ada lagi loop 1–8.
+    |
     */
 
     function resetMeetings() {
@@ -1091,168 +1033,11 @@
 
         selectedMeeting.textContent = '-';
 
-
         meetingButtons.forEach(button => {
-
-            button.classList.add('hidden');
 
             button.classList.remove('selected');
 
         });
-
-
-        meetingLocks.forEach(lock => {
-
-            lock.classList.add('hidden');
-
-        });
-
-
-        noMeeting.classList.add('hidden');
-
-        noMeeting.classList.remove('flex');
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TAMPILKAN PERTEMUAN SESUAI KELAS
-    |--------------------------------------------------------------------------
-    */
-
-    function renderMeetings(pertemuanAktif) {
-
-        resetMeetings();
-
-
-        pertemuanAktif =
-            parseInt(
-                pertemuanAktif || 0,
-                10
-            );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | BELUM ADA YANG DIBUKA
-        |--------------------------------------------------------------------------
-        */
-
-        if (pertemuanAktif <= 0) {
-
-            for (
-                let i = 1;
-                i <= 8;
-                i++
-            ) {
-
-                const lock =
-                    document.querySelector(
-                        `[data-lock-meeting="${i}"]`
-                    );
-
-
-                if (lock) {
-
-                    lock.classList.remove(
-                        'hidden'
-                    );
-
-                }
-
-            }
-
-
-            noMeeting.classList.remove(
-                'hidden'
-            );
-
-            noMeeting.classList.add(
-                'flex'
-            );
-
-
-            return;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | PERTEMUAN YANG SUDAH DIBUKA
-        |--------------------------------------------------------------------------
-        */
-
-        for (
-            let i = 1;
-            i <= 8;
-            i++
-        ) {
-
-            const button =
-                document.querySelector(
-                    `[data-meeting="${i}"]`
-                );
-
-            const lock =
-                document.querySelector(
-                    `[data-lock-meeting="${i}"]`
-                );
-
-
-            if (i <= pertemuanAktif) {
-
-                /*
-                | Terbuka
-                */
-
-                if (button) {
-
-                    button.classList.remove(
-                        'hidden'
-                    );
-
-                    button.classList.add(
-                        'open'
-                    );
-
-                }
-
-
-                if (lock) {
-
-                    lock.classList.add(
-                        'hidden'
-                    );
-
-                }
-
-            } else {
-
-                /*
-                | Terkunci
-                */
-
-                if (button) {
-
-                    button.classList.add(
-                        'hidden'
-                    );
-
-                }
-
-
-                if (lock) {
-
-                    lock.classList.remove(
-                        'hidden'
-                    );
-
-                }
-
-            }
-
-        }
 
     }
 
@@ -1301,19 +1086,6 @@
 
                 classIdInput.value =
                     selectedClassName;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | AMBIL pertemuan_aktif DARI classes
-                |--------------------------------------------------------------------------
-                */
-
-                const pertemuanAktif =
-                    parseInt(
-                        this.dataset.pertemuanAktif || '0',
-                        10
-                    );
 
 
                 /*
@@ -1400,13 +1172,11 @@
 
                 /*
                 |--------------------------------------------------------------------------
-                | RENDER PERTEMUAN KELAS TERPILIH
+                | RESET PERTEMUAN
                 |--------------------------------------------------------------------------
                 */
 
-                renderMeetings(
-                    pertemuanAktif
-                );
+                resetMeetings();
 
 
                 /*
@@ -1799,6 +1569,7 @@
     lucide.createIcons();
 
 </script>
+
 
 </body>
 

@@ -4,32 +4,122 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
+use App\Models\QuizMeetingAdmin;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
 class QuizControllerSiswa extends Controller
 {
     /**
-     * Menampilkan halaman Quiz siswa.
+     * ============================================================
+     * HALAMAN QUIZ SISWA
+     * ============================================================
+     *
+     * Pertemuan Quiz berdiri sendiri.
+     *
+     * Sumber pertemuan:
+     * quiz_meetings
+     *
+     * Tidak menggunakan:
+     * - Material
+     * - material_meetings
+     * - hardcode 1-8
+     *
+     * Semua pertemuan mengikuti data yang dibuat
+     * oleh admin/guru pada tabel quiz_meetings.
      */
     public function index(Request $request)
     {
-        $kelas = $request->get('kelas', '');
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR PERTEMUAN QUIZ
+        |--------------------------------------------------------------------------
+        |
+        | Hanya mengambil pertemuan yang benar-benar tersedia
+        | pada tabel quiz_meetings.
+        |
+        */
 
-        $pertemuan = (int) $request->get('pertemuan', 1);
+        $pertemuans = QuizMeetingAdmin::query()
+            ->orderBy('pertemuan')
+            ->pluck('pertemuan')
+            ->map(function ($item) {
+                return (int) $item;
+            })
+            ->values();
 
-        if ($pertemuan < 1 || $pertemuan > 8) {
-            $pertemuan = 1;
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTEMUAN YANG DIPILIH
+        |--------------------------------------------------------------------------
+        |
+        | Jika user memilih pertemuan tertentu, gunakan pertemuan tersebut.
+        |
+        | Jika belum memilih:
+        | gunakan pertemuan pertama yang tersedia.
+        |
+        */
+
+        $pertemuan = $request->get('pertemuan');
+
+
+        if ($pertemuan !== null && $pertemuan !== '') {
+
+            $pertemuan = (int) $pertemuan;
+
+        } else {
+
+            $pertemuan = $pertemuans->first();
+
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Daftar kelas
+        | PASTIKAN PERTEMUAN TERDAFTAR
+        |--------------------------------------------------------------------------
+        |
+        | Tidak ada lagi batas:
+        |
+        | min:1
+        | max:8
+        | max:255
+        |
+        | Pertemuan sepenuhnya mengikuti quiz_meetings.
+        |
+        */
+
+        if (
+            $pertemuan !== null &&
+            ! $pertemuans->contains($pertemuan)
+        ) {
+
+            $pertemuan = $pertemuans->first();
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KELAS
         |--------------------------------------------------------------------------
         */
 
-        $classes = Student::where('aktif', true)
+        $kelas = $request->get(
+            'kelas',
+            ''
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR KELAS
+        |--------------------------------------------------------------------------
+        */
+
+        $classes = Student::query()
+            ->where('aktif', true)
             ->whereNotNull('kelas')
             ->where('kelas', '!=', '')
             ->select('kelas')
@@ -40,112 +130,206 @@ class QuizControllerSiswa extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Daftar siswa berdasarkan kelas
+        | DAFTAR SISWA
         |--------------------------------------------------------------------------
         */
 
         $students = collect();
 
+
         if ($kelas !== '') {
 
-            $students = Student::where('aktif', true)
+            $students = Student::query()
+                ->where('aktif', true)
                 ->where('kelas', $kelas)
                 ->orderBy('nomor_absen')
                 ->orderBy('nama')
                 ->get();
+
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Siswa yang dipilih
+        | SISWA YANG DIPILIH
         |--------------------------------------------------------------------------
         */
 
-        $studentId = $request->get('student_id');
+        $studentId = $request->get(
+            'student_id'
+        );
+
 
         $selectedStudent = null;
+
 
         if ($studentId) {
 
             $selectedStudent = $students
-                ->firstWhere('id', (int) $studentId);
+                ->firstWhere(
+                    'id',
+                    (int) $studentId
+                );
+
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Quiz berdasarkan pertemuan
+        | QUIZ
         |--------------------------------------------------------------------------
+        |
+        | Quiz hanya dicari berdasarkan pertemuan yang
+        | tersedia di quiz_meetings.
+        |
+        | Quiz harus aktif.
+        |
         */
 
-        $quiz = Quiz::query()
-            ->with([
-                'questions' => function ($query) {
-                    $query->orderBy('urutan');
-                },
-            ])
-            ->where('pertemuan', $pertemuan)
-            ->where('aktif', true)
-            ->first();
+        $quiz = null;
+
+
+        if ($pertemuan !== null) {
+
+            $quiz = Quiz::query()
+                ->with([
+                    'questions' => function ($query) {
+
+                        $query->orderBy(
+                            'urutan'
+                        );
+
+                    },
+                ])
+                ->where(
+                    'pertemuan',
+                    $pertemuan
+                )
+                ->where(
+                    'aktif',
+                    true
+                )
+                ->first();
+
+        }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Hasil pengerjaan sebelumnya
+        | HASIL PENGERJAAN SISWA
         |--------------------------------------------------------------------------
+        |
+        | Jika siswa sudah mengerjakan:
+        |
+        | - Quiz tidak boleh dikerjakan ulang.
+        | - Soal tidak perlu ditampilkan.
+        | - Blade menerima attempt untuk status dan nilai.
+        |
         */
 
         $existingAttempt = null;
 
-        if ($selectedStudent && $quiz) {
 
-            $existingAttempt = QuizAttempt::where(
-                'student_id',
-                $selectedStudent->id
-            )
+        if (
+            $selectedStudent &&
+            $quiz
+        ) {
+
+            $existingAttempt = QuizAttempt::query()
+                ->where(
+                    'student_id',
+                    $selectedStudent->id
+                )
                 ->where(
                     'quiz_id',
                     $quiz->id
                 )
                 ->first();
+
         }
 
 
-        return view('quiz.index', compact(
-            'classes',
-            'kelas',
-            'students',
-            'studentId',
-            'selectedStudent',
-            'pertemuan',
-            'quiz',
-            'existingAttempt'
-        ));
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS QUIZ
+        |--------------------------------------------------------------------------
+        */
+
+        $quizCompleted =
+            $existingAttempt !== null;
+
+
+        $quizScore =
+            $existingAttempt
+                ? $existingAttempt->nilai
+                : null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN VIEW
+        |--------------------------------------------------------------------------
+        */
+
+        return view(
+            'quiz.index',
+            compact(
+                'classes',
+                'kelas',
+                'students',
+                'studentId',
+                'selectedStudent',
+
+                'pertemuans',
+                'pertemuan',
+
+                'quiz',
+
+                'existingAttempt',
+                'quizCompleted',
+                'quizScore'
+            )
+        );
     }
 
 
     /**
-     * Menyimpan jawaban Quiz dan menghitung nilai otomatis.
+     * ============================================================
+     * SUBMIT QUIZ
+     * ============================================================
+     *
+     * Quiz hanya boleh dikerjakan SATU KALI
+     * oleh satu siswa pada satu Quiz.
      */
-    public function submit(Request $request, Quiz $quiz)
-    {
+    public function submit(
+        Request $request,
+        Quiz $quiz
+    ) {
+
         /*
         |--------------------------------------------------------------------------
-        | Pastikan Quiz aktif
+        | PASTIKAN QUIZ AKTIF
         |--------------------------------------------------------------------------
         */
 
-        if (!$quiz->aktif) {
+        if (! $quiz->aktif) {
 
             abort(404);
+
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Validasi data siswa
+        | VALIDASI SISWA DAN JAWABAN
         |--------------------------------------------------------------------------
+        |
+        | Pertemuan tidak divalidasi dengan max:8.
+        |
+        | Nilai pertemuan harus sama dengan Quiz yang dikirim
+        | dan Quiz tersebut harus berasal dari pertemuan yang
+        | terdaftar pada quiz_meetings.
+        |
         */
 
         $validated = $request->validate([
@@ -159,8 +343,6 @@ class QuizControllerSiswa extends Controller
             'pertemuan' => [
                 'required',
                 'integer',
-                'min:1',
-                'max:8',
             ],
 
             'jawaban' => [
@@ -178,19 +360,23 @@ class QuizControllerSiswa extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Pastikan siswa aktif
+        | PASTIKAN SISWA AKTIF
         |--------------------------------------------------------------------------
         */
 
-        $student = Student::where(
-            'id',
-            $validated['student_id']
-        )
-            ->where('aktif', true)
+        $student = Student::query()
+            ->where(
+                'id',
+                $validated['student_id']
+            )
+            ->where(
+                'aktif',
+                true
+            )
             ->first();
 
 
-        if (!$student) {
+        if (! $student) {
 
             return back()
                 ->withErrors([
@@ -198,116 +384,251 @@ class QuizControllerSiswa extends Controller
                         'Siswa tidak ditemukan atau sudah tidak aktif.',
                 ])
                 ->withInput();
+
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Pastikan Quiz sesuai pertemuan
+        | PASTIKAN PERTEMUAN SESUAI QUIZ
         |--------------------------------------------------------------------------
         */
 
-        if ((int) $quiz->pertemuan !== (int) $validated['pertemuan']) {
+        if (
+            (int) $quiz->pertemuan !==
+            (int) $validated['pertemuan']
+        ) {
 
             return back()
                 ->withErrors([
                     'pertemuan' =>
-                        'Pertemuan Quiz tidak sesuai.',
+                        'Pertemuan Quiz tidak sesuai dengan Quiz yang dikirim.',
                 ])
                 ->withInput();
+
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Ambil semua soal
+        | PASTIKAN PERTEMUAN MEMANG TERDAFTAR
+        |--------------------------------------------------------------------------
+        |
+        | Ini yang membuat Quiz benar-benar mengikuti
+        | quiz_meetings.
+        |
+        */
+
+        $meetingExists = QuizMeetingAdmin::query()
+            ->where(
+                'pertemuan',
+                $quiz->pertemuan
+            )
+            ->exists();
+
+
+        if (! $meetingExists) {
+
+            return back()
+                ->withErrors([
+                    'pertemuan' =>
+                        'Pertemuan Quiz tidak tersedia.',
+                ])
+                ->withInput();
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK SUDAH PERNAH MENGERJAKAN
+        |--------------------------------------------------------------------------
+        |
+        | Jika sudah ada attempt:
+        |
+        | - jangan update
+        | - jangan overwrite
+        | - jangan hitung ulang
+        | - jangan membuat attempt baru
+        |
+        */
+
+        $existingAttempt = QuizAttempt::query()
+            ->where(
+                'quiz_id',
+                $quiz->id
+            )
+            ->where(
+                'student_id',
+                $student->id
+            )
+            ->first();
+
+
+        if ($existingAttempt) {
+
+            return redirect()
+                ->route(
+                    'quiz.index',
+                    [
+                        'kelas' =>
+                            $student->kelas,
+
+                        'student_id' =>
+                            $student->id,
+
+                        'pertemuan' =>
+                            $quiz->pertemuan,
+                    ]
+                )
+                ->with(
+                    'info',
+                    'Quiz ini sudah pernah dikerjakan. Siswa tidak dapat mengerjakan ulang.'
+                );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL SEMUA SOAL
         |--------------------------------------------------------------------------
         */
 
         $quiz->load([
             'questions' => function ($query) {
-                $query->orderBy('urutan');
+
+                $query->orderBy(
+                    'urutan'
+                );
+
             },
         ]);
 
 
-        $jawaban = $validated['jawaban'];
+        /*
+        |--------------------------------------------------------------------------
+        | JAWABAN
+        |--------------------------------------------------------------------------
+        */
 
-        $jumlahSoal = $quiz->questions->count();
+        $jawaban =
+            $validated['jawaban'];
+
+
+        $jumlahSoal =
+            $quiz->questions->count();
+
 
         $jumlahBenar = 0;
 
 
         /*
         |--------------------------------------------------------------------------
-        | Penilaian otomatis
+        | PENILAIAN OTOMATIS
         |--------------------------------------------------------------------------
         */
 
-        foreach ($quiz->questions as $question) {
+        foreach (
+            $quiz->questions as $question
+        ) {
 
-            $jawabanSiswa = $jawaban[$question->id] ?? null;
+            $jawabanSiswa =
+                $jawaban[$question->id]
+                ?? null;
+
 
             if (
                 $jawabanSiswa &&
-                strtoupper($jawabanSiswa) ===
-                strtoupper($question->jawaban_benar)
+                strtoupper(
+                    $jawabanSiswa
+                ) ===
+                strtoupper(
+                    $question->jawaban_benar
+                )
             ) {
 
                 $jumlahBenar++;
+
             }
+
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Hitung nilai 0 - 100
+        | HITUNG NILAI
         |--------------------------------------------------------------------------
         */
 
-        $nilai = $jumlahSoal > 0
-            ? round(
-                ($jumlahBenar / $jumlahSoal) * 100,
-                2
-            )
-            : 0;
+        $nilai =
+            $jumlahSoal > 0
+                ? round(
+                    (
+                        $jumlahBenar /
+                        $jumlahSoal
+                    ) * 100,
+                    2
+                )
+                : 0;
 
 
         /*
         |--------------------------------------------------------------------------
-        | Simpan hasil
+        | SIMPAN HASIL
         |--------------------------------------------------------------------------
+        |
+        | create() digunakan agar attempt yang sudah ada
+        | tidak ditimpa.
+        |
         */
 
-        QuizAttempt::updateOrCreate(
+        QuizAttempt::create([
 
-            [
-                'quiz_id' => $quiz->id,
-                'student_id' => $student->id,
-            ],
+            'quiz_id' =>
+                $quiz->id,
 
-            [
-                'jawaban' => $jawaban,
-                'jumlah_benar' => $jumlahBenar,
-                'jumlah_soal' => $jumlahSoal,
-                'nilai' => $nilai,
-                'dikerjakan_at' => now(),
-            ]
-        );
+            'student_id' =>
+                $student->id,
+
+            'jawaban' =>
+                $jawaban,
+
+            'jumlah_benar' =>
+                $jumlahBenar,
+
+            'jumlah_soal' =>
+                $jumlahSoal,
+
+            'nilai' =>
+                $nilai,
+
+            'dikerjakan_at' =>
+                now(),
+
+        ]);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Kembali ke halaman Quiz
+        | KEMBALI KE QUIZ
         |--------------------------------------------------------------------------
         */
 
         return redirect()
-            ->route('quiz.index', [
-                'kelas' => $student->kelas,
-                'student_id' => $student->id,
-                'pertemuan' => $quiz->pertemuan,
-            ])
+            ->route(
+                'quiz.index',
+                [
+                    'kelas' =>
+                        $student->kelas,
+
+                    'student_id' =>
+                        $student->id,
+
+                    'pertemuan' =>
+                        $quiz->pertemuan,
+                ]
+            )
             ->with([
                 'success' =>
                     'Quiz berhasil dikerjakan dan dinilai otomatis.',
@@ -321,43 +642,82 @@ class QuizControllerSiswa extends Controller
                 'nilai' =>
                     $nilai,
             ]);
+
     }
 
 
     /**
-     * Menampilkan hasil Quiz.
+     * ============================================================
+     * HASIL QUIZ
+     * ============================================================
      */
-    public function result(Request $request, Quiz $quiz)
-    {
-        $studentId = $request->get('student_id');
+    public function result(
+        Request $request,
+        Quiz $quiz
+    ) {
 
-        if (!$studentId) {
+        /*
+        |--------------------------------------------------------------------------
+        | BELUM ADA SISWA
+        |--------------------------------------------------------------------------
+        */
+
+        $studentId =
+            $request->get(
+                'student_id'
+            );
+
+
+        if (! $studentId) {
 
             return redirect()
-                ->route('quiz.index', [
-                    'pertemuan' => $quiz->pertemuan,
-                ]);
+                ->route(
+                    'quiz.index',
+                    [
+                        'pertemuan' =>
+                            $quiz->pertemuan,
+                    ]
+                );
+
         }
 
 
-        $student = Student::where(
-            'id',
-            $studentId
-        )
-            ->where('aktif', true)
+        /*
+        |--------------------------------------------------------------------------
+        | CARI SISWA AKTIF
+        |--------------------------------------------------------------------------
+        */
+
+        $student = Student::query()
+            ->where(
+                'id',
+                $studentId
+            )
+            ->where(
+                'aktif',
+                true
+            )
             ->first();
 
 
-        if (!$student) {
+        if (! $student) {
 
             abort(404);
+
         }
 
 
-        $attempt = QuizAttempt::where(
-            'quiz_id',
-            $quiz->id
-        )
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL ATTEMPT
+        |--------------------------------------------------------------------------
+        */
+
+        $attempt = QuizAttempt::query()
+            ->where(
+                'quiz_id',
+                $quiz->id
+            )
             ->where(
                 'student_id',
                 $student->id
@@ -365,10 +725,20 @@ class QuizControllerSiswa extends Controller
             ->first();
 
 
-        return view('quiz.result', compact(
-            'quiz',
-            'student',
-            'attempt'
-        ));
+        /*
+        |--------------------------------------------------------------------------
+        | VIEW HASIL
+        |--------------------------------------------------------------------------
+        */
+
+        return view(
+            'quiz.result',
+            compact(
+                'quiz',
+                'student',
+                'attempt'
+            )
+        );
+
     }
 }

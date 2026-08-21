@@ -7,6 +7,7 @@ use App\Models\Assignment;
 use App\Models\Material;
 use App\Models\Student;
 use App\Models\LKPD;
+use App\Models\Quiz;
 use App\Models\Reflection;
 use Illuminate\Http\Request;
 
@@ -17,40 +18,29 @@ class QuizRankingController extends Controller
      * RANKING 5 ASPEK
      * ============================================================
      *
-     * 1. Absensi
-     * 2. Quiz
-     * 3. LKPD
-     * 4. Refleksi
-     * 5. Praktik
-     *
-     * Bobot penilaian:
-     *
      * Absensi  = 10%
      * Quiz     = 25%
      * LKPD     = 30%
      * Refleksi = 10%
      * Praktik  = 25%
      *
-     * Total    = 100%
+     * Total = 100%
      *
-     * Nilai akhir:
+     * Nilai aspek yang sudah tersedia tetap ditampilkan.
      *
-     * (Absensi x 10%) + (Quiz x 25%) +
-     * (LKPD x 30%) + (Refleksi x 10%) +
-     * (Praktik x 25%)
-     *
-     * Siswa tetap ditampilkan walaupun belum lengkap.
      * Nilai akhir hanya dihitung apabila seluruh aspek lengkap.
      */
     public function index(Request $request)
     {
         /*
         |--------------------------------------------------------------------------
-        | KELAS YANG DIPILIH
+        | KELAS
         |--------------------------------------------------------------------------
         */
 
-        $kelas = $request->get('kelas', '');
+        $kelas = trim(
+            (string) $request->get('kelas', '')
+        );
 
 
         /*
@@ -71,11 +61,10 @@ class QuizRankingController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | JUMLAH PERTEMUAN
+        | PERTEMUAN ABSENSI
         |--------------------------------------------------------------------------
         |
-        | Absensi tetap mengikuti pertemuan yang benar-benar ada
-        | pada Material.
+        | Tetap mengikuti pertemuan yang tersedia pada Material.
         |
         */
 
@@ -91,47 +80,61 @@ class QuizRankingController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL DATA LKPD
+        | QUIZ
         |--------------------------------------------------------------------------
+        |
+        | PENTING:
+        |
+        | Status Quiz tidak lagi berdasarkan jumlah attempt.
+        |
+        | Kita ambil semua Quiz aktif dari database kemudian
+        | mencocokkannya dengan quiz_attempts milik siswa.
+        |
         */
 
-        $lkpds = LKPD::with([
-            'questions',
-            'answers.question',
-        ])
+        $quizzes = Quiz::query()
+            ->where('aktif', true)
+            ->orderBy('pertemuan')
+            ->orderBy('id')
             ->get();
 
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL DATA REFLEKSI
+        | LKPD
         |--------------------------------------------------------------------------
         */
 
-        $reflections = Reflection::with([
-            'questions',
-            'answers',
-        ])
+        $lkpds = LKPD::query()
+            ->with([
+                'questions',
+                'answers.question',
+            ])
+            ->orderBy('pertemuan')
+            ->orderBy('id')
             ->get();
 
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL DATA PRAKTIK
+        | REFLEKSI
         |--------------------------------------------------------------------------
-        |
-        | Praktik menggunakan Assignment.
-        |
-        | Nilai diambil dari:
-        | assignment_submissions.nilai
-        |
-        | Submission individu:
-        | student_id
-        |
-        | Submission kelompok:
-        | assignment_group_id
-        | lalu dicocokkan dengan anggota kelompok.
-        |
+        */
+
+        $reflections = Reflection::query()
+            ->with([
+                'questions',
+                'answers',
+            ])
+            ->orderBy('pertemuan')
+            ->orderBy('id')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRAKTIK
+        |--------------------------------------------------------------------------
         */
 
         $assignmentsQuery = Assignment::query()
@@ -152,30 +155,37 @@ class QuizRankingController extends Controller
 
         if ($kelas !== '') {
 
-            $kelasNormalized = str_replace('-', ' ', $kelas);
+            $kelasNormalized =
+                str_replace('-', ' ', $kelas);
 
-            $assignmentsQuery->where(function ($query) use (
-                $kelas,
-                $kelasNormalized
-            ) {
+            $assignmentsQuery->where(
+                function ($query) use (
+                    $kelas,
+                    $kelasNormalized
+                ) {
 
-                $query
-                    ->where('kelas', $kelas)
-                    ->orWhere('kelas', $kelasNormalized);
-            });
+                    $query
+                        ->where(
+                            'kelas',
+                            $kelas
+                        )
+                        ->orWhere(
+                            'kelas',
+                            $kelasNormalized
+                        );
+                }
+            );
         }
 
 
-        $assignments = $assignmentsQuery->get();
+        $assignments =
+            $assignmentsQuery->get();
 
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL SISWA
+        | SISWA
         |--------------------------------------------------------------------------
-        |
-        | Semua siswa aktif tetap dimunculkan.
-        |
         */
 
         $studentsQuery = Student::query()
@@ -185,36 +195,43 @@ class QuizRankingController extends Controller
                 'quizAttempts',
             ])
             ->orderBy('kelas')
-            ->orderBy('nomor_absen');
+            ->orderBy('nomor_absen')
+            ->orderBy('nama');
 
 
         /*
         |--------------------------------------------------------------------------
-        | FILTER KELAS
+        | FILTER KELAS SISWA
         |--------------------------------------------------------------------------
         */
 
         if ($kelas !== '') {
 
-            $studentsQuery->where(function ($query) use ($kelas) {
+            $kelasNormalized =
+                str_replace('-', ' ', $kelas);
 
-                $query
-                    ->where('kelas', $kelas)
-                    ->orWhere(
-                        'kelas',
-                        str_replace('-', ' ', $kelas)
-                    );
-            });
+            $studentsQuery->where(
+                function ($query) use (
+                    $kelas,
+                    $kelasNormalized
+                ) {
+
+                    $query
+                        ->where(
+                            'kelas',
+                            $kelas
+                        )
+                        ->orWhere(
+                            'kelas',
+                            $kelasNormalized
+                        );
+                }
+            );
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | AMBIL SISWA
-        |--------------------------------------------------------------------------
-        */
-
-        $students = $studentsQuery->get();
+        $students =
+            $studentsQuery->get();
 
 
         /*
@@ -224,270 +241,14 @@ class QuizRankingController extends Controller
         */
 
         $ranking = $students
-            ->map(function ($student) use (
-                $totalPertemuan,
-                $lkpds,
-                $reflections,
-                $assignments
-            ) {
-
-                /*
-                |--------------------------------------------------------------------------
-                | 1. ABSENSI
-                |--------------------------------------------------------------------------
-                */
-
-                $hadir = $student->attendances
-                    ->where('status', 'hadir')
-                    ->count();
-
-                $sakit = $student->attendances
-                    ->where('status', 'sakit')
-                    ->count();
-
-                $izin = $student->attendances
-                    ->where('status', 'izin')
-                    ->count();
-
-                $alfa = $student->attendances
-                    ->where('status', 'alfa')
-                    ->count();
-
-                $dispensasi = $student->attendances
-                    ->where('status', 'dispensasi')
-                    ->count();
-
-
-                $attendancePercentage = $totalPertemuan > 0
-                    ? ($hadir / $totalPertemuan) * 100
-                    : 0;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | 2. QUIZ
-                |--------------------------------------------------------------------------
-                */
-
-                $attempts = $student->quizAttempts;
-
-                $quizCount = $attempts->count();
-
-                $quizAverage = $quizCount > 0
-                    ? (float) $attempts->avg('nilai')
-                    : null;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | 3. LKPD
-                |--------------------------------------------------------------------------
-                */
-
-                $lkpdResult = $this->calculateLkpdScore(
-                    $student,
-                    $lkpds
-                );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | 4. REFLEKSI
-                |--------------------------------------------------------------------------
-                */
-
-                $reflectionResult = $this->calculateReflectionScore(
-                    $student,
-                    $reflections
-                );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | 5. PRAKTIK
-                |--------------------------------------------------------------------------
-                */
-
-                $practiceResult = $this->calculatePracticeScore(
-                    $student,
+            ->map(
+                function ($student) use (
+                    $totalPertemuan,
+                    $quizzes,
+                    $lkpds,
+                    $reflections,
                     $assignments
-                );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | STATUS KELENGKAPAN
-                |--------------------------------------------------------------------------
-                */
-
-                $missing = [];
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | QUIZ
-                |--------------------------------------------------------------------------
-                */
-
-                if ($quizCount === 0) {
-
-                    $missing[] = 'Quiz belum dikerjakan';
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | LKPD
-                |--------------------------------------------------------------------------
-                */
-
-                foreach ($lkpdResult['status_items'] as $status) {
-
-                    if (!in_array(
-                        $status['status'],
-                        ['complete', 'not_required'],
-                        true
-                    )) {
-
-                        $missing[] = $status['message'];
-                    }
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | REFLEKSI
-                |--------------------------------------------------------------------------
-                */
-
-                foreach ($reflectionResult['status_items'] as $status) {
-
-                    if (!in_array(
-                        $status['status'],
-                        ['complete', 'not_required'],
-                        true
-                    )) {
-
-                        $missing[] = $status['message'];
-                    }
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | PRAKTIK
-                |--------------------------------------------------------------------------
-                */
-
-                foreach ($practiceResult['status_items'] as $status) {
-
-                    if (!in_array(
-                        $status['status'],
-                        ['complete', 'not_required'],
-                        true
-                    )) {
-
-                        $missing[] = $status['message'];
-                    }
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | CEK SEMUA ASPEK
-                |--------------------------------------------------------------------------
-                */
-
-                $attendanceComplete =
-                    $totalPertemuan === 0
-                    || $attendancePercentage >= 0;
-
-                $quizComplete =
-                    $quizCount > 0;
-
-                $lkpdComplete =
-                    $lkpdResult['complete'];
-
-                $reflectionComplete =
-                    $reflectionResult['complete'];
-
-                $practiceComplete =
-                    $practiceResult['complete'];
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | 5 ASPEK HARUS LENGKAP
-                |--------------------------------------------------------------------------
-                */
-
-                $isComplete =
-                    $attendanceComplete
-                    && $quizComplete
-                    && $lkpdComplete
-                    && $reflectionComplete
-                    && $practiceComplete;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | NILAI AKHIR
-                |--------------------------------------------------------------------------
-                |
-                | Bobot:
-                |
-                | Absensi  = 10%
-                | LKPD     = 30%
-                | Quiz     = 25%
-                | Praktik  = 25%
-                | Refleksi = 10%
-                |
-                */
-
-                $finalScore = null;
-
-                if ($isComplete) {
-
-                    $finalScore =
-                        ($attendancePercentage * 0.10)
-                        + ($lkpdResult['score'] * 0.30)
-                        + ($quizAverage * 0.25)
-                        + ($practiceResult['score'] * 0.25)
-                        + ($reflectionResult['score'] * 0.10);
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | STATUS
-                |--------------------------------------------------------------------------
-                */
-
-                if ($isComplete) {
-
-                    $statusText =
-                        'Semua aspek penilaian sudah lengkap';
-
-                } else {
-
-                    $statusText =
-                        implode(
-                            ', ',
-                            array_unique($missing)
-                        );
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | RETURN DATA
-                |--------------------------------------------------------------------------
-                */
-
-                return [
-
-                    'student' => $student,
-
+                ) {
 
                     /*
                     |--------------------------------------------------------------------------
@@ -495,20 +256,40 @@ class QuizRankingController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'hadir' => $hadir,
+                    $hadir = $student
+                        ->attendances
+                        ->where('status', 'hadir')
+                        ->count();
 
-                    'sakit' => $sakit,
+                    $sakit = $student
+                        ->attendances
+                        ->where('status', 'sakit')
+                        ->count();
 
-                    'izin' => $izin,
+                    $izin = $student
+                        ->attendances
+                        ->where('status', 'izin')
+                        ->count();
 
-                    'alfa' => $alfa,
+                    $alfa = $student
+                        ->attendances
+                        ->where('status', 'alfa')
+                        ->count();
 
-                    'dispensasi' => $dispensasi,
+                    $dispensasi = $student
+                        ->attendances
+                        ->where('status', 'dispensasi')
+                        ->count();
 
-                    'attendance_percentage' => round(
-                        $attendancePercentage,
-                        2
-                    ),
+
+                    $attendancePercentage =
+                        $totalPertemuan > 0
+                            ? (
+                                $hadir
+                                /
+                                $totalPertemuan
+                            ) * 100
+                            : 0;
 
 
                     /*
@@ -517,11 +298,22 @@ class QuizRankingController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'quiz_count' => $quizCount,
+                    $quizResult =
+                        $this->calculateQuizScore(
+                            $student,
+                            $quizzes
+                        );
 
-                    'quiz_average' => $quizAverage !== null
-                        ? round($quizAverage, 2)
-                        : null,
+
+                    $quizCount =
+                        $quizResult['completed_count'];
+
+                    $quizTotal =
+                        $quizResult['total_count'];
+
+
+                    $quizAverage =
+                        $quizResult['score'];
 
 
                     /*
@@ -530,18 +322,11 @@ class QuizRankingController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'lkpd_score' => $lkpdResult['score'] !== null
-                        ? round(
-                            $lkpdResult['score'],
-                            2
-                        )
-                        : null,
-
-                    'lkpd_complete' =>
-                        $lkpdResult['complete'],
-
-                    'lkpd_status' =>
-                        $lkpdResult['status'],
+                    $lkpdResult =
+                        $this->calculateLkpdScore(
+                            $student,
+                            $lkpds
+                        );
 
 
                     /*
@@ -550,19 +335,11 @@ class QuizRankingController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'reflection_score' =>
-                        $reflectionResult['score'] !== null
-                            ? round(
-                                $reflectionResult['score'],
-                                2
-                            )
-                            : null,
-
-                    'reflection_complete' =>
-                        $reflectionResult['complete'],
-
-                    'reflection_status' =>
-                        $reflectionResult['status'],
+                    $reflectionResult =
+                        $this->calculateReflectionScore(
+                            $student,
+                            $reflections
+                        );
 
 
                     /*
@@ -571,184 +348,539 @@ class QuizRankingController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'practice_score' =>
-                        $practiceResult['score'] !== null
-                            ? round(
-                                $practiceResult['score'],
-                                2
-                            )
-                            : null,
-
-                    'practice_complete' =>
-                        $practiceResult['complete'],
-
-                    'practice_status' =>
-                        $practiceResult['status'],
+                    $practiceResult =
+                        $this->calculatePracticeScore(
+                            $student,
+                            $assignments
+                        );
 
 
                     /*
                     |--------------------------------------------------------------------------
-                    | FINAL
+                    | STATUS
                     |--------------------------------------------------------------------------
                     */
 
-                    'is_complete' =>
-                        $isComplete,
+                    $missing = [];
 
-                    'missing' =>
-                        array_values(
-                            array_unique($missing)
-                        ),
 
-                    'status_text' =>
-                        $statusText,
+                    /*
+                    |--------------------------------------------------------------------------
+                    | QUIZ
+                    |--------------------------------------------------------------------------
+                    */
 
-                    'final_score' =>
-                        $finalScore !== null
-                            ? round(
-                                $finalScore,
-                                2
+                    foreach (
+                        $quizResult['status_items']
+                        as $status
+                    ) {
+
+                        if (
+                            !in_array(
+                                $status['status'],
+                                [
+                                    'complete',
+                                    'not_required',
+                                ],
+                                true
                             )
-                            : null,
+                        ) {
 
-                ];
+                            $missing[] =
+                                $status['message'];
+                        }
+                    }
 
-            })
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | LKPD
+                    |--------------------------------------------------------------------------
+                    */
+
+                    foreach (
+                        $lkpdResult['status_items']
+                        as $status
+                    ) {
+
+                        if (
+                            !in_array(
+                                $status['status'],
+                                [
+                                    'complete',
+                                    'not_required',
+                                ],
+                                true
+                            )
+                        ) {
+
+                            $missing[] =
+                                $status['message'];
+                        }
+                    }
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | URUTKAN
-            |--------------------------------------------------------------------------
-            |
-            | Siswa lengkap berada di atas.
-            | Setelah itu berdasarkan nilai akhir.
-            | Siswa belum lengkap tetap tampil di bawah.
-            |
-            */
+                    /*
+                    |--------------------------------------------------------------------------
+                    | REFLEKSI
+                    |--------------------------------------------------------------------------
+                    */
 
-            ->sort(function ($a, $b) {
+                    foreach (
+                        $reflectionResult['status_items']
+                        as $status
+                    ) {
 
-                /*
-                |--------------------------------------------------------------------------
-                | 1. YANG SUDAH LENGKAP DI ATAS
-                |--------------------------------------------------------------------------
-                */
+                        if (
+                            !in_array(
+                                $status['status'],
+                                [
+                                    'complete',
+                                    'not_required',
+                                ],
+                                true
+                            )
+                        ) {
 
-                if (
-                    $a['is_complete']
-                    !==
-                    $b['is_complete']
-                ) {
+                            $missing[] =
+                                $status['message'];
+                        }
+                    }
 
-                    return $a['is_complete']
-                        ? -1
-                        : 1;
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | PRAKTIK
+                    |--------------------------------------------------------------------------
+                    */
+
+                    foreach (
+                        $practiceResult['status_items']
+                        as $status
+                    ) {
+
+                        if (
+                            !in_array(
+                                $status['status'],
+                                [
+                                    'complete',
+                                    'not_required',
+                                ],
+                                true
+                            )
+                        ) {
+
+                            $missing[] =
+                                $status['message'];
+                        }
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | KELENGKAPAN
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $attendanceComplete =
+                        $totalPertemuan === 0
+                        ||
+                        $attendancePercentage >= 0;
+
+
+                    $quizComplete =
+                        $quizResult['complete'];
+
+
+                    $lkpdComplete =
+                        $lkpdResult['complete'];
+
+
+                    $reflectionComplete =
+                        $reflectionResult['complete'];
+
+
+                    $practiceComplete =
+                        $practiceResult['complete'];
+
+
+                    $isComplete =
+                        $attendanceComplete
+                        &&
+                        $quizComplete
+                        &&
+                        $lkpdComplete
+                        &&
+                        $reflectionComplete
+                        &&
+                        $practiceComplete;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | NILAI AKHIR
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $finalScore = null;
+
+
+                    if (
+                        $isComplete
+                        &&
+                        $quizAverage !== null
+                        &&
+                        $lkpdResult['score'] !== null
+                        &&
+                        $reflectionResult['score'] !== null
+                        &&
+                        $practiceResult['score'] !== null
+                    ) {
+
+                        $finalScore =
+                            ($attendancePercentage * 0.10)
+                            +
+                            ($quizAverage * 0.25)
+                            +
+                            ($lkpdResult['score'] * 0.30)
+                            +
+                            ($reflectionResult['score'] * 0.10)
+                            +
+                            ($practiceResult['score'] * 0.25);
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | STATUS UTAMA
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if ($isComplete) {
+
+                        $statusText =
+                            'Semua aspek penilaian sudah lengkap';
+
+                    } else {
+
+                        $statusText =
+                            count($missing) > 0
+                                ? implode(
+                                    ', ',
+                                    array_unique(
+                                        $missing
+                                    )
+                                )
+                                : 'Penilaian belum lengkap';
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | DATA RANKING
+                    |--------------------------------------------------------------------------
+                    */
+
+                    return [
+
+                        'student' =>
+                            $student,
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | ABSENSI
+                        |--------------------------------------------------------------------------
+                        */
+
+                        'hadir' =>
+                            $hadir,
+
+                        'sakit' =>
+                            $sakit,
+
+                        'izin' =>
+                            $izin,
+
+                        'alfa' =>
+                            $alfa,
+
+                        'dispensasi' =>
+                            $dispensasi,
+
+                        'attendance_percentage' =>
+                            round(
+                                $attendancePercentage,
+                                2
+                            ),
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | QUIZ
+                        |--------------------------------------------------------------------------
+                        */
+
+                        'quiz_count' =>
+                            $quizCount,
+
+                        'quiz_total' =>
+                            $quizTotal,
+
+                        'quiz_average' =>
+                            $quizAverage !== null
+                                ? round(
+                                    $quizAverage,
+                                    2
+                                )
+                                : null,
+
+                        'quiz_complete' =>
+                            $quizResult['complete'],
+
+                        'quiz_status' =>
+                            $quizResult['status'],
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | LKPD
+                        |--------------------------------------------------------------------------
+                        */
+
+                        'lkpd_count' =>
+                            $lkpdResult['completed_count'],
+
+                        'lkpd_total' =>
+                            $lkpdResult['total_count'],
+
+                        'lkpd_score' =>
+                            $lkpdResult['score'] !== null
+                                ? round(
+                                    $lkpdResult['score'],
+                                    2
+                                )
+                                : null,
+
+                        'lkpd_complete' =>
+                            $lkpdResult['complete'],
+
+                        'lkpd_status' =>
+                            $lkpdResult['status'],
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | REFLEKSI
+                        |--------------------------------------------------------------------------
+                        */
+
+                        'reflection_count' =>
+                            $reflectionResult['completed_count'],
+
+                        'reflection_total' =>
+                            $reflectionResult['total_count'],
+
+                        'reflection_score' =>
+                            $reflectionResult['score'] !== null
+                                ? round(
+                                    $reflectionResult['score'],
+                                    2
+                                )
+                                : null,
+
+                        'reflection_complete' =>
+                            $reflectionResult['complete'],
+
+                        'reflection_status' =>
+                            $reflectionResult['status'],
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | PRAKTIK
+                        |--------------------------------------------------------------------------
+                        */
+
+                        'practice_count' =>
+                            $practiceResult['completed_count'],
+
+                        'practice_total' =>
+                            $practiceResult['total_count'],
+
+                        'practice_score' =>
+                            $practiceResult['score'] !== null
+                                ? round(
+                                    $practiceResult['score'],
+                                    2
+                                )
+                                : null,
+
+                        'practice_complete' =>
+                            $practiceResult['complete'],
+
+                        'practice_status' =>
+                            $practiceResult['status'],
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | FINAL
+                        |--------------------------------------------------------------------------
+                        */
+
+                        'is_complete' =>
+                            $isComplete,
+
+                        'missing' =>
+                            array_values(
+                                array_unique(
+                                    $missing
+                                )
+                            ),
+
+                        'status_text' =>
+                            $statusText,
+
+                        'final_score' =>
+                            $finalScore !== null
+                                ? round(
+                                    $finalScore,
+                                    2
+                                )
+                                : null,
+                    ];
                 }
+            )
+            ->sort(
+                function ($a, $b) {
 
-
-                /*
-                |--------------------------------------------------------------------------
-                | 2. NILAI AKHIR
-                |--------------------------------------------------------------------------
-                */
-
-                if (
-                    $a['final_score']
-                    !==
-                    $b['final_score']
-                ) {
+                    /*
+                    |--------------------------------------------------------------------------
+                    | SISWA LENGKAP DI ATAS
+                    |--------------------------------------------------------------------------
+                    */
 
                     if (
-                        $a['final_score'] === null
+                        $a['is_complete']
+                        !==
+                        $b['is_complete']
                     ) {
 
-                        return 1;
+                        return $a['is_complete']
+                            ? -1
+                            : 1;
                     }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | NILAI AKHIR
+                    |--------------------------------------------------------------------------
+                    */
 
                     if (
-                        $b['final_score'] === null
+                        $a['final_score']
+                        !==
+                        $b['final_score']
                     ) {
 
-                        return -1;
+                        if (
+                            $a['final_score'] === null
+                        ) {
+
+                            return 1;
+                        }
+
+
+                        if (
+                            $b['final_score'] === null
+                        ) {
+
+                            return -1;
+                        }
+
+
+                        return
+                            $b['final_score']
+                            <=>
+                            $a['final_score'];
                     }
 
-                    return $b['final_score']
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | QUIZ
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $aQuiz =
+                        $a['quiz_average'] ?? -1;
+
+                    $bQuiz =
+                        $b['quiz_average'] ?? -1;
+
+
+                    if (
+                        $aQuiz != $bQuiz
+                    ) {
+
+                        return
+                            $bQuiz
+                            <=>
+                            $aQuiz;
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ABSENSI
+                    |--------------------------------------------------------------------------
+                    */
+
+                    return
+                        $b['attendance_percentage']
                         <=>
-                        $a['final_score'];
+                        $a['attendance_percentage'];
                 }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | 3. QUIZ
-                |--------------------------------------------------------------------------
-                */
-
-                $aQuiz =
-                    $a['quiz_average'] ?? -1;
-
-                $bQuiz =
-                    $b['quiz_average'] ?? -1;
-
-
-                if ($aQuiz != $bQuiz) {
-
-                    return $bQuiz <=> $aQuiz;
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | 4. ABSENSI
-                |--------------------------------------------------------------------------
-                */
-
-                return $b['attendance_percentage']
-                    <=>
-                    $a['attendance_percentage'];
-
-            })
-
-
+            )
             ->values();
 
 
         /*
         |--------------------------------------------------------------------------
-        | NOMOR RANKING
+        | RANK
         |--------------------------------------------------------------------------
-        |
-        | Hanya siswa lengkap yang mendapatkan ranking.
-        | Siswa belum lengkap tetap ditampilkan tetapi rank = null.
-        |
         */
-
-        $ranking = $ranking
-            ->map(function ($item) {
-
-                return $item;
-            });
-
 
         $rank = 0;
 
-        $ranking = $ranking
-            ->map(function ($item) use (&$rank) {
 
-                if ($item['is_complete']) {
+        $ranking =
+            $ranking->map(
+                function ($item) use (
+                    &$rank
+                ) {
 
-                    $rank++;
+                    if (
+                        $item['is_complete']
+                    ) {
 
-                    $item['rank'] = $rank;
+                        $rank++;
 
-                } else {
+                        $item['rank'] =
+                            $rank;
 
-                    $item['rank'] = null;
+                    } else {
+
+                        $item['rank'] =
+                            null;
+                    }
+
+
+                    return $item;
                 }
-
-                return $item;
-            });
+            );
 
 
         /*
@@ -757,36 +889,46 @@ class QuizRankingController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $totalRanked = $ranking
-            ->where('is_complete', true)
-            ->count();
+        $totalRanked =
+            $ranking
+                ->where(
+                    'is_complete',
+                    true
+                )
+                ->count();
 
 
-        $averageFinalScore = $totalRanked > 0
-            ? round(
-                $ranking
-                    ->where('is_complete', true)
-                    ->avg('final_score'),
-                2
-            )
-            : 0;
+        $averageFinalScore =
+            $totalRanked > 0
+                ? round(
+                    $ranking
+                        ->where(
+                            'is_complete',
+                            true
+                        )
+                        ->avg(
+                            'final_score'
+                        ),
+                    2
+                )
+                : 0;
 
 
-        $highestFinalScore = $totalRanked > 0
-            ? round(
-                $ranking
-                    ->where('is_complete', true)
-                    ->max('final_score'),
-                2
-            )
-            : 0;
+        $highestFinalScore =
+            $totalRanked > 0
+                ? round(
+                    $ranking
+                        ->where(
+                            'is_complete',
+                            true
+                        )
+                        ->max(
+                            'final_score'
+                        ),
+                    2
+                )
+                : 0;
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL SISWA
-        |--------------------------------------------------------------------------
-        */
 
         $totalStudents =
             $ranking->count();
@@ -794,7 +936,7 @@ class QuizRankingController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | HALAMAN RANKING
+        | VIEW
         |--------------------------------------------------------------------------
         */
 
@@ -817,60 +959,52 @@ class QuizRankingController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | HITUNG NILAI PRAKTIK
+    | HITUNG NILAI QUIZ
     |--------------------------------------------------------------------------
-    |
-    | Praktik berasal dari Assignment.
-    |
-    | Individu:
-    | submission.student_id = student.id
-    |
-    | Kelompok:
-    | submission.assignment_group_id
-    | -> group.members
-    | -> student.id
-    |
-    | Nilai hanya dianggap lengkap apabila:
-    |
-    | - submission ada
-    | - status = selesai
-    | - nilai tidak null
-    |
     */
 
-    private function calculatePracticeScore(
+    private function calculateQuizScore(
         Student $student,
-        $assignments
+        $quizzes
     ): array {
 
         /*
         |--------------------------------------------------------------------------
-        | Jika belum ada Praktik
+        | TIDAK ADA QUIZ
         |--------------------------------------------------------------------------
         */
 
-        if ($assignments->isEmpty()) {
+        if (
+            $quizzes->isEmpty()
+        ) {
 
             return [
 
-                'score' => null,
+                'score' =>
+                    null,
 
-                'complete' => true,
+                'complete' =>
+                    true,
 
                 'status' =>
-                    'Belum ada Praktik',
+                    'Belum ada Quiz',
 
                 'status_items' => [
 
                     [
-                        'status' => 'not_required',
+                        'status' =>
+                            'not_required',
 
                         'message' =>
-                            'Tidak ada Praktik',
+                            'Tidak ada Quiz',
                     ],
-
                 ],
 
+                'completed_count' =>
+                    0,
+
+                'total_count' =>
+                    0,
             ];
         }
 
@@ -879,76 +1013,299 @@ class QuizRankingController extends Controller
 
         $statusItems = [];
 
+        $completedCount = 0;
+
+        $totalCount = $quizzes->count();
+
 
         /*
         |--------------------------------------------------------------------------
-        | CEK SETIAP TUGAS PRAKTIK
+        | CEK SETIAP QUIZ
         |--------------------------------------------------------------------------
         */
 
-        foreach ($assignments as $assignment) {
+        foreach (
+            $quizzes
+            as $quiz
+        ) {
 
             /*
             |--------------------------------------------------------------------------
-            | Cari submission siswa
+            | CARI ATTEMPT BERDASARKAN QUIZ ID
             |--------------------------------------------------------------------------
             */
 
-            $submission = $assignment
-                ->submissions
-                ->first(
-                    function ($submission) use (
-                        $student
-                    ) {
-
-                        /*
-                        |--------------------------------------------------------------------------
-                        | INDIVIDU
-                        |--------------------------------------------------------------------------
-                        */
-
-                        if (
-                            $submission->student_id !== null
-                            &&
-                            (int) $submission->student_id ===
-                            (int) $student->id
-                        ) {
-
-                            return true;
-                        }
+            $attempt =
+                $student
+                    ->quizAttempts
+                    ->firstWhere(
+                        'quiz_id',
+                        $quiz->id
+                    );
 
 
-                        /*
-                        |--------------------------------------------------------------------------
-                        | KELOMPOK
-                        |--------------------------------------------------------------------------
-                        */
+            /*
+            |--------------------------------------------------------------------------
+            | BELUM DIKERJAKAN
+            |--------------------------------------------------------------------------
+            */
 
-                        if (
-                            $submission->assignment_group_id !== null
-                            &&
-                            $submission->group
-                        ) {
+            if (!$attempt) {
 
-                            return $submission
-                                ->group
-                                ->members
-                                ->contains(
-                                    function ($member) use (
-                                        $student
-                                    ) {
+                $statusItems[] = [
 
-                                        return (int) $member->student_id ===
-                                            (int) $student->id;
+                    'status' =>
+                        'not_done',
 
-                                    }
-                                );
-                        }
+                    'message' =>
+                        "Quiz Pertemuan {$quiz->pertemuan} belum dikerjakan",
+                ];
+
+                continue;
+            }
 
 
-                        return false;
+            /*
+            |--------------------------------------------------------------------------
+            | SUDAH DIKERJAKAN TETAPI NILAI NULL
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $attempt->nilai === null
+            ) {
+
+                $statusItems[] = [
+
+                    'status' =>
+                        'pending',
+
+                    'message' =>
+                        "Quiz Pertemuan {$quiz->pertemuan} belum memiliki nilai",
+                ];
+
+                continue;
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SUDAH SELESAI
+            |--------------------------------------------------------------------------
+            */
+
+            $scores[] =
+                (float) $attempt->nilai;
+
+            $completedCount++;
+
+
+            $statusItems[] = [
+
+                'status' =>
+                    'complete',
+
+                'message' =>
+                    "Quiz Pertemuan {$quiz->pertemuan} selesai",
+            ];
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RATA-RATA QUIZ YANG SUDAH ADA
+        |--------------------------------------------------------------------------
+        */
+
+        $score =
+            count($scores) > 0
+                ? array_sum($scores)
+                /
+                count($scores)
+                : null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK BELUM LENGKAP
+        |--------------------------------------------------------------------------
+        */
+
+        $hasIncomplete =
+            collect($statusItems)
+                ->contains(
+                    function ($item) {
+
+                        return !in_array(
+                            $item['status'],
+                            [
+                                'complete',
+                                'not_required',
+                            ],
+                            true
+                        );
                     }
                 );
+
+
+        return [
+
+            'score' =>
+                $score,
+
+            'complete' =>
+                !$hasIncomplete,
+
+            'status' =>
+                $hasIncomplete
+                    ? 'Belum lengkap'
+                    : 'Semua Quiz selesai',
+
+            'status_items' =>
+                $statusItems,
+
+            'completed_count' =>
+                $completedCount,
+
+            'total_count' =>
+                $totalCount,
+        ];
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HITUNG NILAI PRAKTIK
+    |--------------------------------------------------------------------------
+    */
+
+    private function calculatePracticeScore(
+        Student $student,
+        $assignments
+    ): array {
+
+        if (
+            $assignments->isEmpty()
+        ) {
+
+            return [
+
+                'score' =>
+                    null,
+
+                'complete' =>
+                    true,
+
+                'status' =>
+                    'Belum ada Praktik',
+
+                'status_items' => [
+
+                    [
+                        'status' =>
+                            'not_required',
+
+                        'message' =>
+                            'Tidak ada Praktik',
+                    ],
+                ],
+
+                'completed_count' =>
+                    0,
+
+                'total_count' =>
+                    0,
+            ];
+        }
+
+
+        $scores = [];
+
+        $statusItems = [];
+
+        $completedCount = 0;
+
+        $totalCount = $assignments->count();
+
+
+        foreach (
+            $assignments
+            as $assignment
+        ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | CARI SUBMISSION SISWA
+            |--------------------------------------------------------------------------
+            */
+
+            $submission =
+                $assignment
+                    ->submissions
+                    ->first(
+                        function (
+                            $submission
+                        ) use (
+                            $student
+                        ) {
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | INDIVIDU
+                            |--------------------------------------------------------------------------
+                            */
+
+                            if (
+                                $submission->student_id !== null
+                                &&
+                                (int)
+                                $submission->student_id
+                                ===
+                                (int)
+                                $student->id
+                            ) {
+
+                                return true;
+                            }
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | KELOMPOK
+                            |--------------------------------------------------------------------------
+                            */
+
+                            if (
+                                $submission->assignment_group_id !== null
+                                &&
+                                $submission->group
+                            ) {
+
+                                return
+                                    $submission
+                                        ->group
+                                        ->members
+                                        ->contains(
+                                            function (
+                                                $member
+                                            ) use (
+                                                $student
+                                            ) {
+
+                                                return
+                                                    (int)
+                                                    $member->student_id
+                                                    ===
+                                                    (int)
+                                                    $student->id;
+                                            }
+                                        );
+                            }
+
+
+                            return false;
+                        }
+                    );
 
 
             /*
@@ -966,7 +1323,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "Praktik Pertemuan {$assignment->pertemuan} belum dikumpulkan",
-
                 ];
 
                 continue;
@@ -975,7 +1331,7 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | BELUM DINILAI
+            | BELUM ADA NILAI
             |--------------------------------------------------------------------------
             */
 
@@ -990,7 +1346,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "Praktik Pertemuan {$assignment->pertemuan} belum memiliki nilai",
-
                 ];
 
                 continue;
@@ -999,7 +1354,7 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | PENILAIAN BELUM DISELESAIKAN
+            | BELUM SELESAI DINILAI
             |--------------------------------------------------------------------------
             */
 
@@ -1014,7 +1369,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "Praktik Pertemuan {$assignment->pertemuan} menunggu penilaian guru",
-
                 ];
 
                 continue;
@@ -1023,12 +1377,14 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | NILAI PRAKTIK
+            | NILAI
             |--------------------------------------------------------------------------
             */
 
             $scores[] =
                 (float) $submission->nilai;
+
+            $completedCount++;
 
 
             $statusItems[] = [
@@ -1038,57 +1394,45 @@ class QuizRankingController extends Controller
 
                 'message' =>
                     "Praktik Pertemuan {$assignment->pertemuan} selesai",
-
             ];
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | CEK ADA YANG BELUM LENGKAP
-        |--------------------------------------------------------------------------
-        */
-
-        $hasIncomplete =
-            collect($statusItems)
-                ->contains(
-                    fn ($item) =>
-                        $item['status'] !== 'complete'
-                        &&
-                        $item['status'] !== 'not_required'
-                );
-
-
-        if ($hasIncomplete) {
-
-            return [
-
-                'score' => null,
-
-                'complete' => false,
-
-                'status' =>
-                    'Belum lengkap',
-
-                'status_items' =>
-                    $statusItems,
-
-            ];
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | RATA-RATA PRAKTIK
+        | NILAI YANG SUDAH TERSEDIA
         |--------------------------------------------------------------------------
         */
 
         $score =
             count($scores) > 0
                 ? array_sum($scores)
-                    /
-                    count($scores)
+                /
+                count($scores)
                 : null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK LENGKAP
+        |--------------------------------------------------------------------------
+        */
+
+        $hasIncomplete =
+            collect($statusItems)
+                ->contains(
+                    function ($item) {
+
+                        return !in_array(
+                            $item['status'],
+                            [
+                                'complete',
+                                'not_required',
+                            ],
+                            true
+                        );
+                    }
+                );
 
 
         return [
@@ -1097,14 +1441,21 @@ class QuizRankingController extends Controller
                 $score,
 
             'complete' =>
-                true,
+                !$hasIncomplete,
 
             'status' =>
-                'Semua Praktik selesai',
+                $hasIncomplete
+                    ? 'Belum lengkap'
+                    : 'Semua Praktik selesai',
 
             'status_items' =>
                 $statusItems,
 
+            'completed_count' =>
+                $completedCount,
+
+            'total_count' =>
+                $totalCount,
         ];
     }
 
@@ -1120,19 +1471,17 @@ class QuizRankingController extends Controller
         $lkpds
     ): array {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Jika belum ada LKPD sama sekali
-        |--------------------------------------------------------------------------
-        */
-
-        if ($lkpds->isEmpty()) {
+        if (
+            $lkpds->isEmpty()
+        ) {
 
             return [
 
-                'score' => null,
+                'score' =>
+                    null,
 
-                'complete' => true,
+                'complete' =>
+                    true,
 
                 'status' =>
                     'Belum ada LKPD',
@@ -1140,14 +1489,19 @@ class QuizRankingController extends Controller
                 'status_items' => [
 
                     [
-                        'status' => 'not_required',
+                        'status' =>
+                            'not_required',
 
                         'message' =>
                             'Tidak ada LKPD',
                     ],
-
                 ],
 
+                'completed_count' =>
+                    0,
+
+                'total_count' =>
+                    0,
             ];
         }
 
@@ -1156,29 +1510,40 @@ class QuizRankingController extends Controller
 
         $statusItems = [];
 
+        $completedCount = 0;
 
-        foreach ($lkpds as $lkpd) {
+        $totalCount = $lkpds->count();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Cari jawaban siswa pada LKPD ini
-            |--------------------------------------------------------------------------
-            */
 
-            $answers = $lkpd->answers
-                ->where(
-                    'student_id',
-                    $student->id
-                );
-
+        foreach (
+            $lkpds
+            as $lkpd
+        ) {
 
             /*
             |--------------------------------------------------------------------------
-            | Jika belum menjawab
+            | JAWABAN SISWA
             |--------------------------------------------------------------------------
             */
 
-            if ($answers->isEmpty()) {
+            $answers =
+                $lkpd
+                    ->answers
+                    ->where(
+                        'student_id',
+                        $student->id
+                    );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BELUM DIKERJAKAN
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $answers->isEmpty()
+            ) {
 
                 $statusItems[] = [
 
@@ -1187,7 +1552,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "LKPD Pertemuan {$lkpd->pertemuan} belum dikerjakan",
-
                 ];
 
                 continue;
@@ -1196,7 +1560,7 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Hitung jumlah soal
+            | SOAL
             |--------------------------------------------------------------------------
             */
 
@@ -1210,22 +1574,34 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Cek apakah semua soal sudah dijawab
+            | JUMLAH JAWABAN
             |--------------------------------------------------------------------------
             */
 
             $answeredCount =
                 $answers
                     ->filter(
-                        fn ($answer) =>
-                            $answer->jawaban !== null
-                            &&
-                            trim(
-                                (string) $answer->jawaban
-                            ) !== ''
+                        function (
+                            $answer
+                        ) {
+
+                            return
+                                $answer->jawaban !== null
+                                &&
+                                trim(
+                                    (string)
+                                    $answer->jawaban
+                                ) !== '';
+                        }
                     )
                     ->count();
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | BELUM SELESAI
+            |--------------------------------------------------------------------------
+            */
 
             if (
                 $questionCount > 0
@@ -1240,7 +1616,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "LKPD Pertemuan {$lkpd->pertemuan} belum selesai",
-
                 ];
 
                 continue;
@@ -1249,7 +1624,7 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Cek essay yang belum dinilai
+            | CEK ESSAY
             |--------------------------------------------------------------------------
             */
 
@@ -1271,10 +1646,11 @@ class QuizRankingController extends Controller
             ) {
 
                 $answer =
-                    $answers->firstWhere(
-                        'lkpd_question_id',
-                        $essayQuestion->id
-                    );
+                    $answers
+                        ->firstWhere(
+                            'lkpd_question_id',
+                            $essayQuestion->id
+                        );
 
 
                 if (
@@ -1283,14 +1659,17 @@ class QuizRankingController extends Controller
                     $answer->nilai === null
                 ) {
 
-                    $pendingEssay = true;
+                    $pendingEssay =
+                        true;
 
                     break;
                 }
             }
 
 
-            if ($pendingEssay) {
+            if (
+                $pendingEssay
+            ) {
 
                 $statusItems[] = [
 
@@ -1299,7 +1678,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "LKPD Pertemuan {$lkpd->pertemuan} menunggu penilaian guru",
-
                 ];
 
                 continue;
@@ -1308,7 +1686,7 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | HITUNG NILAI LKPD
+            | NILAI SOAL
             |--------------------------------------------------------------------------
             */
 
@@ -1321,10 +1699,11 @@ class QuizRankingController extends Controller
             ) {
 
                 $answer =
-                    $answers->firstWhere(
-                        'lkpd_question_id',
-                        $question->id
-                    );
+                    $answers
+                        ->firstWhere(
+                            'lkpd_question_id',
+                            $question->id
+                        );
 
 
                 if (!$answer) {
@@ -1333,25 +1712,26 @@ class QuizRankingController extends Controller
                 }
 
 
-                $nilai =
-                    $answer->nilai;
-
-
-                if ($nilai !== null) {
+                if (
+                    $answer->nilai !== null
+                ) {
 
                     $questionScores[] =
-                        (float) $nilai;
+                        (float)
+                        $answer->nilai;
                 }
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | Jika belum ada nilai
+            | BELUM ADA NILAI
             |--------------------------------------------------------------------------
             */
 
-            if (count($questionScores) === 0) {
+            if (
+                count($questionScores) === 0
+            ) {
 
                 $statusItems[] = [
 
@@ -1360,7 +1740,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "LKPD Pertemuan {$lkpd->pertemuan} belum memiliki nilai",
-
                 ];
 
                 continue;
@@ -1369,18 +1748,24 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | NILAI LKPD PERTEMUAN
+            | NILAI PERTEMUAN
             |--------------------------------------------------------------------------
             */
 
             $meetingScore =
-                array_sum($questionScores)
+                array_sum(
+                    $questionScores
+                )
                 /
-                count($questionScores);
+                count(
+                    $questionScores
+                );
 
 
             $scores[] =
                 $meetingScore;
+
+            $completedCount++;
 
 
             $statusItems[] = [
@@ -1390,57 +1775,45 @@ class QuizRankingController extends Controller
 
                 'message' =>
                     "LKPD Pertemuan {$lkpd->pertemuan} selesai",
-
             ];
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Jika ada LKPD yang belum selesai
-        |--------------------------------------------------------------------------
-        */
-
-        $hasIncomplete =
-            collect($statusItems)
-                ->contains(
-                    fn ($item) =>
-                        $item['status'] !== 'complete'
-                        &&
-                        $item['status'] !== 'not_required'
-                );
-
-
-        if ($hasIncomplete) {
-
-            return [
-
-                'score' => null,
-
-                'complete' => false,
-
-                'status' =>
-                    'Belum lengkap',
-
-                'status_items' =>
-                    $statusItems,
-
-            ];
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NILAI RATA-RATA SEMUA LKPD
+        | RATA-RATA NILAI YANG SUDAH TERSEDIA
         |--------------------------------------------------------------------------
         */
 
         $score =
             count($scores) > 0
                 ? array_sum($scores)
-                    /
-                    count($scores)
+                /
+                count($scores)
                 : null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK LENGKAP
+        |--------------------------------------------------------------------------
+        */
+
+        $hasIncomplete =
+            collect($statusItems)
+                ->contains(
+                    function ($item) {
+
+                        return !in_array(
+                            $item['status'],
+                            [
+                                'complete',
+                                'not_required',
+                            ],
+                            true
+                        );
+                    }
+                );
 
 
         return [
@@ -1449,14 +1822,21 @@ class QuizRankingController extends Controller
                 $score,
 
             'complete' =>
-                true,
+                !$hasIncomplete,
 
             'status' =>
-                'Semua LKPD selesai',
+                $hasIncomplete
+                    ? 'Belum lengkap'
+                    : 'Semua LKPD selesai',
 
             'status_items' =>
                 $statusItems,
 
+            'completed_count' =>
+                $completedCount,
+
+            'total_count' =>
+                $totalCount,
         ];
     }
 
@@ -1472,19 +1852,17 @@ class QuizRankingController extends Controller
         $reflections
     ): array {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Tidak ada refleksi
-        |--------------------------------------------------------------------------
-        */
-
-        if ($reflections->isEmpty()) {
+        if (
+            $reflections->isEmpty()
+        ) {
 
             return [
 
-                'score' => null,
+                'score' =>
+                    null,
 
-                'complete' => true,
+                'complete' =>
+                    true,
 
                 'status' =>
                     'Belum ada refleksi',
@@ -1497,11 +1875,14 @@ class QuizRankingController extends Controller
 
                         'message' =>
                             'Tidak ada refleksi',
-
                     ],
-
                 ],
 
+                'completed_count' =>
+                    0,
+
+                'total_count' =>
+                    0,
             ];
         }
 
@@ -1509,6 +1890,10 @@ class QuizRankingController extends Controller
         $scores = [];
 
         $statusItems = [];
+
+        $completedCount = 0;
+
+        $totalCount = $reflections->count();
 
 
         foreach (
@@ -1518,12 +1903,13 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Ambil jawaban siswa
+            | JAWABAN SISWA
             |--------------------------------------------------------------------------
             */
 
             $answers =
-                $reflection->answers
+                $reflection
+                    ->answers
                     ->where(
                         'student_id',
                         $student->id
@@ -1532,11 +1918,13 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Belum menjawab
+            | BELUM DIKERJAKAN
             |--------------------------------------------------------------------------
             */
 
-            if ($answers->isEmpty()) {
+            if (
+                $answers->isEmpty()
+            ) {
 
                 $statusItems[] = [
 
@@ -1545,7 +1933,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "Refleksi Pertemuan {$reflection->pertemuan} belum dikerjakan",
-
                 ];
 
                 continue;
@@ -1554,7 +1941,7 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Cek soal
+            | SOAL
             |--------------------------------------------------------------------------
             */
 
@@ -1566,18 +1953,36 @@ class QuizRankingController extends Controller
                 $questions->count();
 
 
+            /*
+            |--------------------------------------------------------------------------
+            | JAWABAN TERISI
+            |--------------------------------------------------------------------------
+            */
+
             $answeredCount =
                 $answers
                     ->filter(
-                        fn ($answer) =>
-                            $answer->jawaban !== null
-                            &&
-                            trim(
-                                (string) $answer->jawaban
-                            ) !== ''
+                        function (
+                            $answer
+                        ) {
+
+                            return
+                                $answer->jawaban !== null
+                                &&
+                                trim(
+                                    (string)
+                                    $answer->jawaban
+                                ) !== '';
+                        }
                     )
                     ->count();
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | BELUM SELESAI
+            |--------------------------------------------------------------------------
+            */
 
             if (
                 $questionCount > 0
@@ -1592,7 +1997,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "Refleksi Pertemuan {$reflection->pertemuan} belum selesai",
-
                 ];
 
                 continue;
@@ -1601,15 +2005,20 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | REFLEKSI DINILAI MANUAL
+            | BELUM DINILAI
             |--------------------------------------------------------------------------
             */
 
             $pending =
                 $answers
                     ->contains(
-                        fn ($answer) =>
-                            $answer->nilai === null
+                        function (
+                            $answer
+                        ) {
+
+                            return
+                                $answer->nilai === null;
+                        }
                     );
 
 
@@ -1622,7 +2031,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "Refleksi Pertemuan {$reflection->pertemuan} menunggu penilaian guru",
-
                 ];
 
                 continue;
@@ -1639,17 +2047,36 @@ class QuizRankingController extends Controller
                 $answers
                     ->pluck('nilai')
                     ->filter(
-                        fn ($value) =>
-                            $value !== null
+                        function (
+                            $value
+                        ) {
+
+                            return
+                                $value !== null;
+                        }
                     )
                     ->map(
-                        fn ($value) =>
-                            (float) $value
+                        function (
+                            $value
+                        ) {
+
+                            return
+                                (float)
+                                $value;
+                        }
                     )
                     ->values();
 
 
-            if ($answerScores->isEmpty()) {
+            /*
+            |--------------------------------------------------------------------------
+            | BELUM ADA NILAI
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $answerScores->isEmpty()
+            ) {
 
                 $statusItems[] = [
 
@@ -1658,7 +2085,6 @@ class QuizRankingController extends Controller
 
                     'message' =>
                         "Refleksi Pertemuan {$reflection->pertemuan} belum memiliki nilai",
-
                 ];
 
                 continue;
@@ -1667,7 +2093,7 @@ class QuizRankingController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | NILAI REFLEKSI PERTEMUAN
+            | NILAI PERTEMUAN
             |--------------------------------------------------------------------------
             */
 
@@ -1678,6 +2104,8 @@ class QuizRankingController extends Controller
             $scores[] =
                 $meetingScore;
 
+            $completedCount++;
+
 
             $statusItems[] = [
 
@@ -1686,57 +2114,45 @@ class QuizRankingController extends Controller
 
                 'message' =>
                     "Refleksi Pertemuan {$reflection->pertemuan} selesai",
-
             ];
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | CEK KELENGKAPAN
-        |--------------------------------------------------------------------------
-        */
-
-        $hasIncomplete =
-            collect($statusItems)
-                ->contains(
-                    fn ($item) =>
-                        $item['status'] !== 'complete'
-                        &&
-                        $item['status'] !== 'not_required'
-                );
-
-
-        if ($hasIncomplete) {
-
-            return [
-
-                'score' => null,
-
-                'complete' => false,
-
-                'status' =>
-                    'Belum lengkap',
-
-                'status_items' =>
-                    $statusItems,
-
-            ];
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NILAI RATA-RATA REFLEKSI
+        | RATA-RATA NILAI YANG SUDAH ADA
         |--------------------------------------------------------------------------
         */
 
         $score =
             count($scores) > 0
                 ? array_sum($scores)
-                    /
-                    count($scores)
+                /
+                count($scores)
                 : null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK LENGKAP
+        |--------------------------------------------------------------------------
+        */
+
+        $hasIncomplete =
+            collect($statusItems)
+                ->contains(
+                    function ($item) {
+
+                        return !in_array(
+                            $item['status'],
+                            [
+                                'complete',
+                                'not_required',
+                            ],
+                            true
+                        );
+                    }
+                );
 
 
         return [
@@ -1745,14 +2161,21 @@ class QuizRankingController extends Controller
                 $score,
 
             'complete' =>
-                true,
+                !$hasIncomplete,
 
             'status' =>
-                'Semua refleksi selesai',
+                $hasIncomplete
+                    ? 'Belum lengkap'
+                    : 'Semua refleksi selesai',
 
             'status_items' =>
                 $statusItems,
 
+            'completed_count' =>
+                $completedCount,
+
+            'total_count' =>
+                $totalCount,
         ];
     }
 }

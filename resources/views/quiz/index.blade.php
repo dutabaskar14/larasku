@@ -2,24 +2,25 @@
 <html lang="id">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
     <title>Quiz — LARASKU</title>
 
-    {{-- Sidebar siswa --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-
         * {
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -36,369 +37,602 @@
                 sans-serif;
         }
 
-        #studentMainContent {
-            margin-left: 256px;
-            min-height: 100vh;
-            transition: margin-left .3s ease;
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
         }
 
+        button,
+        a,
+        select,
+        input,
+        textarea {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .student-main {
+            min-height: 100vh;
+        }
+
+        /* =========================================================
+           TOPBAR
+        ========================================================== */
+
         .topbar {
-            height: 70px;
+            height: 64px;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 28px;
-            background: #fff;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 0 26px;
+            position: sticky;
+            top: 0;
+            z-index: 30;
         }
 
         .brand {
             color: #0f172a;
-            font-size: 21px;
+            font-size: 19px;
             font-weight: 900;
             letter-spacing: -.04em;
         }
 
         .brand span {
             display: block;
-            margin-top: 3px;
+            margin-top: 1px;
             color: #94a3b8;
-            font-size: 10px;
-            font-weight: 650;
+            font-size: 9px;
+            font-weight: 700;
         }
 
-        .badge {
-            padding: 8px 12px;
+        .top-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
             border: 1px solid #e2e8f0;
             border-radius: 9px;
             background: #f8fafc;
             color: #64748b;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 800;
         }
+
+        /* =========================================================
+           CONTAINER
+        ========================================================== */
 
         .container {
             width: min(900px, calc(100% - 30px));
             margin: auto;
-            padding: 30px 0 55px;
+            padding: 25px 0 50px;
         }
 
         .heading {
-            margin-bottom: 20px;
+            margin-bottom: 17px;
         }
 
         .eyebrow {
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: #2563eb;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 900;
-            letter-spacing: .12em;
+            letter-spacing: .13em;
             text-transform: uppercase;
         }
 
         h1 {
             margin: 0;
             color: #0f172a;
-            font-size: 29px;
+            font-size: 28px;
             font-weight: 900;
-            letter-spacing: -.04em;
+            letter-spacing: -.045em;
         }
 
         .subtitle {
-            margin: 7px 0 0;
+            margin: 5px 0 0;
             color: #64748b;
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.55;
         }
 
-        /* IDENTITAS */
+        /* =========================================================
+           PERTEMUAN
+        ========================================================== */
 
-        .identity-card {
-            margin-bottom: 20px;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-        }
-
-        .section-label {
+        .meeting-wrapper {
             margin-bottom: 15px;
-            color: #0f172a;
-            font-size: 13px;
-            font-weight: 900;
         }
 
-        .section-label span {
-            display: block;
-            margin-top: 3px;
-            color: #94a3b8;
-            font-size: 10px;
-            font-weight: 650;
-        }
-
-        .identity-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 13px;
-        }
-
-        .field label {
-            display: block;
+        .meeting-title {
             margin-bottom: 7px;
             color: #475569;
-            font-size: 11px;
-            font-weight: 850;
-        }
-
-        .field select {
-            width: 100%;
-            min-height: 43px;
-            padding: 10px 12px;
-            border: 1px solid #dbe2ea;
-            border-radius: 10px;
-            outline: none;
-            background: #fff;
-            color: #172033;
-            font-family: inherit;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .field select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,.08);
-        }
-
-        .student-info {
-            display: grid;
-            grid-template-columns: 1fr 140px;
-            gap: 10px;
-            margin-top: 14px;
-        }
-
-        .info-box {
-            padding: 12px 13px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            background: #f8fafc;
-        }
-
-        .info-label {
-            margin-bottom: 4px;
-            color: #94a3b8;
-            font-size: 9px;
-            font-weight: 850;
-            letter-spacing: .05em;
-            text-transform: uppercase;
-        }
-
-        .info-value {
-            color: #0f172a;
-            font-size: 13px;
-            font-weight: 850;
-        }
-
-        .student-hint {
-            margin-top: 10px;
-            color: #94a3b8;
-            font-size: 10px;
-            line-height: 1.5;
-        }
-
-        /* PERTEMUAN */
-
-        .meeting-card {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 15px;
-        }
-
-        .meeting-label {
-            margin-bottom: 10px;
-            color: #64748b;
             font-size: 10px;
             font-weight: 850;
-            letter-spacing: .07em;
-            text-transform: uppercase;
         }
 
         .meetings {
             display: flex;
-            gap: 7px;
+            gap: 6px;
             overflow-x: auto;
+            padding: 1px 1px 5px;
+            scrollbar-width: none;
+        }
+
+        .meetings::-webkit-scrollbar {
+            display: none;
         }
 
         .meeting {
             flex: 0 0 auto;
-            padding: 9px 13px;
+            min-width: 54px;
+            padding: 8px 10px;
             border: 1px solid #e2e8f0;
             border-radius: 9px;
             background: #fff;
             color: #64748b;
             text-decoration: none;
-            font-size: 12px;
-            font-weight: 800;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 850;
+            transition: .15s ease;
         }
 
         .meeting:hover {
             border-color: #cbd5e1;
-            color: #0f172a;
+            background: #f8fafc;
         }
 
         .meeting.active {
-            background: #0f172a;
             border-color: #0f172a;
+            background: #0f172a;
             color: #fff;
         }
 
-        /* ALERT */
+        /* =========================================================
+           NOTIFIKASI
+        ========================================================== */
 
-        .success {
-            margin-bottom: 16px;
-            padding: 13px 14px;
-            border: 1px solid #bbf7d0;
-            border-radius: 10px;
-            background: #f0fdf4;
-            color: #166534;
-            font-size: 12px;
+        .success,
+        .error-box {
+            margin-bottom: 13px;
+            padding: 10px 12px;
+            border-radius: 9px;
+            font-size: 11px;
             font-weight: 750;
         }
 
-        .error {
-            margin-bottom: 16px;
-            padding: 13px 14px;
+        .success {
+            border: 1px solid #bbf7d0;
+            background: #ecfdf5;
+            color: #166534;
+        }
+
+        .error-box {
             border: 1px solid #fecaca;
-            border-radius: 10px;
             background: #fef2f2;
             color: #b91c1c;
-            font-size: 12px;
-            font-weight: 700;
         }
 
-        /* QUIZ */
+        /* =========================================================
+           CARD UTAMA
+        ========================================================== */
 
-        .quiz-card {
+        .card {
+            overflow: hidden;
             background: #fff;
             border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            overflow: hidden;
+            border-radius: 17px;
+            box-shadow: 0 5px 22px rgba(15, 23, 42, .035);
         }
 
-        .quiz-head {
-            padding: 21px;
-            border-bottom: 1px solid #edf0f4;
+        .card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .quiz-title {
+        .header-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .meeting-label {
+            display: inline-flex;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .card-title {
+            margin: 7px 0 0;
             color: #0f172a;
             font-size: 19px;
             font-weight: 900;
+            letter-spacing: -.025em;
         }
 
-        .quiz-description {
-            margin-top: 5px;
+        .card-description {
+            margin-top: 4px;
             color: #64748b;
-            font-size: 12px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.55;
         }
 
-        .quiz-meta {
-            display: flex;
-            gap: 7px;
-            margin-top: 12px;
-            flex-wrap: wrap;
+        /* =========================================================
+           STATUS POJOK KANAN
+           BELUM PILIH = —
+           SUDAH TERKIRIM = ✓ TERKIRIM
+        ========================================================== */
+
+        .progress-mini {
+            flex: 0 0 auto;
+            min-width: 65px;
+            padding: 7px 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            background: #f8fafc;
+            text-align: center;
         }
 
-        .meta {
-            padding: 6px 9px;
-            border-radius: 7px;
-            background: #f1f5f9;
-            color: #64748b;
+        .progress-mini strong {
+            display: block;
+            color: #0f172a;
+            font-size: 15px;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+
+        .progress-mini span {
+            display: block;
+            margin-top: 2px;
+            color: #94a3b8;
+            font-size: 8px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        /* =========================================================
+           FORM CONTENT
+        ========================================================== */
+
+        .form-content {
+            padding: 18px 20px 22px;
+        }
+
+        /* =========================================================
+           PERTEMUAN SELECT
+        ========================================================== */
+
+        .meeting-select-box {
+            margin-bottom: 16px;
+            padding: 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+
+        .meeting-select-title {
+            margin-bottom: 9px;
+            color: #0f172a;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .meeting-select-wrapper {
+            position: relative;
+        }
+
+        .meeting-select-wrapper i {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2563eb;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .meeting-select {
+            width: 100%;
+            height: 43px;
+            padding: 0 40px;
+            border: 1px solid #93c5fd;
+            border-radius: 9px;
+            background: #fff;
+            color: #0f172a;
+            font-size: 13px;
+            font-weight: 800;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.05);
+        }
+
+        /* =========================================================
+           IDENTITAS
+        ========================================================== */
+
+        .student-box {
+            margin-bottom: 16px;
+            padding: 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+
+        .student-box-title {
+            margin-bottom: 9px;
+            color: #0f172a;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .field {
+            margin-bottom: 9px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            color: #475569;
             font-size: 9px;
             font-weight: 850;
         }
 
-        /* STATUS SELESAI */
+        select,
+        input[type="text"],
+        textarea {
+            width: 100%;
+            border: 1px solid #dbe2ea;
+            border-radius: 8px;
+            background: #fff;
+            color: #0f172a;
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
 
-        .completed-card {
-            padding: 24px;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 15px;
+        select,
+        input[type="text"] {
+            height: 38px;
+            padding: 0 10px;
+        }
+
+        select:focus,
+        input:focus,
+        textarea:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+        }
+
+        input[readonly] {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .identity {
+            display: grid;
+            grid-template-columns: 1fr 105px;
+            gap: 8px;
+        }
+
+        /* =========================================================
+           SEARCH SISWA
+        ========================================================== */
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+            font-size: 13px;
+            z-index: 2;
+        }
+
+        .search-box input {
+            padding-left: 31px;
+        }
+
+        .student-results {
+            display: none;
+            max-height: 190px;
+            overflow-y: auto;
+            margin-top: 5px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            background: #fff;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
+        }
+
+        .student-result {
+            display: block;
+            width: 100%;
+            padding: 10px 11px;
+            border: 0;
+            border-bottom: 1px solid #f1f5f9;
+            background: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: background .15s ease;
+        }
+
+        .student-result:last-child {
+            border-bottom: 0;
+        }
+
+        .student-result:hover {
+            background: #f8fafc;
+        }
+
+        .student-name {
+            display: block;
+            color: #0f172a;
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .student-info {
+            display: block;
+            margin-top: 2px;
+            color: #64748b;
+            font-size: 9px;
+        }
+
+        .selected-student {
+            display: none;
+            margin-top: 7px;
+            padding: 8px 10px;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-size: 10px;
+            font-weight: 750;
+        }
+
+        /* =========================================================
+           PILIH SISWA
+        ========================================================== */
+
+        .choose-box {
+            margin-top: 12px;
+            padding: 18px 14px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            background: #f8fafc;
             text-align: center;
         }
 
-        .completed-icon {
-            display: inline-flex;
+        .choose-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 9px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 48px;
-            height: 48px;
-            margin-bottom: 10px;
-            border-radius: 50%;
-            background: #dcfce7;
-            color: #15803d;
-            font-size: 22px;
-            font-weight: 900;
-        }
-
-        .completed-title {
-            color: #166534;
-            font-size: 16px;
-            font-weight: 900;
-        }
-
-        .completed-text {
-            margin-top: 5px;
-            color: #64748b;
-            font-size: 11px;
-            line-height: 1.6;
-        }
-
-        .completed-score {
-            margin-top: 16px;
-            color: #15803d;
-            font-size: 32px;
-            font-weight: 950;
-            letter-spacing: -.05em;
-        }
-
-        .completed-detail {
-            margin-top: 3px;
-            color: #64748b;
-            font-size: 11px;
-        }
-
-        /* QUESTION */
-
-        .question {
-            padding: 22px;
-            border-bottom: 1px solid #edf0f4;
-        }
-
-        .question-number {
-            margin-bottom: 9px;
+            border-radius: 11px;
+            background: #eff6ff;
             color: #2563eb;
+        }
+
+        .choose-title {
+            color: #334155;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .choose-text {
+            margin-top: 4px;
+            color: #94a3b8;
             font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* =========================================================
+           PETUNJUK
+        ========================================================== */
+
+        .instruction {
+            margin-bottom: 16px;
+            padding: 12px;
+            border: 1px solid #dbeafe;
+            border-radius: 11px;
+            background: #f8fbff;
+        }
+
+        .instruction-label {
+            margin-bottom: 4px;
+            color: #2563eb;
+            font-size: 8px;
             font-weight: 900;
             letter-spacing: .08em;
             text-transform: uppercase;
         }
 
-        .question-text {
-            color: #0f172a;
-            font-size: 14px;
-            font-weight: 750;
-            line-height: 1.65;
-            white-space: pre-line;
+        .instruction-text {
+            color: #334155;
+            font-size: 11px;
+            line-height: 1.6;
         }
+
+        /* =========================================================
+           QUESTIONS
+        ========================================================== */
+
+        .questions-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+
+        .questions-title {
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .questions-count {
+            color: #94a3b8;
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .question-card {
+            margin-bottom: 9px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+            background: #fff;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            margin-bottom: 7px;
+            border-radius: 7px;
+            background: #0f172a;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        .question-text {
+            margin-bottom: 10px;
+            color: #1e293b;
+            font-size: 12px;
+            line-height: 1.55;
+            font-weight: 750;
+        }
+
+        /* =========================================================
+           OPTIONS
+        ========================================================== */
 
         .options {
             display: grid;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 7px;
         }
 
         .option {
@@ -411,702 +645,1474 @@
             pointer-events: none;
         }
 
-        .option label {
-            display: block;
-            padding: 12px 13px;
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            width: 100%;
+            padding: 10px 11px;
             border: 1px solid #e2e8f0;
-            border-radius: 10px;
+            border-radius: 9px;
             background: #fff;
-            color: #475569;
+            color: #334155;
             cursor: pointer;
-            font-size: 12px;
-            line-height: 1.5;
-            transition: .18s ease;
+            transition:
+                border-color .15s ease,
+                background .15s ease,
+                box-shadow .15s ease;
         }
 
-        .option label:hover {
-            border-color: #cbd5e1;
-            background: #f8fafc;
+        .option-label:hover {
+            border-color: #bfdbfe;
+            background: #f8fbff;
         }
 
-        .option input:checked + label {
-            border-color: #2563eb;
+        .option input:checked + .option-label {
+            border-color: #60a5fa;
             background: #eff6ff;
-            color: #1d4ed8;
-            font-weight: 800;
+            color: #1e3a8a;
+            box-shadow: 0 0 0 2px rgba(59,130,246,.06);
         }
 
-        /* BUTTON */
+        .option-letter {
+            width: 25px;
+            height: 25px;
+            flex: 0 0 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        .option input:checked + .option-label .option-letter {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .option-text {
+            padding-top: 3px;
+            font-size: 11px;
+            line-height: 1.45;
+            font-weight: 700;
+        }
+
+        /* =========================================================
+           SUBMIT
+        ========================================================== */
 
         .submit-area {
-            padding: 20px;
-            background: #fafbfc;
-            border-top: 1px solid #edf0f4;
+            margin-top: 15px;
         }
 
         .submit-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
             width: 100%;
-            padding: 13px 18px;
+            min-height: 44px;
+            padding: 9px 15px;
             border: 0;
             border-radius: 10px;
             background: #0f172a;
             color: #fff;
             font-family: inherit;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 850;
             cursor: pointer;
+            box-shadow: 0 7px 18px rgba(15, 23, 42, .16);
+            transition: transform .12s ease, background .12s ease;
         }
 
         .submit-button:hover {
             background: #1e293b;
         }
 
-        .completed-button {
-            width: 100%;
-            padding: 13px 18px;
-            border: 1px solid #bbf7d0;
-            border-radius: 10px;
-            background: #dcfce7;
-            color: #166534;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 850;
-            cursor: default;
+        .submit-button:active {
+            transform: translateY(1px);
         }
 
-        /* EMPTY */
+        .required {
+            margin-top: 10px;
+            padding: 9px 10px;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            background: #fff7ed;
+            color: #9a3412;
+            font-size: 10px;
+            font-weight: 700;
+        }
 
-        .empty {
-            padding: 55px 20px;
+        /* =========================================================
+           SUBMITTED
+        ========================================================== */
+
+        .submitted-card {
+            padding: 16px;
+            border: 1px solid #bbf7d0;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #f0fdf4, #fff);
+        }
+
+        .submitted-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .submitted-icon {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .submitted-title {
+            color: #166534;
+            font-size: 13px;
+            font-weight: 950;
+        }
+
+        .submitted-name {
+            margin-top: 2px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* =========================================================
+           SCORE
+        ========================================================== */
+
+        .score-card {
+            margin-top: 13px;
+            padding: 18px;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
             background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
             text-align: center;
         }
 
-        .empty-icon {
-            margin-bottom: 10px;
-            font-size: 28px;
+        .score-label {
+            color: #64748b;
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: .14em;
+            text-transform: uppercase;
         }
 
-        .empty-title {
+        .score-value {
+            margin-top: 5px;
+            color: #15803d;
+            font-size: 44px;
+            line-height: 1;
+            font-weight: 950;
+            letter-spacing: -.06em;
+        }
+
+        .score-info {
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 9px;
+        }
+
+        /* =========================================================
+           LOCKED
+        ========================================================== */
+
+        .locked-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 9px;
+            border-radius: 8px;
+            background: #f8fafc;
+            color: #94a3b8;
+            font-size: 9px;
+            font-weight: 750;
+            text-align: center;
+        }
+
+        /* =========================================================
+           EMPTY
+        ========================================================== */
+
+        .no-quiz {
+            padding: 30px 18px;
+            text-align: center;
+        }
+
+        .no-quiz-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .no-quiz-title {
             color: #334155;
-            font-size: 15px;
+            font-size: 12px;
             font-weight: 850;
         }
 
-        .empty-text {
-            margin-top: 6px;
+        .no-quiz-text {
+            margin-top: 4px;
             color: #94a3b8;
-            font-size: 12px;
-            line-height: 1.6;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* =========================================================
+           LOADING
+        ========================================================== */
+
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,.72);
+            backdrop-filter: blur(3px);
+        }
+
+        .loading-box {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            color: #475569;
+            font-size: 10px;
+            font-weight: 800;
+            box-shadow: 0 10px 25px rgba(15,23,42,.08);
+        }
+
+        .spinner {
+            width: 15px;
+            height: 15px;
+            border: 2px solid #dbeafe;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================================================
+           DESKTOP SIDEBAR
+        ========================================================== */
+
+        @media (min-width: 1024px) {
+            .student-main {
+                margin-left: 256px;
+            }
         }
 
         @media (max-width: 1023px) {
-
-            #studentMainContent {
+            .student-main {
                 margin-left: 0;
             }
-
         }
+
+        /* =========================================================
+           MOBILE
+        ========================================================== */
 
         @media (max-width: 600px) {
 
             .topbar {
-                padding: 0 16px;
+                height: 58px;
+                padding: 0 12px;
             }
 
-            .badge {
-                display: none;
+            .brand {
+                font-size: 17px;
+            }
+
+            .brand span {
+                font-size: 8px;
+            }
+
+            .top-badge {
+                padding: 6px 8px;
+                font-size: 9px;
             }
 
             .container {
-                width: calc(100% - 24px);
-                padding-top: 23px;
+                width: calc(100% - 16px);
+                padding: 15px 0 30px;
+            }
+
+            .heading {
+                margin-bottom: 13px;
             }
 
             h1 {
-                font-size: 25px;
+                font-size: 24px;
             }
 
-            .identity-grid {
-                grid-template-columns: 1fr;
+            .subtitle {
+                font-size: 10px;
+            }
+
+            .meeting-wrapper {
+                margin-bottom: 12px;
+            }
+
+            .meeting-title {
+                font-size: 9px;
+            }
+
+            .meeting {
+                min-width: 51px;
+                padding: 7px 9px;
+                font-size: 9px;
+            }
+
+            .card {
+                border-radius: 13px;
+            }
+
+            .card-header {
+                padding: 14px;
+            }
+
+            .form-content {
+                padding: 14px;
+            }
+
+            .card-title {
+                font-size: 16px;
+            }
+
+            .card-description {
+                font-size: 10px;
+            }
+
+            .progress-mini {
+                min-width: 61px;
+                padding: 7px 7px;
+            }
+
+            .progress-mini strong {
+                font-size: 14px;
+            }
+
+            .progress-mini span {
+                font-size: 7px;
+            }
+
+            .student-box,
+            .meeting-select-box {
+                padding: 11px;
+            }
+
+            .identity {
+                grid-template-columns: 1fr 78px;
+                gap: 6px;
+            }
+
+            select,
+            input[type="text"] {
+                height: 37px;
+                font-size: 11px;
+            }
+
+            .student-result {
+                padding: 9px 10px;
+            }
+
+            .student-name {
+                font-size: 10px;
             }
 
             .student-info {
-                grid-template-columns: 1fr;
+                font-size: 8px;
             }
 
-            .question {
-                padding: 18px;
+            .choose-box {
+                padding: 16px 12px;
             }
 
-            .quiz-head {
-                padding: 18px;
+            .choose-title {
+                font-size: 11px;
             }
 
+            .choose-text {
+                font-size: 9px;
+            }
+
+            .instruction {
+                padding: 10px;
+            }
+
+            .instruction-text {
+                font-size: 10px;
+            }
+
+            .question-card {
+                padding: 11px;
+            }
+
+            .question-text {
+                font-size: 11px;
+            }
+
+            .option-label {
+                padding: 9px;
+            }
+
+            .option-text {
+                font-size: 10px;
+            }
+
+            .submit-button {
+                min-height: 43px;
+            }
+
+            .submitted-card {
+                padding: 13px;
+            }
+
+            .submitted-title {
+                font-size: 12px;
+            }
+
+            .score-value {
+                font-size: 39px;
+            }
         }
-
     </style>
-
 </head>
-
 
 <body>
 
 @include('partials.sidebar')
 
-<div id="studentMainContent" class="lg:ml-64">
+<div class="student-main">
 
-<header class="topbar">
+    {{-- =========================================================
+         TOPBAR
+    ========================================================== --}}
 
-    <div class="brand">
+    <header class="topbar">
 
-        LARASKU
-
-        <span>
-            Pembelajaran Seni Musik
-        </span>
-
-    </div>
-
-    <div class="badge">
-        Quiz
-    </div>
-
-</header>
-
-
-<main class="container">
-
-
-    <section class="heading">
-
-        <div class="eyebrow">
-            Evaluasi Pembelajaran
+        <div class="brand">
+            LARASKU
+            <span>Pembelajaran Seni Musik</span>
         </div>
 
-        <h1>
+        <div class="top-badge">
+
+            <i
+                data-lucide="clipboard-check"
+                style="width:13px;height:13px;"
+            ></i>
+
             Quiz
-        </h1>
-
-        <p class="subtitle">
-            Pilih kelas dan nama siswa sebelum mengerjakan quiz.
-        </p>
-
-    </section>
-
-
-    {{-- NOTIFIKASI --}}
-
-    @if(session('success'))
-
-        <div class="success">
-            ✓ {{ session('success') }}
-        </div>
-
-    @endif
-
-
-    @if($errors->any())
-
-        <div class="error">
-            {{ $errors->first() }}
-        </div>
-
-    @endif
-
-
-    {{-- IDENTITAS SISWA --}}
-
-    <section class="identity-card">
-
-        <div class="section-label">
-
-            Identitas Siswa
-
-            <span>
-                Pilih kelas kemudian pilih nama siswa.
-            </span>
 
         </div>
 
+    </header>
 
-        <div class="identity-grid">
+
+    <main class="container">
+
+        {{-- =========================================================
+             HEADING
+        ========================================================== --}}
+
+        <section class="heading">
+
+            <div class="eyebrow">
+                LARASKU
+            </div>
+
+            <h1>
+                Quiz
+            </h1>
+
+            <p class="subtitle">
+                Kerjakan evaluasi pembelajaran yang tersedia dari guru.
+            </p>
+
+        </section>
 
 
-            {{-- KELAS --}}
+        {{-- =========================================================
+             DAFTAR PERTEMUAN
+             DIAMBIL DARI quiz_meetings
+        ========================================================== --}}
 
-            <div class="field">
+        @php
+            $quizMeetings = \App\Models\QuizMeetingAdmin::query()
+                ->orderBy('pertemuan')
+                ->pluck('pertemuan');
 
-                <label for="kelas">
-                    Kelas
-                </label>
+            /*
+             * Jika controller sudah mengirim $pertemuans,
+             * gunakan itu. Jika belum, gunakan quiz_meetings.
+             */
+            $availableMeetings = isset($pertemuans)
+                ? collect($pertemuans)
+                : $quizMeetings;
+        @endphp
 
-                <select
-                    id="kelas"
-                    onchange="changeClass(this.value)"
-                >
 
-                    <option value="">
-                        — Pilih Kelas —
-                    </option>
+        @if($availableMeetings->count() > 0)
 
-                    @foreach($classes as $class)
+            <div class="meeting-wrapper">
 
-                        <option
-                            value="{{ $class }}"
-                            {{ $kelas === $class ? 'selected' : '' }}
+                <div class="meeting-title">
+                    Pertemuan tersedia
+                </div>
+
+                <div class="meetings">
+
+                    @foreach($availableMeetings as $item)
+
+                        <a
+                            href="{{ route('quiz.index', [
+                                'pertemuan' => $item,
+                                'kelas' => $kelas ?? '',
+                                'student_id' => $selectedStudent->id ?? ''
+                            ]) }}"
+                            class="meeting {{ (int) $pertemuan === (int) $item ? 'active' : '' }}"
                         >
-                            {{ $class }}
-                        </option>
+                            P{{ $item }}
+                        </a>
 
                     @endforeach
 
-                </select>
-
-            </div>
-
-
-            {{-- NAMA --}}
-
-            <div class="field">
-
-                <label for="student_id">
-                    Nama Siswa
-                </label>
-
-                <select
-                    id="student_id"
-                    onchange="changeStudent(this.value)"
-                    {{ $kelas === '' ? 'disabled' : '' }}
-                >
-
-                    @if($kelas === '')
-
-                        <option value="">
-                            — Pilih kelas dahulu —
-                        </option>
-
-                    @else
-
-                        <option value="">
-                            — Pilih Nama —
-                        </option>
-
-                        @foreach($students as $student)
-
-                            <option
-                                value="{{ $student->id }}"
-                                {{ (string) $studentId === (string) $student->id ? 'selected' : '' }}
-                            >
-                                {{ $student->nama }}
-                            </option>
-
-                        @endforeach
-
-                    @endif
-
-                </select>
-
-            </div>
-
-        </div>
-
-
-        @if($selectedStudent)
-
-            <div class="student-info">
-
-                <div class="info-box">
-
-                    <div class="info-label">
-                        Nama Siswa
-                    </div>
-
-                    <div class="info-value">
-                        {{ $selectedStudent->nama }}
-                    </div>
-
                 </div>
 
-                <div class="info-box">
-
-                    <div class="info-label">
-                        Nomor Absen
-                    </div>
-
-                    <div class="info-value">
-                        {{ $selectedStudent->nomor_absen }}
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="student-hint">
-                Identitas siswa sudah dipilih. Nomor absen otomatis mengikuti data siswa.
-            </div>
-
-        @else
-
-            <div class="student-hint">
-                Pilih kelas dan nama siswa untuk melanjutkan.
             </div>
 
         @endif
 
-    </section>
 
+        {{-- =========================================================
+             NOTIFIKASI SUKSES
+        ========================================================== --}}
 
-    {{-- PERTEMUAN --}}
+        @if(session('success'))
 
-    <section class="meeting-card">
+            <div class="success">
 
-        <div class="meeting-label">
-            Pilih Pertemuan
-        </div>
+                <i
+                    data-lucide="check-circle"
+                    style="width:14px;height:14px;vertical-align:-3px;"
+                ></i>
 
-        <div class="meetings">
-
-            @for($i = 1; $i <= 8; $i++)
-
-                <a
-                    href="{{ route('quiz.index', [
-                        'kelas' => $kelas,
-                        'student_id' => $studentId,
-                        'pertemuan' => $i
-                    ]) }}"
-                    class="meeting {{ $pertemuan === $i ? 'active' : '' }}"
-                >
-                    Pertemuan {{ $i }}
-                </a>
-
-            @endfor
-
-        </div>
-
-    </section>
-
-
-    {{-- BELUM PILIH SISWA --}}
-
-    @if(!$selectedStudent)
-
-        <section class="empty">
-
-            <div class="empty-icon">
-                👤
-            </div>
-
-            <div class="empty-title">
-                Pilih Identitas Siswa
-            </div>
-
-            <div class="empty-text">
-                Pilih kelas dan nama siswa terlebih dahulu.
-                Setelah itu Quiz akan tersedia.
-            </div>
-
-        </section>
-
-
-    @elseif(!$quiz)
-
-        {{-- QUIZ TIDAK ADA --}}
-
-        <section class="empty">
-
-            <div class="empty-icon">
-                📝
-            </div>
-
-            <div class="empty-title">
-                Quiz belum tersedia
-            </div>
-
-            <div class="empty-text">
-                Quiz untuk Pertemuan {{ $pertemuan }}
-                belum tersedia atau belum diaktifkan oleh guru.
-            </div>
-
-        </section>
-
-
-    @else
-
-
-        {{-- =====================================================
-             QUIZ
-        ====================================================== --}}
-
-        <section class="quiz-card">
-
-
-            {{-- HEADER --}}
-
-            <div class="quiz-head">
-
-                <div class="quiz-title">
-                    {{ $quiz->judul }}
-                </div>
-
-                @if($quiz->deskripsi)
-
-                    <div class="quiz-description">
-                        {{ $quiz->deskripsi }}
-                    </div>
-
-                @endif
-
-
-                <div class="quiz-meta">
-
-                    <div class="meta">
-                        Pertemuan {{ $quiz->pertemuan }}
-                    </div>
-
-                    <div class="meta">
-                        {{ $quiz->questions->count() }} Soal
-                    </div>
-
-                    <div class="meta">
-                        {{ $selectedStudent->nama }}
-                    </div>
-
-                </div>
+                {{ session('success') }}
 
             </div>
 
-
-            {{-- =================================================
-                 SUDAH SELESAI
-            ================================================== --}}
-
-            @if($existingAttempt)
-
-                <div style="padding:20px;">
-
-                    <div class="completed-card">
-
-                        <div class="completed-icon">
-                            ✓
-                        </div>
-
-                        <div class="completed-title">
-                            Quiz Telah Diselesaikan
-                        </div>
-
-                        <div class="completed-text">
-                            Quiz Pertemuan {{ $pertemuan }}
-                            sudah dikerjakan oleh
-                            <strong>{{ $selectedStudent->nama }}</strong>.
-                        </div>
-
-                        <div class="completed-score">
-                            {{ number_format((float) $existingAttempt->nilai, 0) }}
-                        </div>
-
-                        <div class="completed-detail">
-                            {{ $existingAttempt->jumlah_benar }}
-                            benar dari
-                            {{ $existingAttempt->jumlah_soal }}
-                            soal
-                        </div>
-
-                    </div>
-
-                </div>
+        @endif
 
 
-                {{-- BUTTON STATUS DI BAGIAN BAWAH --}}
+        {{-- =========================================================
+             ERROR
+        ========================================================== --}}
 
-                <div class="submit-area">
+        @if($errors->any())
 
-                    <button
-                        type="button"
-                        class="completed-button"
-                        disabled
-                    >
-                        ✓ Quiz Telah Diselesaikan
-                    </button>
+            <div class="error-box">
 
-                </div>
+                <strong>
+                    Periksa kembali:
+                </strong>
 
+                <ul style="margin:5px 0 0 16px;">
 
-            @else
+                    @foreach($errors->all() as $error)
 
-
-                {{-- =================================================
-                     BELUM SELESAI — TAMPILKAN SOAL
-                ================================================== --}}
-
-                <form
-                    method="POST"
-                    action="{{ route('quiz.submit', $quiz) }}"
-                >
-
-                    @csrf
-
-
-                    <input
-                        type="hidden"
-                        name="student_id"
-                        value="{{ $selectedStudent->id }}"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="pertemuan"
-                        value="{{ $pertemuan }}"
-                    >
-
-
-                    @foreach($quiz->questions as $question)
-
-                        <article class="question">
-
-                            <div class="question-number">
-                                Soal {{ $question->urutan }}
-                            </div>
-
-                            <div class="question-text">
-                                {{ $question->pertanyaan }}
-                            </div>
-
-
-                            <div class="options">
-
-
-                                {{-- A --}}
-
-                                <div class="option">
-
-                                    <input
-                                        type="radio"
-                                        id="q{{ $question->id }}_a"
-                                        name="jawaban[{{ $question->id }}]"
-                                        value="A"
-                                        required
-                                    >
-
-                                    <label for="q{{ $question->id }}_a">
-                                        <strong>A.</strong>
-                                        {{ $question->opsi_a }}
-                                    </label>
-
-                                </div>
-
-
-                                {{-- B --}}
-
-                                <div class="option">
-
-                                    <input
-                                        type="radio"
-                                        id="q{{ $question->id }}_b"
-                                        name="jawaban[{{ $question->id }}]"
-                                        value="B"
-                                    >
-
-                                    <label for="q{{ $question->id }}_b">
-                                        <strong>B.</strong>
-                                        {{ $question->opsi_b }}
-                                    </label>
-
-                                </div>
-
-
-                                {{-- C --}}
-
-                                <div class="option">
-
-                                    <input
-                                        type="radio"
-                                        id="q{{ $question->id }}_c"
-                                        name="jawaban[{{ $question->id }}]"
-                                        value="C"
-                                    >
-
-                                    <label for="q{{ $question->id }}_c">
-                                        <strong>C.</strong>
-                                        {{ $question->opsi_c }}
-                                    </label>
-
-                                </div>
-
-
-                                {{-- D --}}
-
-                                <div class="option">
-
-                                    <input
-                                        type="radio"
-                                        id="q{{ $question->id }}_d"
-                                        name="jawaban[{{ $question->id }}]"
-                                        value="D"
-                                    >
-
-                                    <label for="q{{ $question->id }}_d">
-                                        <strong>D.</strong>
-                                        {{ $question->opsi_d }}
-                                    </label>
-
-                                </div>
-
-
-                            </div>
-
-                        </article>
+                        <li>
+                            {{ $error }}
+                        </li>
 
                     @endforeach
 
+                </ul>
 
-                    {{-- BUTTON KERJAKAN --}}
+            </div>
 
-                    @if($quiz->questions->count())
+        @endif
 
-                        <div class="submit-area">
 
-                            <button
-                                type="submit"
-                                class="submit-button"
-                                onclick="return confirm('Yakin semua jawaban sudah benar? Quiz hanya dapat dikerjakan satu kali untuk pertemuan ini.')"
-                            >
-                                Kerjakan Quiz &amp; Lihat Nilai
-                            </button>
+        {{-- =========================================================
+             CARD UTAMA
+        ========================================================== --}}
 
+        <section class="card">
+
+            @if(!$quiz)
+
+                {{-- =================================================
+                     QUIZ TIDAK TERSEDIA
+                ================================================== --}}
+
+                <div class="no-quiz">
+
+                    <div class="no-quiz-icon">
+
+                        <i
+                            data-lucide="clipboard-x"
+                            style="width:20px;height:20px;"
+                        ></i>
+
+                    </div>
+
+                    <div class="no-quiz-title">
+                        Belum ada Quiz
+                    </div>
+
+                    <div class="no-quiz-text">
+                        Guru belum menyediakan Quiz aktif untuk
+                        pertemuan ini.
+                    </div>
+
+                </div>
+
+            @else
+
+                {{-- =================================================
+                     HEADER QUIZ
+                ================================================== --}}
+
+                <div class="card-header">
+
+                    <div class="header-row">
+
+                        <div>
+
+                            <div class="meeting-label">
+                                Pertemuan {{ $quiz->pertemuan }}
+                            </div>
+
+                            <h2 class="card-title">
+                                {{ $quiz->judul }}
+                            </h2>
+
+                        </div>
+
+
+                        {{-- =================================================
+                             STATUS POJOK KANAN
+                             BELUM PILIH = —
+                             SUDAH TERKIRIM = ✓ TERKIRIM
+                        ================================================== --}}
+
+                        <div class="progress-mini">
+
+                            @if($selectedStudent && $existingAttempt)
+
+                                <strong>
+                                    ✓
+                                </strong>
+
+                                <span>
+                                    TERKIRIM
+                                </span>
+
+                            @else
+
+                                <strong>
+                                    —
+                                </strong>
+
+                                <span>
+                                    STATUS
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+
+                    @if($quiz->deskripsi)
+
+                        <div class="card-description">
+                            {{ $quiz->deskripsi }}
                         </div>
 
                     @endif
 
+                </div>
 
-                </form>
+
+                <div class="form-content">
+
+                    
+                    {{-- =================================================
+                         IDENTITAS SISWA
+                    ================================================== --}}
+
+                    <div class="student-box">
+
+                        <div class="student-box-title">
+                            Identitas Siswa
+                        </div>
+
+
+                        {{-- =================================================
+                             KELAS
+                        ================================================== --}}
+
+                        <div class="field">
+
+                            <label for="kelas">
+                                Kelas
+                            </label>
+
+                            <select
+                                id="kelas"
+                                onchange="ubahKelas(this.value)"
+                            >
+
+                                <option value="">
+                                    — Pilih Kelas —
+                                </option>
+
+                                @foreach($classes as $class)
+
+                                    <option
+                                        value="{{ $class }}"
+                                        {{ ($kelas ?? '') === $class ? 'selected' : '' }}
+                                    >
+                                        {{ $class }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="identity">
+
+                            {{-- =================================================
+                                 NAMA
+                            ================================================== --}}
+
+                            <div class="field">
+
+                                <label for="cari_siswa">
+                                    Nama Siswa
+                                </label>
+
+                                <div class="search-box">
+
+                                    <span class="search-icon">
+                                        🔍
+                                    </span>
+
+                                    <input
+                                        type="text"
+                                        id="cari_siswa"
+                                        placeholder="{{ ($kelas ?? '') ? 'Cari nama atau absen...' : 'Pilih kelas dahulu' }}"
+                                        {{ ($kelas ?? '') ? '' : 'disabled' }}
+                                        autocomplete="off"
+                                        value="{{ $selectedStudent->nama ?? '' }}"
+                                    >
+
+                                </div>
+
+
+                                <div
+                                    id="student-results"
+                                    class="student-results"
+                                >
+
+                                    @if(($kelas ?? '') && $students->count())
+
+                                        @foreach($students as $student)
+
+                                            <button
+                                                type="button"
+                                                class="student-result"
+                                                data-id="{{ $student->id }}"
+                                                data-name="{{ $student->nama }}"
+                                                data-absen="{{ $student->nomor_absen }}"
+                                                data-kelas="{{ $student->kelas }}"
+                                            >
+
+                                                <span class="student-name">
+                                                    {{ $student->nama }}
+                                                </span>
+
+                                                <span class="student-info">
+                                                    No. Absen {{ $student->nomor_absen }}
+                                                    · {{ $student->kelas }}
+                                                </span>
+
+                                            </button>
+
+                                        @endforeach
+
+                                    @elseif(($kelas ?? ''))
+
+                                        <div
+                                            style="
+                                                padding:10px;
+                                                color:#94a3b8;
+                                                font-size:10px;
+                                            "
+                                        >
+                                            Tidak ada siswa pada kelas ini.
+                                        </div>
+
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+
+                            {{-- =================================================
+                                 ABSEN
+                            ================================================== --}}
+
+                            <div class="field">
+
+                                <label for="nomor_absen">
+                                    Absen
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="nomor_absen"
+                                    value="{{ $selectedStudent->nomor_absen ?? '' }}"
+                                    placeholder="—"
+                                    readonly
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        {{-- =================================================
+                             SISWA TERPILIH
+                        ================================================== --}}
+
+                        @if($selectedStudent)
+
+                            <div
+                                class="selected-student"
+                                style="display:block;"
+                            >
+
+                                Siswa terpilih:
+
+                                <strong>
+                                    {{ $selectedStudent->nama }}
+                                </strong>
+
+                            </div>
+
+                        @endif
+
+                    </div>
+
+
+                    {{-- =================================================
+                         BELUM PILIH SISWA
+                         SOAL TIDAK DITAMPILKAN
+                    ================================================== --}}
+
+                    @if(!$selectedStudent)
+
+                        <div class="choose-box">
+
+                            <div class="choose-icon">
+
+                                <i
+                                    data-lucide="user-round-search"
+                                    style="width:20px;height:20px;"
+                                ></i>
+
+                            </div>
+
+                            <div class="choose-title">
+                                Pilih kelas dan nama siswa
+                            </div>
+
+                            <div class="choose-text">
+                                Setelah nama dipilih, halaman akan memuat
+                                ulang dan otomatis memeriksa status Quiz.
+                                Soal belum ditampilkan sebelum siswa
+                                dipilih.
+                            </div>
+
+                        </div>
+
+
+                    @else
+
+
+                        {{-- =================================================
+                             SUDAH PERNAH DIKERJAKAN
+                        ================================================== --}}
+
+                        @if($existingAttempt)
+
+                            <div class="submitted-card">
+
+                                <div class="submitted-head">
+
+                                    <div class="submitted-icon">
+
+                                        <i
+                                            data-lucide="check-circle"
+                                            style="width:20px;height:20px;"
+                                        ></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="submitted-title">
+                                            Quiz Sudah Dikerjakan
+                                        </div>
+
+                                        <div class="submitted-name">
+                                            {{ $selectedStudent->nama }}
+                                            · No. Absen
+                                            {{ $selectedStudent->nomor_absen }}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {{-- =================================================
+                                     NILAI QUIZ
+                                ================================================== --}}
+
+                                <div class="score-card">
+
+                                    <div class="score-label">
+                                        Nilai Quiz
+                                    </div>
+
+                                    <div class="score-value">
+    {{ rtrim(rtrim(number_format((float) $existingAttempt->nilai, 2, '.', ''), '0'), '.') }}
+</div>
+
+                                    <div class="score-info">
+
+                                        Benar
+                                        {{ $existingAttempt->jumlah_benar }}
+                                        dari
+                                        {{ $existingAttempt->jumlah_soal }}
+                                        soal.
+
+                                    </div>
+
+                                </div>
+
+
+                                {{-- =================================================
+                                     JAWABAN DIKUNCI
+                                ================================================== --}}
+
+                                <div class="locked-card">
+
+                                    <i
+                                        data-lucide="lock"
+                                        style="width:13px;height:13px;"
+                                    ></i>
+
+                                    Jawaban tidak dapat dilihat,
+                                    diubah, atau dikirim ulang.
+
+                                </div>
+
+                            </div>
+
+
+                        {{-- =================================================
+                             BELUM MENGERJAKAN
+                        ================================================== --}}
+
+                        @else
+
+                            @if($quiz->deskripsi)
+
+                                <div class="instruction">
+
+                                    <div class="instruction-label">
+                                        Petunjuk
+                                    </div>
+
+                                    <div class="instruction-text">
+                                        {{ $quiz->deskripsi }}
+                                    </div>
+
+                                </div>
+
+                            @endif
+
+
+                            {{-- =================================================
+                                 PERTANYAAN
+                            ================================================== --}}
+
+                            @if($quiz->questions->count() > 0)
+
+                                <form
+                                    action="{{ route('quiz.submit', $quiz) }}"
+                                    method="POST"
+                                    id="quiz-form"
+                                >
+
+                                    @csrf
+
+
+                                    <input
+                                        type="hidden"
+                                        name="pertemuan"
+                                        value="{{ $quiz->pertemuan }}"
+                                    >
+
+
+                                    <input
+                                        type="hidden"
+                                        name="student_id"
+                                        value="{{ $selectedStudent->id }}"
+                                        id="student_id"
+                                    >
+
+
+                                    <div class="questions-heading">
+
+                                        <div class="questions-title">
+                                            Pertanyaan Quiz
+                                        </div>
+
+                                        <div class="questions-count">
+                                            {{ $quiz->questions->count() }}
+                                            soal
+                                        </div>
+
+                                    </div>
+
+
+                                    @foreach($quiz->questions as $question)
+
+                                        <div class="question-card">
+
+                                            <div class="question-number">
+                                                {{ $question->urutan }}
+                                            </div>
+
+                                            <div class="question-text">
+                                                {{ $question->pertanyaan }}
+                                            </div>
+
+
+                                            <div class="options">
+
+                                                {{-- A --}}
+
+                                                <div class="option">
+
+                                                    <input
+                                                        type="radio"
+                                                        id="q{{ $question->id }}_A"
+                                                        name="jawaban[{{ $question->id }}]"
+                                                        value="A"
+                                                        required
+                                                    >
+
+                                                    <label
+                                                        for="q{{ $question->id }}_A"
+                                                        class="option-label"
+                                                    >
+
+                                                        <span class="option-letter">
+                                                            A
+                                                        </span>
+
+                                                        <span class="option-text">
+                                                            {{ $question->pilihan_a }}
+                                                        </span>
+
+                                                    </label>
+
+                                                </div>
+
+
+                                                {{-- B --}}
+
+                                                <div class="option">
+
+                                                    <input
+                                                        type="radio"
+                                                        id="q{{ $question->id }}_B"
+                                                        name="jawaban[{{ $question->id }}]"
+                                                        value="B"
+                                                    >
+
+                                                    <label
+                                                        for="q{{ $question->id }}_B"
+                                                        class="option-label"
+                                                    >
+
+                                                        <span class="option-letter">
+                                                            B
+                                                        </span>
+
+                                                        <span class="option-text">
+                                                            {{ $question->pilihan_b }}
+                                                        </span>
+
+                                                    </label>
+
+                                                </div>
+
+
+                                                {{-- C --}}
+
+                                                <div class="option">
+
+                                                    <input
+                                                        type="radio"
+                                                        id="q{{ $question->id }}_C"
+                                                        name="jawaban[{{ $question->id }}]"
+                                                        value="C"
+                                                    >
+
+                                                    <label
+                                                        for="q{{ $question->id }}_C"
+                                                        class="option-label"
+                                                    >
+
+                                                        <span class="option-letter">
+                                                            C
+                                                        </span>
+
+                                                        <span class="option-text">
+                                                            {{ $question->pilihan_c }}
+                                                        </span>
+
+                                                    </label>
+
+                                                </div>
+
+
+                                                {{-- D --}}
+
+                                                <div class="option">
+
+                                                    <input
+                                                        type="radio"
+                                                        id="q{{ $question->id }}_D"
+                                                        name="jawaban[{{ $question->id }}]"
+                                                        value="D"
+                                                    >
+
+                                                    <label
+                                                        for="q{{ $question->id }}_D"
+                                                        class="option-label"
+                                                    >
+
+                                                        <span class="option-letter">
+                                                            D
+                                                        </span>
+
+                                                        <span class="option-text">
+                                                            {{ $question->pilihan_d }}
+                                                        </span>
+
+                                                    </label>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    @endforeach
+
+
+                                    <div class="required">
+
+                                        <i
+                                            data-lucide="alert-circle"
+                                            style="
+                                                width:13px;
+                                                height:13px;
+                                                vertical-align:-3px;
+                                            "
+                                        ></i>
+
+                                        Semua soal wajib dijawab.
+                                        Quiz hanya dapat dikerjakan satu kali.
+
+                                    </div>
+
+
+                                    <div class="submit-area">
+
+                                        <button
+                                            type="submit"
+                                            class="submit-button"
+                                            id="submit-button"
+                                        >
+
+                                            <i
+                                                data-lucide="send"
+                                                style="width:14px;height:14px;"
+                                            ></i>
+
+                                            Kirim Jawaban Quiz
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+
+                            @else
+
+                                {{-- =================================================
+                                     BELUM ADA SOAL
+                                ================================================== --}}
+
+                                <div class="no-quiz">
+
+                                    <div class="no-quiz-icon">
+
+                                        <i
+                                            data-lucide="file-question"
+                                            style="width:20px;height:20px;"
+                                        ></i>
+
+                                    </div>
+
+                                    <div class="no-quiz-title">
+                                        Belum ada soal
+                                    </div>
+
+                                    <div class="no-quiz-text">
+                                        Guru belum menambahkan soal
+                                        pada Quiz ini.
+                                    </div>
+
+                                </div>
+
+                            @endif
+
+                        @endif
+
+                    @endif
+
+                </div>
 
             @endif
 
-
         </section>
 
-    @endif
-
-
-</main>
+    </main>
 
 </div>
 
+
+{{-- =========================================================
+     LOADING
+========================================================== --}}
+
+<div
+    id="loading-screen"
+    class="loading-screen"
+>
+
+    <div class="loading-box">
+
+        <div class="spinner"></div>
+
+        Memuat data siswa...
+
+    </div>
+
+</div>
+
+
 <script>
 
-    function changeClass(kelas) {
+    /* =========================================================
+       ICON
+    ========================================================== */
 
-        const url = new URL(
-            window.location.href
-        );
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
 
-        url.searchParams.set(
-            'pertemuan',
-            '{{ $pertemuan }}'
-        );
+            if (
+                typeof lucide !== 'undefined'
+            ) {
+
+                lucide.createIcons();
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       LOADING
+    ========================================================== */
+
+    function showLoading()
+    {
+
+        const loading =
+            document.getElementById(
+                'loading-screen'
+            );
+
+        if (loading) {
+
+            loading.style.display = 'flex';
+
+        }
+
+    }
+
+
+    /* =========================================================
+       GANTI PERTEMUAN
+       MENGIKUTI quiz_meetings
+    ========================================================== */
+
+    function ubahPertemuan(pertemuan)
+    {
+
+        showLoading();
+
+        const url =
+            new URL(
+                "{{ route('quiz.index') }}",
+                window.location.origin
+            );
+
+
+        if (pertemuan) {
+
+            url.searchParams.set(
+                'pertemuan',
+                pertemuan
+            );
+
+        }
+
+
+        const kelas =
+            document.getElementById('kelas');
+
+        if (
+            kelas &&
+            kelas.value
+        ) {
+
+            url.searchParams.set(
+                'kelas',
+                kelas.value
+            );
+
+        }
+
+
+        /*
+         * Pertemuan berubah.
+         * Jika sebelumnya ada siswa, siswa tetap dipertahankan.
+         * Database akan mengecek ulang status Quiz.
+         */
+
+        @if($selectedStudent)
+
+            url.searchParams.set(
+                'student_id',
+                "{{ $selectedStudent->id }}"
+            );
+
+        @else
+
+            url.searchParams.delete(
+                'student_id'
+            );
+
+        @endif
+
+
+        window.location.href =
+            url.toString();
+
+    }
+
+
+    /* =========================================================
+       GANTI KELAS
+       FULL RELOAD
+       STUDENT ID DIHAPUS
+    ========================================================== */
+
+    function ubahKelas(kelas)
+    {
+
+        showLoading();
+
+        const url =
+            new URL(
+                "{{ route('quiz.index') }}",
+                window.location.origin
+            );
+
+
+        const pertemuan =
+            "{{ $pertemuan }}";
+
+        if (pertemuan) {
+
+            url.searchParams.set(
+                'pertemuan',
+                pertemuan
+            );
+
+        }
+
 
         if (kelas) {
 
@@ -1123,58 +2129,347 @@
 
         }
 
+
+        /*
+         * Sangat penting:
+         * saat kelas berubah, siswa lama dihapus.
+         */
+
         url.searchParams.delete(
             'student_id'
         );
 
+
         window.location.href =
             url.toString();
+
     }
 
 
-    function changeStudent(studentId) {
+    /* =========================================================
+       SEARCH SISWA
+    ========================================================== */
 
-        const url = new URL(
-            window.location.href
+    const searchInput =
+        document.getElementById(
+            'cari_siswa'
         );
 
-        url.searchParams.set(
-            'pertemuan',
-            '{{ $pertemuan }}'
+    const studentResults =
+        document.getElementById(
+            'student-results'
         );
 
 
-        @if($kelas !== '')
+    if (
+        searchInput &&
+        studentResults
+    ) {
 
-            url.searchParams.set(
-                'kelas',
-                @json($kelas)
+        searchInput.addEventListener(
+            'focus',
+            function () {
+
+                if (
+                    searchInput.disabled
+                ) {
+
+                    return;
+
+                }
+
+                filterStudents();
+
+            }
+        );
+
+
+        searchInput.addEventListener(
+            'input',
+            function () {
+
+                filterStudents();
+
+            }
+        );
+
+
+        function filterStudents()
+        {
+
+            const keyword =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+
+            const students =
+                studentResults.querySelectorAll(
+                    '.student-result'
+                );
+
+
+            let visibleCount = 0;
+
+
+            students.forEach(
+                function (student) {
+
+                    const name =
+                        (
+                            student.dataset.name
+                            || ''
+                        ).toLowerCase();
+
+
+                    const absen =
+                        (
+                            student.dataset.absen
+                            || ''
+                        ).toLowerCase();
+
+
+                    const match =
+                        keyword === ''
+                        ||
+                        name.includes(keyword)
+                        ||
+                        absen.includes(keyword);
+
+
+                    if (match) {
+
+                        student.style.display =
+                            'block';
+
+                        visibleCount++;
+
+                    } else {
+
+                        student.style.display =
+                            'none';
+
+                    }
+
+                }
             );
 
-        @endif
 
+            if (
+                students.length > 0 &&
+                visibleCount > 0
+            ) {
 
-        if (studentId) {
+                studentResults.style.display =
+                    'block';
 
-            url.searchParams.set(
-                'student_id',
-                studentId
-            );
+            } else {
 
-        } else {
+                studentResults.style.display =
+                    'none';
 
-            url.searchParams.delete(
-                'student_id'
-            );
+            }
 
         }
 
-        window.location.href =
-            url.toString();
+
+        /* =====================================================
+           PILIH NAMA SISWA
+           FULL RELOAD
+           STATUS DIAMBIL ULANG DARI DATABASE
+        ====================================================== */
+
+        studentResults
+            .querySelectorAll(
+                '.student-result'
+            )
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+
+                            const studentId =
+                                button.dataset.id;
+
+
+                            const kelas =
+                                button.dataset.kelas;
+
+
+                            if (!studentId) {
+
+                                return;
+
+                            }
+
+
+                            showLoading();
+
+
+                            const url =
+                                new URL(
+                                    "{{ route('quiz.index') }}",
+                                    window.location.origin
+                                );
+
+
+                            const pertemuan =
+                                "{{ $pertemuan }}";
+
+
+                            if (pertemuan) {
+
+                                url.searchParams.set(
+                                    'pertemuan',
+                                    pertemuan
+                                );
+
+                            }
+
+
+                            if (kelas) {
+
+                                url.searchParams.set(
+                                    'kelas',
+                                    kelas
+                                );
+
+                            }
+
+
+                            url.searchParams.set(
+                                'student_id',
+                                studentId
+                            );
+
+
+                            /*
+                             * Reload halaman.
+                             *
+                             * Ini penting agar:
+                             * - status TERKIRIM langsung dicek
+                             * - nilai langsung dicek
+                             * - soal tidak memakai data siswa sebelumnya
+                             */
+
+                            window.location.href =
+                                url.toString();
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =====================================================
+           TUTUP DROPDOWN KETIKA KLIK DI LUAR
+        ====================================================== */
+
+        document.addEventListener(
+            'click',
+            function (event) {
+
+                if (
+                    !searchInput.contains(event.target)
+                    &&
+                    !studentResults.contains(event.target)
+                ) {
+
+                    studentResults.style.display =
+                        'none';
+
+                }
+
+            }
+        );
+
     }
 
-</script>
 
+    /* =========================================================
+       SUBMIT QUIZ
+       CEGAH DOUBLE CLICK
+    ========================================================== */
+
+    const quizForm =
+        document.getElementById(
+            'quiz-form'
+        );
+
+    const submitButton =
+        document.getElementById(
+            'submit-button'
+        );
+
+
+    if (
+        quizForm &&
+        submitButton
+    ) {
+
+        quizForm.addEventListener(
+            'submit',
+            function (event) {
+
+                /*
+                 * Browser native validation tetap bekerja.
+                 */
+
+                if (!quizForm.checkValidity()) {
+
+                    return;
+
+                }
+
+
+                submitButton.disabled =
+                    true;
+
+
+                submitButton.innerHTML = `
+                    <div
+                        class="spinner"
+                        style="
+                            width:14px;
+                            height:14px;
+                            border-width:2px;
+                            border-color:rgba(255,255,255,.35);
+                            border-top-color:#fff;
+                        "
+                    ></div>
+                    Mengirim...
+                `;
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       SAAT HALAMAN DIMUAT DARI CACHE
+       PASTIKAN STATUS TETAP FRESH
+    ========================================================== */
+
+    window.addEventListener(
+        'pageshow',
+        function (event) {
+
+            if (
+                event.persisted
+            ) {
+
+                window.location.reload();
+
+            }
+
+        }
+    );
+
+</script>
 
 </body>
 

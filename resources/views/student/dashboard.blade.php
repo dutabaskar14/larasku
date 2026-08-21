@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -17,6 +16,7 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
 
+
     <style>
 
         * {
@@ -26,9 +26,11 @@
                 sans-serif;
         }
 
+
         body {
             background: #f4f7fb;
         }
+
 
         .menu-card,
         .stat-card {
@@ -36,6 +38,7 @@
                 transform .2s ease,
                 box-shadow .2s ease;
         }
+
 
         .menu-card:hover {
             transform: translateY(-3px);
@@ -45,6 +48,7 @@
                 rgba(15, 23, 42, .08);
         }
 
+
         .stat-card:hover {
             transform: translateY(-2px);
 
@@ -53,15 +57,21 @@
                 rgba(15, 23, 42, .06);
         }
 
+
         .progress-bar {
             overflow: hidden;
+
             height: 7px;
+
             border-radius: 999px;
+
             background: #e2e8f0;
         }
 
+
         .progress-fill {
             height: 100%;
+
             border-radius: 999px;
         }
 
@@ -75,11 +85,13 @@
 
 <div class="flex min-h-screen">
 
+
     {{-- =====================================================
          SIDEBAR SISWA
     ====================================================== --}}
 
     @include('partials.sidebar')
+
 
 
     {{-- =====================================================
@@ -123,11 +135,13 @@
                     Panel Siswa
                 </p>
 
+
                 <h2 class="font-bold text-slate-900">
                     Dashboard
                 </h2>
 
             </div>
+
 
 
             <div
@@ -143,7 +157,9 @@
                     font-bold
                 "
             >
+
                 {{ strtoupper(substr($student->nama, 0, 1)) }}
+
             </div>
 
         </header>
@@ -245,8 +261,11 @@
                             font-bold
                         "
                     >
+
                         {{ strtoupper(substr($student->nama, 0, 1)) }}
+
                     </div>
+
 
 
                     <div class="min-w-0">
@@ -254,6 +273,7 @@
                         <p class="text-xs text-slate-400">
                             Siswa
                         </p>
+
 
                         <h2
                             class="
@@ -265,6 +285,7 @@
                         >
                             {{ $student->nama }}
                         </h2>
+
 
                         <div
                             class="
@@ -324,6 +345,7 @@
                         class="w-5 h-5 shrink-0"
                     ></i>
 
+
                     <span>
                         {{ session('success') }}
                     </span>
@@ -352,6 +374,7 @@
                         Progres Pembelajaran
                     </h2>
 
+
                     <p
                         class="
                             text-xs
@@ -369,7 +392,7 @@
                     class="
                         grid
                         grid-cols-2
-                        md:grid-cols-4
+                        md:grid-cols-5
                         gap-4
                     "
                 >
@@ -423,17 +446,6 @@
                             "
                         >
                             {{ $attendanceProgress }}/{{ $totalPertemuan }}
-                        </p>
-
-
-                        <p
-                            class="
-                                text-[10px]
-                                text-slate-400
-                                mt-1
-                            "
-                        >
-                            {{ $attendancePercentage }}% hadir
                         </p>
 
                     </div>
@@ -490,17 +502,6 @@
                             {{ $quizCompleted }}/{{ $totalQuiz }}
                         </p>
 
-
-                        <p
-                            class="
-                                text-[10px]
-                                text-slate-400
-                                mt-1
-                            "
-                        >
-                            {{ $quizPercentage }}% selesai
-                        </p>
-
                     </div>
 
 
@@ -553,17 +554,6 @@
                             "
                         >
                             {{ $reflectionProgress }}/{{ $totalPertemuan }}
-                        </p>
-
-
-                        <p
-                            class="
-                                text-[10px]
-                                text-slate-400
-                                mt-1
-                            "
-                        >
-                            {{ $reflectionPercentage }}% selesai
                         </p>
 
                     </div>
@@ -620,18 +610,65 @@
                             {{ $lkpdProgress }}/{{ $totalPertemuan }}
                         </p>
 
+                    </div>
+
+
+
+                    {{-- PRAKTIK --}}
+
+                    <a
+                        href="{{ route('assignments.index') }}"
+                        class="
+                            stat-card
+                            group
+                            bg-white
+                            border
+                            border-slate-200
+                            rounded-2xl
+                            p-5
+                            hover:border-indigo-200
+                        "
+                    >
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-indigo-50
+                                flex
+                                items-center
+                                justify-center
+                                mb-4
+                            "
+                        >
+
+                            <i
+                                data-lucide="clipboard-pen-line"
+                                class="w-5 h-5 text-indigo-600"
+                            ></i>
+
+                        </div>
+
+
+                        <p class="text-xs text-slate-400">
+                            Praktik
+                        </p>
+
 
                         <p
                             class="
-                                text-[10px]
-                                text-slate-400
+                                text-2xl
+                                font-bold
+                                text-slate-900
                                 mt-1
                             "
                         >
-                            {{ $lkpdPercentage }}% selesai
+                            {{ $praktikProgress ?? 0 }}/{{ $totalPraktik ?? 0 }}
                         </p>
 
-                    </div>
+                    </a>
+
 
                 </div>
 
@@ -654,6 +691,7 @@
                 >
                     Pembelajaran
                 </h2>
+
 
                 <p
                     class="
@@ -749,6 +787,7 @@
                             gap-1
                         "
                     >
+
                         Buka Absensi
 
                         <i
@@ -839,6 +878,7 @@
                                 gap-1
                             "
                         >
+
                             Buka Materi
 
                             <i
@@ -934,6 +974,7 @@
                             gap-1
                         "
                     >
+
                         Buka Video
 
                         <i
@@ -1016,6 +1057,7 @@
                             gap-1
                         "
                     >
+
                         Kerjakan Quiz
 
                         <i
@@ -1098,6 +1140,7 @@
                             gap-1
                         "
                     >
+
                         Mulai Bermain
 
                         <i
@@ -1180,6 +1223,7 @@
                             gap-1
                         "
                     >
+
                         Isi Refleksi
 
                         <i
@@ -1262,6 +1306,7 @@
                             gap-1
                         "
                     >
+
                         Buka LKPD
 
                         <i
@@ -1272,6 +1317,91 @@
                     </div>
 
                 </a>
+
+
+
+                {{-- PRAKTIK --}}
+
+                <a
+                    href="{{ route('assignments.index') }}"
+                    class="
+                        menu-card
+                        bg-white
+                        border
+                        border-slate-200
+                        rounded-2xl
+                        p-6
+                        hover:border-indigo-200
+                    "
+                >
+
+                    <div
+                        class="
+                            w-12
+                            h-12
+                            rounded-xl
+                            bg-indigo-50
+                            flex
+                            items-center
+                            justify-center
+                            mb-5
+                        "
+                    >
+
+                        <i
+                            data-lucide="clipboard-pen-line"
+                            class="w-6 h-6 text-indigo-600"
+                        ></i>
+
+                    </div>
+
+
+                    <h3
+                        class="
+                            font-bold
+                            text-lg
+                            text-slate-900
+                        "
+                    >
+                        Praktik
+                    </h3>
+
+
+                    <p
+                        class="
+                            text-sm
+                            text-slate-500
+                            mt-1
+                        "
+                    >
+                        Kumpulkan tugas praktik dan pantau
+                        status serta hasil penilaianmu.
+                    </p>
+
+
+                    <div
+                        class="
+                            mt-5
+                            text-sm
+                            font-semibold
+                            text-indigo-600
+                            flex
+                            items-center
+                            gap-1
+                        "
+                    >
+
+                        Buka Praktik
+
+                        <i
+                            data-lucide="arrow-right"
+                            class="w-4 h-4"
+                        ></i>
+
+                    </div>
+
+                </a>
+
 
             </div>
 
@@ -1311,6 +1441,7 @@
                         >
                             Progres Kamu
                         </h3>
+
 
                         <p
                             class="
@@ -1358,6 +1489,7 @@
                             >
                                 Absensi
                             </span>
+
 
                             <span
                                 class="
@@ -1413,6 +1545,7 @@
                                 Quiz
                             </span>
 
+
                             <span
                                 class="
                                     font-bold
@@ -1466,6 +1599,7 @@
                             >
                                 Refleksi
                             </span>
+
 
                             <span
                                 class="
@@ -1521,6 +1655,7 @@
                                 LKPD
                             </span>
 
+
                             <span
                                 class="
                                     font-bold
@@ -1549,6 +1684,62 @@
                         </div>
 
                     </div>
+
+
+
+                    {{-- PRAKTIK --}}
+
+                    <div>
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                justify-between
+                                text-xs
+                                mb-2
+                            "
+                        >
+
+                            <span
+                                class="
+                                    font-semibold
+                                    text-slate-600
+                                "
+                            >
+                                Praktik
+                            </span>
+
+
+                            <span
+                                class="
+                                    font-bold
+                                    text-indigo-600
+                                "
+                            >
+                                {{ $praktikPercentage ?? 0 }}%
+                            </span>
+
+                        </div>
+
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="
+                                    progress-fill
+                                    bg-indigo-500
+                                "
+                                style="
+                                    width:
+                                    {{ $praktikPercentage ?? 0 }}%;
+                                "
+                            ></div>
+
+                        </div>
+
+                    </div>
+
 
                 </div>
 
@@ -1716,4 +1907,3 @@ document.addEventListener(
 
 </body>
 </html>
-```
