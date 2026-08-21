@@ -2,7 +2,6 @@
 <html lang="id">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -16,7 +15,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-
         * {
             font-family: 'DM Sans', 'Inter', sans-serif;
         }
@@ -49,7 +47,7 @@
         }
 
         .class-btn.selected span:first-child {
-            color: rgba(255,255,255,.7);
+            color: rgba(255, 255, 255, .7);
         }
 
         .meeting-btn:hover {
@@ -74,16 +72,34 @@
             background: #dcfce7;
         }
 
-    </style>
+        .search-empty {
+            min-height: 170px;
+        }
 
+        .student-results {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .student-results::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .student-results::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .student-results::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px;
+        }
+    </style>
 </head>
 
 
 <body class="min-h-screen text-slate-800">
 
-
 <div class="max-w-5xl mx-auto px-5 py-8">
-
 
     {{-- =========================================================
          HEADER
@@ -104,19 +120,15 @@
                 mb-4
             "
         >
-
             <i
                 data-lucide="graduation-cap"
                 class="w-7 h-7 text-white"
             ></i>
-
         </div>
-
 
         <h1 class="text-3xl font-bold text-slate-900">
             LARASKU
         </h1>
-
 
         <p class="text-sm text-slate-500 mt-1">
             Absensi Pembelajaran
@@ -150,7 +162,7 @@
 
             <i
                 data-lucide="circle-check"
-                class="w-5 h-5"
+                class="w-5 h-5 shrink-0"
             ></i>
 
             <span>
@@ -189,7 +201,7 @@
                     class="w-5 h-5 shrink-0 mt-0.5"
                 ></i>
 
-                <div>
+                <div class="space-y-1">
 
                     @foreach($errors->all() as $error)
 
@@ -209,7 +221,7 @@
 
 
     {{-- =========================================================
-         STEP 1 — PILIH KELAS
+         STEP 1 — PILIH KELAS & CARI SISWA
     ========================================================== --}}
 
     <section
@@ -244,7 +256,6 @@
                 1
             </div>
 
-
             <div>
 
                 <h2 class="text-lg font-bold text-slate-900">
@@ -252,7 +263,7 @@
                 </h2>
 
                 <p class="text-sm text-slate-500 mt-1">
-                    Pilih kelas kamu terlebih dahulu.
+                    Pilih kelas terlebih dahulu, kemudian cari nama siswa.
                 </p>
 
             </div>
@@ -333,7 +344,6 @@
                             Kelas
                         </span>
 
-
                         <span class="text-lg font-bold">
                             {{ $class->nama }}
                         </span>
@@ -348,28 +358,33 @@
 
 
         {{-- =====================================================
-             CARI SISWA
+             AREA PENCARIAN SISWA
         ====================================================== --}}
 
         <div
             id="studentSearchArea"
-            class="opacity-50 pointer-events-none"
+            class="
+                opacity-50
+                pointer-events-none
+            "
         >
 
             <div class="mb-3">
 
                 <p class="text-sm font-semibold text-slate-700">
-                    Cari Nama Kamu
+                    Cari Nama Siswa
                 </p>
 
                 <p class="text-xs text-slate-400 mt-1">
-                    Data siswa akan menyesuaikan kelas yang dipilih.
+                    Ketik nama siswa untuk menampilkan hasil pencarian.
                 </p>
 
             </div>
 
 
-            <div class="relative mb-5">
+            {{-- SEARCH INPUT --}}
+
+            <div class="relative">
 
                 <i
                     data-lucide="search"
@@ -384,11 +399,10 @@
                     "
                 ></i>
 
-
                 <input
                     id="studentSearch"
                     type="text"
-                    placeholder="Ketik nama kamu..."
+                    placeholder="Ketik nama siswa untuk mencari..."
                     autocomplete="off"
                     class="
                         w-full
@@ -412,17 +426,68 @@
 
 
             {{-- =================================================
-                 STUDENTS
+                 PESAN AWAL
+            ================================================== --}}
+
+            <div
+                id="searchInstruction"
+                class="
+                    search-empty
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    text-center
+                    py-10
+                    text-slate-400
+                "
+            >
+
+                <div
+                    class="
+                        w-14
+                        h-14
+                        rounded-2xl
+                        bg-slate-100
+                        flex
+                        items-center
+                        justify-center
+                        mb-4
+                    "
+                >
+
+                    <i
+                        data-lucide="search"
+                        class="w-7 h-7"
+                    ></i>
+
+                </div>
+
+                <p class="text-sm font-semibold text-slate-600">
+                    Cari nama siswa
+                </p>
+
+                <p class="text-xs mt-1">
+                    Ketik nama siswa terlebih dahulu.
+                </p>
+
+            </div>
+
+
+            {{-- =================================================
+                 STUDENT RESULTS
             ================================================== --}}
 
             <div
                 id="studentList"
                 class="
+                    student-results
                     grid
                     grid-cols-1
                     sm:grid-cols-2
                     md:grid-cols-3
                     gap-3
+                    mt-4
                 "
             >
 
@@ -441,7 +506,7 @@
                             hidden
                         "
                         data-id="{{ $student->id }}"
-                        data-name="{{ strtolower($student->nama) }}"
+                        data-name="{{ strtolower(trim($student->nama)) }}"
                         data-class="{{ strtoupper(trim($student->kelas)) }}"
                     >
 
@@ -461,15 +526,13 @@
                                     shrink-0
                                 "
                             >
-
                                 {{ strtoupper(
                                     substr(
-                                        $student->nama,
+                                        trim($student->nama),
                                         0,
                                         1
                                     )
                                 ) }}
-
                             </div>
 
 
@@ -486,7 +549,6 @@
                                     {{ $student->nama }}
                                 </p>
 
-
                                 <p
                                     class="
                                         text-xs
@@ -495,7 +557,8 @@
                                     "
                                 >
                                     Absen {{ $student->nomor_absen }}
-                                    · {{ $student->kelas }}
+                                    ·
+                                    {{ $student->kelas }}
                                 </p>
 
                             </div>
@@ -540,7 +603,7 @@
                 class="
                     hidden
                     text-center
-                    py-8
+                    py-10
                     text-slate-400
                 "
             >
@@ -555,7 +618,7 @@
                 </p>
 
                 <p class="text-xs mt-1">
-                    Pastikan kamu memilih kelas yang benar.
+                    Coba ketik nama lain atau periksa kelas yang dipilih.
                 </p>
 
             </div>
@@ -603,7 +666,6 @@
             >
                 2
             </div>
-
 
             <div>
 
@@ -663,13 +725,11 @@
                             class="meeting-icon w-4 h-4"
                         ></i>
 
-
                         <span class="text-lg font-bold">
                             {{ $meeting->pertemuan }}
                         </span>
 
                     </div>
-
 
                     <span
                         class="
@@ -759,7 +819,6 @@
             >
                 3
             </div>
-
 
             <div>
 
@@ -863,7 +922,7 @@
 
 
         {{-- =====================================================
-             FORM
+             FORM ABSENSI
         ====================================================== --}}
 
         <form
@@ -874,13 +933,11 @@
 
             @csrf
 
-
             <input
                 type="hidden"
                 name="student_id"
                 id="studentId"
             >
-
 
             <input
                 type="hidden"
@@ -888,13 +945,11 @@
                 id="classId"
             >
 
-
             <input
                 type="hidden"
                 name="pertemuan"
                 id="meetingId"
             >
-
 
             <button
                 type="submit"
@@ -929,7 +984,6 @@
 
     </section>
 
-
 </div>
 
 
@@ -962,6 +1016,12 @@
     const studentSearchArea =
         document.getElementById('studentSearchArea');
 
+    const studentList =
+        document.getElementById('studentList');
+
+    const searchInstruction =
+        document.getElementById('searchInstruction');
+
     const noStudent =
         document.getElementById('noStudent');
 
@@ -993,10 +1053,14 @@
         document.querySelectorAll('.meeting-btn');
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | STATE
+    |--------------------------------------------------------------------------
+    */
+
     let selectedStudent = null;
-
     let selectedClassName = null;
-
     let selectedMeetingNumber = null;
 
 
@@ -1017,12 +1081,32 @@
 
     /*
     |--------------------------------------------------------------------------
+    | RESET HASIL PENCARIAN
+    |--------------------------------------------------------------------------
+    */
+
+    function resetStudentSearch() {
+
+        searchInput.value = '';
+
+        studentCards.forEach(card => {
+
+            card.classList.add('hidden');
+            card.classList.remove('selected');
+
+        });
+
+        noStudent.classList.add('hidden');
+
+        searchInstruction.classList.remove('hidden');
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
     | RESET PERTEMUAN
     |--------------------------------------------------------------------------
-    |
-    | Pertemuan berasal langsung dari database.
-    | Tidak ada lagi loop 1–8.
-    |
     */
 
     function resetMeetings() {
@@ -1038,6 +1122,52 @@
             button.classList.remove('selected');
 
         });
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RESET STEP 2 & 3
+    |--------------------------------------------------------------------------
+    */
+
+    function lockAttendance() {
+
+        attendanceSection.classList.add(
+            'opacity-50',
+            'pointer-events-none'
+        );
+
+    }
+
+
+    function unlockAttendance() {
+
+        attendanceSection.classList.remove(
+            'opacity-50',
+            'pointer-events-none'
+        );
+
+    }
+
+
+    function lockConfirmation() {
+
+        confirmSection.classList.add(
+            'opacity-50',
+            'pointer-events-none'
+        );
+
+    }
+
+
+    function unlockConfirmation() {
+
+        confirmSection.classList.remove(
+            'opacity-50',
+            'pointer-events-none'
+        );
 
     }
 
@@ -1071,7 +1201,7 @@
 
                 /*
                 |--------------------------------------------------------------------------
-                | PILIH KELAS
+                | AKTIFKAN KELAS
                 |--------------------------------------------------------------------------
                 */
 
@@ -1090,7 +1220,7 @@
 
                 /*
                 |--------------------------------------------------------------------------
-                | AKTIFKAN PENCARIAN SISWA
+                | AKTIFKAN AREA PENCARIAN
                 |--------------------------------------------------------------------------
                 */
 
@@ -1100,57 +1230,14 @@
                 );
 
 
-                searchInput.value = '';
-
-
                 /*
                 |--------------------------------------------------------------------------
-                | FILTER SISWA
+                | PENTING:
+                | SEMUA NAMA TETAP TERSEMBUNYI
                 |--------------------------------------------------------------------------
                 */
 
-                const selectedNormalized =
-                    normalizeClass(
-                        selectedClassName
-                    );
-
-
-                let visibleCount = 0;
-
-
-                studentCards.forEach(card => {
-
-                    card.classList.remove(
-                        'selected'
-                    );
-
-
-                    const studentClass =
-                        normalizeClass(
-                            card.dataset.class
-                        );
-
-
-                    if (
-                        studentClass ===
-                        selectedNormalized
-                    ) {
-
-                        card.classList.remove(
-                            'hidden'
-                        );
-
-                        visibleCount++;
-
-                    } else {
-
-                        card.classList.add(
-                            'hidden'
-                        );
-
-                    }
-
-                });
+                resetStudentSearch();
 
 
                 /*
@@ -1181,14 +1268,11 @@
 
                 /*
                 |--------------------------------------------------------------------------
-                | KUNCI STEP 2 SAMPAI SISWA DIPILIH
+                | KUNCI STEP 2
                 |--------------------------------------------------------------------------
                 */
 
-                attendanceSection.classList.add(
-                    'opacity-50',
-                    'pointer-events-none'
-                );
+                lockAttendance();
 
 
                 /*
@@ -1197,33 +1281,20 @@
                 |--------------------------------------------------------------------------
                 */
 
-                confirmSection.classList.add(
-                    'opacity-50',
-                    'pointer-events-none'
-                );
+                lockConfirmation();
 
 
                 /*
                 |--------------------------------------------------------------------------
-                | PESAN SISWA
+                | FOCUS SEARCH
                 |--------------------------------------------------------------------------
                 */
 
-                if (
-                    visibleCount === 0
-                ) {
+                setTimeout(() => {
 
-                    noStudent.classList.remove(
-                        'hidden'
-                    );
+                    searchInput.focus();
 
-                } else {
-
-                    noStudent.classList.add(
-                        'hidden'
-                    );
-
-                }
+                }, 150);
 
 
                 /*
@@ -1247,6 +1318,9 @@
     |--------------------------------------------------------------------------
     | CARI SISWA
     |--------------------------------------------------------------------------
+    |
+    | Nama siswa HANYA muncul setelah keyword diketik.
+    |
     */
 
     searchInput.addEventListener(
@@ -1265,13 +1339,57 @@
                 );
 
 
+            /*
+            |--------------------------------------------------------------------------
+            | BELUM MENGETIK
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                !selectedClassName ||
+                keyword.length === 0
+            ) {
+
+                studentCards.forEach(card => {
+
+                    card.classList.add(
+                        'hidden'
+                    );
+
+                });
+
+                noStudent.classList.add(
+                    'hidden'
+                );
+
+                searchInstruction.classList.remove(
+                    'hidden'
+                );
+
+                return;
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SUDAH MENGETIK
+            |--------------------------------------------------------------------------
+            */
+
+            searchInstruction.classList.add(
+                'hidden'
+            );
+
+
             let visibleCount = 0;
 
 
             studentCards.forEach(card => {
 
                 const name =
-                    card.dataset.name;
+                    String(
+                        card.dataset.name || ''
+                    ).toLowerCase();
 
 
                 const studentClass =
@@ -1312,6 +1430,12 @@
 
             });
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | HASIL TIDAK DITEMUKAN
+            |--------------------------------------------------------------------------
+            */
 
             if (
                 visibleCount === 0
@@ -1399,7 +1523,6 @@
                 studentIdInput.value =
                     selectedStudent.id;
 
-
                 classIdInput.value =
                     selectedClassName;
 
@@ -1413,7 +1536,6 @@
                 selectedStudentName.textContent =
                     selectedStudent.name;
 
-
                 selectedClass.textContent =
                     selectedClassName;
 
@@ -1424,11 +1546,23 @@
                 |--------------------------------------------------------------------------
                 */
 
-                attendanceSection.classList.remove(
-                    'opacity-50',
-                    'pointer-events-none'
-                );
+                unlockAttendance();
 
+
+                /*
+                |--------------------------------------------------------------------------
+                | STEP 3 TETAP TERKUNCI
+                |--------------------------------------------------------------------------
+                */
+
+                lockConfirmation();
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | SCROLL
+                |--------------------------------------------------------------------------
+                */
 
                 attendanceSection.scrollIntoView({
                     behavior: 'smooth',
@@ -1455,7 +1589,27 @@
 
                 /*
                 |--------------------------------------------------------------------------
-                | RESET
+                | PASTIKAN SISWA SUDAH DIPILIH
+                |--------------------------------------------------------------------------
+                */
+
+                if (
+                    !selectedStudent ||
+                    !studentIdInput.value
+                ) {
+
+                    alert(
+                        'Silakan cari dan pilih nama siswa terlebih dahulu.'
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | RESET PERTEMUAN LAIN
                 |--------------------------------------------------------------------------
                 */
 
@@ -1470,7 +1624,7 @@
 
                 /*
                 |--------------------------------------------------------------------------
-                | PILIH
+                | PILIH PERTEMUAN
                 |--------------------------------------------------------------------------
                 */
 
@@ -1504,11 +1658,14 @@
                 |--------------------------------------------------------------------------
                 */
 
-                confirmSection.classList.remove(
-                    'opacity-50',
-                    'pointer-events-none'
-                );
+                unlockConfirmation();
 
+
+                /*
+                |--------------------------------------------------------------------------
+                | SCROLL
+                |--------------------------------------------------------------------------
+                */
 
                 confirmSection.scrollIntoView({
                     behavior: 'smooth',
@@ -1542,8 +1699,32 @@
                     event.preventDefault();
 
                     alert(
-                        'Silakan pilih kelas, nama siswa, dan pertemuan terlebih dahulu.'
+                        'Silakan pilih kelas, cari nama siswa, pilih nama siswa, dan pilih pertemuan terlebih dahulu.'
                     );
+
+                    return;
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | KONFIRMASI TERAKHIR
+                |--------------------------------------------------------------------------
+                */
+
+                const confirmed =
+                    confirm(
+                        'Tandai ' +
+                        selectedStudentName.textContent +
+                        ' sebagai HADIR pada ' +
+                        selectedMeeting.textContent +
+                        '?'
+                    );
+
+
+                if (!confirmed) {
+
+                    event.preventDefault();
 
                 }
 
@@ -1555,21 +1736,33 @@
     |--------------------------------------------------------------------------
     | INITIAL STATE
     |--------------------------------------------------------------------------
+    |
+    | Saat halaman pertama dibuka:
+    | - tidak ada siswa tampil
+    | - search belum aktif
+    | - pertemuan terkunci
+    | - konfirmasi terkunci
+    |
     */
 
+    resetStudentSearch();
+
     resetMeetings();
+
+    lockAttendance();
+
+    lockConfirmation();
 
 
     /*
     |--------------------------------------------------------------------------
-    | RE-INIT ICON
+    | ICON
     |--------------------------------------------------------------------------
     */
 
     lucide.createIcons();
 
 </script>
-
 
 </body>
 
